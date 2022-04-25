@@ -1,0 +1,9 @@
+lib/libs.hpp.gch
+
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/targets.log
+
+!ft2build.h
+!lib/freetype/*
+!lib/freetype/*/*

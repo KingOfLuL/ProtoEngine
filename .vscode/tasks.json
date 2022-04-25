@@ -1,0 +1,17 @@
+{
+    "tasks": [
+        {
+            "label": "Debug",
+            "type": "shell",
+            "command": "mingw32-make debug",
+            "args": [],
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "mingw32-make build",
+            "args": [],
+        }
+    ],
+    "version": "2.0.0"
+}
