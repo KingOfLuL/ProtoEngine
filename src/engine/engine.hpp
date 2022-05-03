@@ -3,14 +3,16 @@
 
 #include "scene/scene.hpp"
 #include "window/window.hpp"
+#include "util/util.hpp"
 
 namespace Engine
 {
     extern Scene *activeScene;
     extern Window *activeWindow;
 
-    /// set a function to be called every frame
-    void addOnUpdate(const std::function<void()> &func);
+    // Event that gets called on each frame
+    extern Event onRenderUpdate;
+
     void init(Scene &scene, const std::string &windowName, int windowW, int windowH);
     void run();
 }

@@ -14,7 +14,12 @@ namespace Engine
         glm::vec3 color;
 
         Vertex();
-        Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 color);
+        Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 color = glm::vec3(1.f));
+    };
+    struct Bounds
+    {
+        glm::vec3 center;
+        glm::vec3 size;
     };
 
     struct Mesh
@@ -22,9 +27,18 @@ namespace Engine
         Mesh() = default;
         Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
 
+        void calculateBounds();
+        void drawBounds() const;
+
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
+
+        Bounds bounds;
+
         Vertexbuffer vertexbuffer;
+
+    private:
+        Vertexbuffer m_boundsVertexbuffer;
     };
 }
 #endif // SRC_ENGINE_RENDERER_MESH_MESH

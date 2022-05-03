@@ -8,6 +8,7 @@
 #include <ostream>
 #include <sstream>
 #include <cstring>
+#include <regex>
 #include <fstream>
 #include <typeinfo>
 

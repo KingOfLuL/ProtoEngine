@@ -10,12 +10,10 @@ namespace Engine::Time
     float lastFrame = 0;
     void init()
     {
-        Engine::addOnUpdate(
-            [&]()
-            {
+        Engine::onRenderUpdate += ([&]()
+                                   {
                 time = glfwGetTime();
                 deltaTime = time - lastFrame;
-                lastFrame = time;
-            });
+                lastFrame = time; });
     }
 }

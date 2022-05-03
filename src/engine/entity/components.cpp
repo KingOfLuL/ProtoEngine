@@ -90,6 +90,10 @@ namespace Engine
     {
         m_Mesh.vertexbuffer.draw();
     }
+    void MeshRenderer::drawMeshBounds() const
+    {
+        m_Mesh.drawBounds();
+    }
 
     ///
     ///

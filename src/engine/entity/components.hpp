@@ -72,6 +72,7 @@ namespace Engine
     public:
         void setMesh(const Mesh &mesh);
         void drawMesh() const;
+        void drawMeshBounds() const;
 
     public:
         Material *material;

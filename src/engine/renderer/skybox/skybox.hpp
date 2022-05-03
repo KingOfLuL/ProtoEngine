@@ -11,7 +11,7 @@ namespace Engine
     {
     public:
         Skybox() = default;
-        /// faces must be defined in following order: right, left, top, bottom, front, back
+        /// @param faces must be defined in following order: right, left, top, bottom, front, back
         Skybox(const std::array<std::string, 6> &faces);
 
     public:

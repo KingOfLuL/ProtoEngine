@@ -3,7 +3,6 @@
 #include "util.hpp"
 
 #include "random/random.hpp"
-#include <regex>
 
 namespace Engine
 {
@@ -75,5 +74,128 @@ namespace Engine
             std::cout << "File (" << path << ") not successfully read: " << e.what() << std::endl;
         }
         return text;
+    }
+    namespace GeomUtil
+    {
+        std::array<Vertex, 36> createCubeVertices(
+            const glm::vec3 &cornerA, const glm::vec3 &cornerB, const glm::vec3 &cornerC, const glm::vec3 &cornerD,
+            const glm::vec3 &cornerE, const glm::vec3 &cornerF, const glm::vec3 &cornerG, const glm::vec3 &cornerH)
+        {
+            return {
+                // front
+                Vertex(cornerA, {0, 0, -1}, {0, 1}), // a
+                Vertex(cornerB, {0, 0, -1}, {0, 0}), // b
+                Vertex(cornerC, {0, 0, -1}, {1, 0}), // c
+                Vertex(cornerC, {0, 0, -1}, {0, 1}), // c
+                Vertex(cornerD, {0, 0, -1}, {1, 0}), // d
+                Vertex(cornerA, {0, 0, -1}, {1, 1}), // a
+
+                // right
+                Vertex(cornerD, {1, 0, 0}, {0, 1}), // a
+                Vertex(cornerC, {1, 0, 0}, {0, 0}), // b
+                Vertex(cornerG, {1, 0, 0}, {1, 0}), // c
+                Vertex(cornerG, {1, 0, 0}, {0, 1}), // c
+                Vertex(cornerH, {1, 0, 0}, {1, 0}), // d
+                Vertex(cornerD, {1, 0, 0}, {1, 1}), // a
+
+                // left
+                Vertex(cornerE, {-1, 0, 0}, {0, 1}), // a
+                Vertex(cornerF, {-1, 0, 0}, {0, 0}), // b
+                Vertex(cornerB, {-1, 0, 0}, {1, 0}), // c
+                Vertex(cornerB, {-1, 0, 0}, {0, 1}), // c
+                Vertex(cornerA, {-1, 0, 0}, {1, 0}), // d
+                Vertex(cornerE, {-1, 0, 0}, {1, 1}), // a
+
+                // back
+                Vertex(cornerH, {0, 0, 1}, {0, 1}), // a
+                Vertex(cornerG, {0, 0, 1}, {0, 0}), // b
+                Vertex(cornerF, {0, 0, 1}, {1, 0}), // c
+                Vertex(cornerF, {0, 0, 1}, {0, 1}), // c
+                Vertex(cornerE, {0, 0, 1}, {1, 0}), // d
+                Vertex(cornerH, {0, 0, 1}, {1, 1}), // a
+
+                // top
+                Vertex(cornerE, {0, 1, 0}, {0, 1}), // a
+                Vertex(cornerA, {0, 1, 0}, {0, 0}), // b
+                Vertex(cornerD, {0, 1, 0}, {1, 0}), // c
+                Vertex(cornerD, {0, 1, 0}, {0, 1}), // c
+                Vertex(cornerH, {0, 1, 0}, {1, 0}), // d
+                Vertex(cornerE, {0, 1, 0}, {1, 1}), // a
+
+                // bottom
+                Vertex(cornerB, {0, -1, 0}, {0, 1}), // a
+                Vertex(cornerF, {0, -1, 0}, {0, 0}), // b
+                Vertex(cornerG, {0, -1, 0}, {1, 0}), // c
+                Vertex(cornerG, {0, -1, 0}, {0, 1}), // c
+                Vertex(cornerC, {0, -1, 0}, {1, 0}), // d
+                Vertex(cornerB, {0, -1, 0}, {1, 1}), // a
+            };
+        }
+        std::array<Vertex, 48> createLineCubeVertices(
+            const glm::vec3 &cornerA, const glm::vec3 &cornerB, const glm::vec3 &cornerC, const glm::vec3 &cornerD,
+            const glm::vec3 &cornerE, const glm::vec3 &cornerF, const glm::vec3 &cornerG, const glm::vec3 &cornerH)
+        {
+            return {
+                // front
+                Vertex(cornerA, {0, 0, -1}, {0, 1}), // a
+                Vertex(cornerB, {0, 0, -1}, {0, 0}), // b
+                Vertex(cornerB, {0, 0, -1}, {0, 0}), // b
+                Vertex(cornerC, {0, 0, -1}, {0, 1}), // c
+                Vertex(cornerC, {0, 0, -1}, {0, 1}), // c
+                Vertex(cornerD, {0, 0, -1}, {1, 0}), // d
+                Vertex(cornerD, {0, 0, -1}, {1, 0}), // d
+                Vertex(cornerA, {0, 0, -1}, {1, 1}), // a
+
+                // back
+                Vertex(cornerH, {0, 0, 1}, {0, 1}), // a
+                Vertex(cornerG, {0, 0, 1}, {0, 0}), // b
+                Vertex(cornerG, {0, 0, 1}, {0, 0}), // b
+                Vertex(cornerF, {0, 0, 1}, {1, 0}), // c
+                Vertex(cornerF, {0, 0, 1}, {0, 1}), // c
+                Vertex(cornerE, {0, 0, 1}, {1, 0}), // d
+                Vertex(cornerE, {0, 0, 1}, {1, 0}), // d
+                Vertex(cornerH, {0, 0, 1}, {1, 1}), // a
+
+                // right
+                Vertex(cornerD, {1, 0, 0}, {0, 1}), // a
+                Vertex(cornerC, {1, 0, 0}, {0, 0}), // b
+                Vertex(cornerC, {1, 0, 0}, {0, 0}), // b
+                Vertex(cornerG, {1, 0, 0}, {1, 0}), // c
+                Vertex(cornerG, {1, 0, 0}, {0, 1}), // c
+                Vertex(cornerH, {1, 0, 0}, {1, 0}), // d
+                Vertex(cornerH, {1, 0, 0}, {1, 0}), // d
+                Vertex(cornerD, {1, 0, 0}, {1, 1}), // a
+
+                // left
+                Vertex(cornerE, {-1, 0, 0}, {0, 1}), // a
+                Vertex(cornerF, {-1, 0, 0}, {0, 0}), // b
+                Vertex(cornerF, {-1, 0, 0}, {0, 0}), // b
+                Vertex(cornerB, {-1, 0, 0}, {1, 0}), // c
+                Vertex(cornerB, {-1, 0, 0}, {0, 1}), // c
+                Vertex(cornerA, {-1, 0, 0}, {1, 0}), // d
+                Vertex(cornerA, {-1, 0, 0}, {1, 0}), // d
+                Vertex(cornerE, {-1, 0, 0}, {1, 1}), // a
+
+                // top
+                Vertex(cornerE, {0, 1, 0}, {0, 1}), // a
+                Vertex(cornerA, {0, 1, 0}, {0, 0}), // b
+                Vertex(cornerA, {0, 1, 0}, {0, 0}), // b
+                Vertex(cornerD, {0, 1, 0}, {1, 0}), // c
+                Vertex(cornerD, {0, 1, 0}, {0, 1}), // c
+                Vertex(cornerH, {0, 1, 0}, {1, 0}), // d
+                Vertex(cornerH, {0, 1, 0}, {1, 0}), // d
+                Vertex(cornerE, {0, 1, 0}, {1, 1}), // a
+
+                // bottom
+                Vertex(cornerB, {0, -1, 0}, {0, 1}), // a
+                Vertex(cornerF, {0, -1, 0}, {0, 0}), // b
+                Vertex(cornerF, {0, -1, 0}, {0, 0}), // b
+                Vertex(cornerG, {0, -1, 0}, {1, 0}), // c
+                Vertex(cornerG, {0, -1, 0}, {0, 1}), // c
+                Vertex(cornerC, {0, -1, 0}, {1, 0}), // d
+                Vertex(cornerC, {0, -1, 0}, {1, 0}), // d
+                Vertex(cornerB, {0, -1, 0}, {1, 1}), // a
+            };
+        }
     }
 }

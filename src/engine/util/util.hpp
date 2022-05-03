@@ -1,6 +1,8 @@
 #ifndef SRC_ENGINE_UTIL_UTIL
 #define SRC_ENGINE_UTIL_UTIL
 
+#include "renderer/mesh/mesh.hpp"
+
 namespace Engine
 {
     class Event
@@ -35,6 +37,17 @@ namespace Engine
         const glm::vec3 X_AXIS = glm::vec3(1.0f, 0.0f, 0.0f);
         const glm::vec3 Y_AXIS = glm::vec3(0.0f, 1.0f, 0.0f);
         const glm::vec3 Z_AXIS = glm::vec3(0.0f, 0.0f, 1.0f);
+
+        /// corners given counter clockwise
+        /// cornerA to cornerD front face, cornerE to cornerH backface
+        std::array<Vertex, 36> createCubeVertices(
+            const glm::vec3 &cornerA, const glm::vec3 &cornerB, const glm::vec3 &cornerC, const glm::vec3 &cornerD,
+            const glm::vec3 &cornerE, const glm::vec3 &cornerF, const glm::vec3 &cornerG, const glm::vec3 &cornerH);
+        /// corners given counter clockwise
+        /// cornerA to cornerD front face, cornerE to cornerH backface
+        std::array<Vertex, 48> createLineCubeVertices(
+            const glm::vec3 &cornerA, const glm::vec3 &cornerB, const glm::vec3 &cornerC, const glm::vec3 &cornerD,
+            const glm::vec3 &cornerE, const glm::vec3 &cornerF, const glm::vec3 &cornerG, const glm::vec3 &cornerH);
     }
     std::string loadTextFile(const std::string &path);
 }

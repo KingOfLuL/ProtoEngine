@@ -16,6 +16,7 @@ namespace Engine::Renderer
     glm::mat4 viewMatrix;
 
     Shader shaderLit;
+    Shader shaderColor;
 
     std::map<std::string, Material *> loadedMaterials;
 
@@ -42,7 +43,11 @@ namespace Engine::Renderer
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // TODO: Add transparency -> sorting transparent meshes
 
+        glEnable(GL_POLYGON_OFFSET_LINE);
+        glPolygonOffset(-1.0f, -1.0f);
+
         shaderLit = Shader("vertex/vertex.glsl.vs", "fragment/lit.glsl.fs");
+        shaderColor = Shader("vertex/vertex.glsl.vs", "fragment/color.glsl.fs");
         shaderUniformbufferMatrices = Uniformbuffer(matrixDataSize, 0);
         shaderUniformbufferLights = Uniformbuffer(lightDataSize + numberLightsDataSize, 1);
         shaderUniformbufferInput = Uniformbuffer(inputDataSize, 2);
@@ -94,6 +99,7 @@ namespace Engine::Renderer
             else
                 for (int j = 0; j < 24; j++)
                     lightData.push_back(0.f);
+
         shaderUniformbufferLights.setData(&lightData[0], lightDataSize, 0);
     }
     void render()
@@ -152,6 +158,7 @@ namespace Engine::Renderer
 
             glActiveTexture(GL_TEXTURE0);
             renderer->drawMesh();
+            renderer->drawMeshBounds();
         }
 
         activeScene->mainCamera->targetTexture.unbindFramebuffer();
