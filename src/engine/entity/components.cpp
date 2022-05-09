@@ -94,9 +94,11 @@ namespace Engine
     {
         m_Mesh.vertexbuffer.draw();
     }
-    void MeshRenderer::drawBounds() // FIXME: world space bounds too large, probably due to rotation not being applied correctly
+    void MeshRenderer::drawBounds() // FIXME: world bounds are scaled by the transforms position
     {
         glm::mat4 transformation = entity->transform.getTransformationMatrix();
+        // float len = glm::length(transformation[3]);
+        // transformation[3] = len / transformation[3];
         bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0);
         bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 1.0);
 
