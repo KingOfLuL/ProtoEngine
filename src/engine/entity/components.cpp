@@ -12,6 +12,8 @@
 
 #include <stb/stb_image.h>
 
+#include <glm/gtx/rotate_vector.hpp>
+
 namespace Engine
 {
     Transform::Transform(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl)
@@ -85,14 +87,21 @@ namespace Engine
         m_Mesh = mesh;
         m_Mesh.vertexbuffer = Vertexbuffer(&m_Mesh.vertices[0], m_Mesh.vertices.size());
         m_Mesh.vertexbuffer.addIndexbuffer(&m_Mesh.indices[0], m_Mesh.indices.size());
+
+        bounds = m_Mesh.bounds;
     }
     void MeshRenderer::drawMesh() const
     {
         m_Mesh.vertexbuffer.draw();
     }
-    void MeshRenderer::drawMeshBounds() const
+    void MeshRenderer::drawBounds() // FIXME: world space bounds too large, probably due to rotation not being applied correctly
     {
-        m_Mesh.drawBounds();
+        glm::mat4 transformation = entity->transform.getTransformationMatrix();
+        bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0);
+        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 1.0);
+
+        bounds.updateCornerVertices();
+        bounds.draw();
     }
 
     ///

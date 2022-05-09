@@ -29,6 +29,8 @@ namespace Engine
         void addIndexbuffer(const void *indexBufferData, int indexBufferDataCount);
         void deleteBuffers();
 
+        void setData(const void *data, int dataCount);
+
         void bind() const;
         void unbind() const;
         void draw() const;

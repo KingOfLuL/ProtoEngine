@@ -91,6 +91,13 @@ namespace Engine
         glDeleteBuffers(1, &m_BufferID);
         m_IndexBuffer.deleteBuffers();
     }
+    void Vertexbuffer::setData(const void *data, int dataCount)
+    {
+        glBindVertexArray(m_ID);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
+        glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(Vertex), data, GL_STATIC_DRAW);
+    }
 
     Framebuffer::Framebuffer(int w, int h)
     {

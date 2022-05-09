@@ -102,7 +102,7 @@ int main()
     Shader reflectiveShader("vertex/vertex.glsl.vs", "fragment/reflective.glsl.fs");
 
     Entity *box = loadModel("Tree.fbx", &Renderer::shaderLit);
-    box->transform.position = glm::vec3(0, 0, 0);
+    box->transform.position = glm::vec3(0, 10, 10);
 
     Entity *sun = new Entity;
     sun->addComponent(new DirectionalLight(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1));

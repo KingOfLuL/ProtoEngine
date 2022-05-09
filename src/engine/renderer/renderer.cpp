@@ -41,7 +41,7 @@ namespace Engine::Renderer
         glEnable(GL_CULL_FACE);
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // TODO: Add transparency -> sorting transparent meshes
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // TODO: Add transparency -> sorting transparent meshes using their world bounds
 
         glEnable(GL_POLYGON_OFFSET_LINE);
         glPolygonOffset(-1.0f, -1.0f);
@@ -158,7 +158,7 @@ namespace Engine::Renderer
 
             glActiveTexture(GL_TEXTURE0);
             renderer->drawMesh();
-            renderer->drawMeshBounds();
+            renderer->drawBounds();
         }
 
         activeScene->mainCamera->targetTexture.unbindFramebuffer();

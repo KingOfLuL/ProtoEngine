@@ -18,8 +18,16 @@ namespace Engine
     };
     struct Bounds
     {
-        glm::vec3 center;
-        glm::vec3 size;
+        Bounds();
+
+        glm::vec3 center = glm::vec3(0.f);
+        glm::vec3 size = glm::vec3(0.f);
+
+        void updateCornerVertices();
+        void draw() const;
+
+    private:
+        Vertexbuffer m_Vertexbuffer;
     };
 
     struct Mesh
@@ -28,7 +36,6 @@ namespace Engine
         Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
 
         void calculateBounds();
-        void drawBounds() const;
 
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
@@ -36,9 +43,6 @@ namespace Engine
         Bounds bounds;
 
         Vertexbuffer vertexbuffer;
-
-    private:
-        Vertexbuffer m_boundsVertexbuffer;
     };
 }
 #endif // SRC_ENGINE_RENDERER_MESH_MESH

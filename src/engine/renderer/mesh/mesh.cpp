@@ -9,6 +9,15 @@
 
 namespace Engine
 {
+    Vertex::Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 color)
+        : position(position), normal(normal), uv(uv), color(color)
+    {
+    }
+    Vertex::Vertex()
+        : position(glm::vec3(0.0f)), normal(glm::vec3(0.0f)), uv(glm::vec2(0.0f)), color(glm::vec3(1.0f))
+    {
+    }
+
     Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices) : vertices(vertices), indices(indices)
     {
         vertexbuffer = Vertexbuffer(&vertices[0], vertices.size());
@@ -46,24 +55,33 @@ namespace Engine
         bounds.center = g + (a - g) * 0.5f;
         bounds.size = glm::vec3((d - a).x, (b - a).y, (e - a).z);
 
-        auto data = GeomUtil::createLineCubeVertices(a, b, c, d, e, f, g, h);
-        m_boundsVertexbuffer = Vertexbuffer(&data[0], 36);
+        bounds.updateCornerVertices();
     }
-    void Mesh::drawBounds() const
+
+    Bounds::Bounds() : m_Vertexbuffer(NULL, 48)
+    {
+    }
+    void Bounds::updateCornerVertices()
+    {
+        glm::vec3 halfSize = size * 0.5f;
+        auto verts = GeomUtil::createLineCubeVertices(
+            center + glm::vec3(-halfSize.x, halfSize.y, -halfSize.z),
+            center + glm::vec3(-halfSize.x, -halfSize.y, -halfSize.z),
+            center + glm::vec3(halfSize.x, -halfSize.y, -halfSize.z),
+            center + glm::vec3(halfSize.x, halfSize.y, -halfSize.z),
+            center + glm::vec3(-halfSize.x, halfSize.y, halfSize.z),
+            center + glm::vec3(-halfSize.x, -halfSize.y, halfSize.z),
+            center + glm::vec3(halfSize.x, -halfSize.y, halfSize.z),
+            center + glm::vec3(halfSize.x, halfSize.y, halfSize.z));
+
+        m_Vertexbuffer.setData(&verts[0], 48);
+    }
+    void Bounds::draw() const
     {
         Renderer::shaderColor.use();
         Renderer::shaderColor.setMat4("_ModelMatrix", glm::mat4(1.0));
-        m_boundsVertexbuffer.bind();
+        m_Vertexbuffer.bind();
         glDrawArrays(GL_LINES, 0, 48);
-        m_boundsVertexbuffer.unbind();
-    }
-
-    Vertex::Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, glm::vec3 color)
-        : position(position), normal(normal), uv(uv), color(color)
-    {
-    }
-    Vertex::Vertex()
-        : position(glm::vec3(0.0f)), normal(glm::vec3(0.0f)), uv(glm::vec2(0.0f)), color(glm::vec3(1.0f))
-    {
+        m_Vertexbuffer.unbind();
     }
 }
