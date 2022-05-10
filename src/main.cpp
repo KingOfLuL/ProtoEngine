@@ -18,6 +18,23 @@ struct Rotate : public Behavior
         };
     }
 };
+struct Move : public Behavior
+{
+    float angle = 0.f;
+    const float RANGE = 8.f;
+    const float SPEED = 30.f;
+    Move() : Behavior()
+    {
+        start = []() {};
+        update = [&]()
+        {
+            angle += Time::deltaTime * SPEED;
+            entity->transform.position = glm::vec3(glm::sin(glm::radians(angle)) * RANGE,
+                                                   glm::sin(glm::radians(angle)) * glm::cos(glm::radians(angle)) * RANGE,
+                                                   glm::cos(glm::radians(angle)) * RANGE);
+        };
+    }
+};
 struct PlayerMovement : public Behavior
 {
     PlayerMovement() : Behavior()
@@ -99,16 +116,11 @@ int main()
     camera->addComponent<PlayerMovement>();
     scene.mainCamera = camera->getComponent<Camera>();
 
-    Shader reflectiveShader("vertex/vertex.glsl.vs", "fragment/reflective.glsl.fs");
-
     Entity *tree = loadModel("Tree.fbx", &Renderer::shaderLit);
-    tree->transform.position = glm::vec3(10, -10, 0);
+    tree->transform.position = glm::vec3(10, 20, 10);
 
     Entity *box = loadModel("Box.fbx", &Renderer::shaderLit);
-    box->transform.position = glm::vec3(0, 10, 10);
-
-    // Entity *backpack = loadModel("Backpack.fbx", &Renderer::shaderLit);
-    // backpack->transform.position = glm::vec3(-40, 0, 0);
+    box->addComponent<Move>();
 
     Entity *sun = new Entity;
     sun->addComponent(new DirectionalLight(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1));

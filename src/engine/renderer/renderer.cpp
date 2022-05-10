@@ -73,6 +73,7 @@ namespace Engine::Renderer
 
         std::vector<float> lightData;
         for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
+        {
             if (dirLights[i])
             {
                 auto data = dirLights[i]->getData();
@@ -81,7 +82,9 @@ namespace Engine::Renderer
             else
                 for (int j = 0; j < 16; j++)
                     lightData.push_back(0.f);
+        }
         for (int i = 0; i < MAX_NR_POINTLIGHTS; i++)
+        {
             if (pointLights[i])
             {
                 auto data = pointLights[i]->getData();
@@ -90,7 +93,9 @@ namespace Engine::Renderer
             else
                 for (int j = 0; j < 20; j++)
                     lightData.push_back(0.f);
+        }
         for (int i = 0; i < MAX_NR_SPOTLIGHTS; i++)
+        {
             if (spotLights[i])
             {
                 auto data = spotLights[i]->getData();
@@ -99,6 +104,7 @@ namespace Engine::Renderer
             else
                 for (int j = 0; j < 24; j++)
                     lightData.push_back(0.f);
+        }
 
         shaderUniformbufferLights.setData(&lightData[0], lightDataSize, 0);
     }

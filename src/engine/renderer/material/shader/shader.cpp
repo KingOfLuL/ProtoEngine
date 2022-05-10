@@ -139,7 +139,7 @@ namespace Engine
 
                 std::string name = line.substr(startOfInclude + fileNameStartindex, endOfInclude - (startOfInclude + fileNameStartindex));
                 std::string includedCode = loadTextFile(PathUtil::SHADER_INCLUDE_PATH + name);
-                includedCode = (processIncludes(includedCode));
+                includedCode = processIncludes(includedCode);
 
                 line.replace(line.begin() + startOfInclude, line.end(), includedCode);
             }
