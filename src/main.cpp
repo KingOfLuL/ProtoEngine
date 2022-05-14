@@ -8,7 +8,7 @@ struct Rotate : public Behavior
 {
     float angle = 0;
     const float speed = 30.f;
-    Rotate() : Behavior()
+    Rotate()
     {
         start = []() {};
         update = [&]()
@@ -21,9 +21,9 @@ struct Rotate : public Behavior
 struct Move : public Behavior
 {
     float angle = 0.f;
-    const float RANGE = 8.f;
+    const float RANGE = 13.f;
     const float SPEED = 30.f;
-    Move() : Behavior()
+    Move()
     {
         start = []() {};
         update = [&]()
@@ -37,7 +37,7 @@ struct Move : public Behavior
 };
 struct PlayerMovement : public Behavior
 {
-    PlayerMovement() : Behavior()
+    PlayerMovement()
     {
         start = [&]()
         {

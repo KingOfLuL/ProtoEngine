@@ -164,7 +164,6 @@ namespace Engine::Renderer
 
             glActiveTexture(GL_TEXTURE0);
             renderer->drawMesh();
-            renderer->drawBounds();
         }
 
         activeScene->mainCamera->targetTexture.unbindFramebuffer();

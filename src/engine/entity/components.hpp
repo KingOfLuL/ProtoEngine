@@ -71,7 +71,7 @@ namespace Engine
 
     public:
         void setMesh(const Mesh &mesh);
-        void drawMesh() const;
+        void drawMesh();
         void drawBounds();
 
     public:
@@ -90,8 +90,9 @@ namespace Engine
     public:
         Light(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity);
         virtual ~Light();
-        virtual std::vector<float> getData() const;
 
+    public:
+        virtual std::vector<float> getData() const;
         int internal_getIndex() const;
         void internal_setIndex(int i);
 
@@ -110,6 +111,8 @@ namespace Engine
     public:
         DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity);
         ~DirectionalLight();
+
+    public:
         glm::vec3 getDirection() const;
         std::vector<float> getData() const override;
     };
@@ -119,6 +122,8 @@ namespace Engine
     public:
         PointLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity, float range);
         ~PointLight();
+
+    public:
         std::vector<float> getData() const override;
 
     public:
@@ -130,6 +135,8 @@ namespace Engine
     public:
         SpotLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity, float range, float innerCutoff, float outerCutoff);
         ~SpotLight();
+
+    public:
         glm::vec3 getDirection() const;
         std::vector<float> getData() const override;
 
@@ -147,6 +154,8 @@ namespace Engine
     public:
         Behavior();
         virtual ~Behavior();
+
+    public:
         std::function<void()> start;
         std::function<void()> update;
     };

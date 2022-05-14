@@ -31,8 +31,8 @@ namespace Engine
         activeScene->start();
         while (!glfwWindowShouldClose(activeWindow->getGLFWwindow()))
         {
-            activeScene->update();
             onRenderUpdate.call();
+            activeScene->update();
 
             if (glfwGetKey(activeWindow->getGLFWwindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 glfwSetWindowShouldClose(activeWindow->getGLFWwindow(), true);

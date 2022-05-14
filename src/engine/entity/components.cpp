@@ -25,7 +25,7 @@ namespace Engine
         glm::mat4 matrix(1.0f);
         matrix = glm::translate(matrix, position);
         matrix = glm::scale(matrix, scale);
-        matrix = glm::rotate(matrix, glm::radians(rotation.x), GeomUtil::X_AXIS); // TODO: Figure out how rotations work
+        matrix = glm::rotate(matrix, glm::radians(rotation.x), GeomUtil::X_AXIS); // TODO: Figure out how rotations work (quaternions)
         matrix = glm::rotate(matrix, glm::radians(rotation.y), GeomUtil::Y_AXIS);
         matrix = glm::rotate(matrix, glm::radians(rotation.z), GeomUtil::Z_AXIS);
 
@@ -90,15 +90,19 @@ namespace Engine
 
         bounds = m_Mesh.bounds;
     }
-    void MeshRenderer::drawMesh() const
-    {
-        m_Mesh.vertexbuffer.draw();
-    }
-    void MeshRenderer::drawBounds() // FIXME: world bounds are scaled by the transforms position
+    void MeshRenderer::drawMesh()
     {
         glm::mat4 transformation = entity->transform.getTransformationMatrix();
         bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0);
-        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 1.0);
+        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 0.0);
+
+        m_Mesh.vertexbuffer.draw();
+    }
+    void MeshRenderer::drawBounds()
+    {
+        glm::mat4 transformation = entity->transform.getTransformationMatrix();
+        bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0);
+        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 0.0);
 
         bounds.updateCornerVertices();
         bounds.draw();
