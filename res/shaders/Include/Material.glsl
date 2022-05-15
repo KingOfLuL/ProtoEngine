@@ -16,15 +16,15 @@ uniform Material _Material;
 vec4 _TextureDiffuseColor;
 vec4 _TextureSpecularColor;
 
-void getTextureColors(Material material, Fragment frag)
+void getTextureColors()
 {
-    if (material.hasDiffuse)
-        _TextureDiffuseColor = texture(material.diffuseTexture, frag.UV);
+    if (_Material.hasDiffuse)
+        _TextureDiffuseColor = texture(_Material.diffuseTexture, _Fragment.UV);
     else
-        _TextureDiffuseColor = vec4(material.diffuseColor, 1.0);
+        _TextureDiffuseColor = vec4(_Material.diffuseColor, 1.0);
 
-    if (material.hasSpecular)
-        _TextureSpecularColor = texture(material.specularTexture, frag.UV);
+    if (_Material.hasSpecular)
+        _TextureSpecularColor = texture(_Material.specularTexture, _Fragment.UV);
     else
         _TextureSpecularColor = vec4(vec3(0.0), 1.0);
 }

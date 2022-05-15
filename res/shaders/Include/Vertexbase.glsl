@@ -1,7 +1,5 @@
 #version 460 core
 
-#include "Fragment.glsl"
-
 layout (location = 0) in vec3 m_Position;
 layout (location = 1) in vec3 m_Normal;
 layout (location = 2) in vec2 m_UV;
@@ -9,7 +7,13 @@ layout (location = 3) in vec3 m_Color;
 
 #include "ShaderValues.glsl"
 
-out Fragment _Fragment;
+out FRAGMENT
+{
+    vec3 Position;
+    vec2 UV;
+    vec3 Normal;
+    vec3 VertexColor;
+} _Fragment;
 
 uniform mat4 _ModelMatrix;
 

@@ -1,10 +1,16 @@
 #version 460 core
 
-#include "Fragment.glsl"
-#include "Material.glsl"
 #include "ShaderValues.glsl"
 
-in Fragment _Fragment;
+in FRAGMENT
+{
+    vec3 Position;
+    vec2 UV;
+    vec3 Normal;
+    vec3 VertexColor;
+} _Fragment;
+
+#include "Material.glsl"
 
 uniform samplerCube _Skybox;
 

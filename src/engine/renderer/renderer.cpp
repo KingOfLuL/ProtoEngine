@@ -46,8 +46,8 @@ namespace Engine::Renderer
         glEnable(GL_POLYGON_OFFSET_LINE);
         glPolygonOffset(-1.0f, -1.0f);
 
-        shaderLit = Shader("vertex/vertex.glsl.vs", "fragment/lit.glsl.fs");
-        shaderColor = Shader("vertex/vertex.glsl.vs", "fragment/color.glsl.fs");
+        shaderLit = Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl");
+        shaderColor = Shader("vertex/vertex.vs.glsl", "fragment/color.fs.glsl");
         shaderUniformbufferMatrices = Uniformbuffer(matrixDataSize, 0);
         shaderUniformbufferLights = Uniformbuffer(lightDataSize + numberLightsDataSize, 1);
         shaderUniformbufferInput = Uniformbuffer(inputDataSize, 2);
