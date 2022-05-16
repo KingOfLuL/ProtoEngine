@@ -5,7 +5,7 @@ layout (location = 1) in vec3 m_Normal;
 layout (location = 2) in vec2 m_UV;
 layout (location = 3) in vec3 m_Color;
 
-#include "ShaderValues.glsl"
+#include "Values.glsl"
 
 out FRAGMENT
 {

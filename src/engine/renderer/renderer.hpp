@@ -12,7 +12,7 @@
 namespace Engine::Renderer
 {
     extern Shader shaderLit;
-    extern Shader shaderColor;
+    extern Shader shaderBounds;
 
     extern std::map<std::string, Material *> loadedMaterials;
 

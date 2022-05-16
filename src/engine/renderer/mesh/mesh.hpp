@@ -23,8 +23,7 @@ namespace Engine
         glm::vec3 center = glm::vec3(0.f);
         glm::vec3 size = glm::vec3(0.f);
 
-        void updateCornerVertices();
-        void draw() const;
+        void draw();
 
     private:
         Vertexbuffer m_Vertexbuffer;

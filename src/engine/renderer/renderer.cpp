@@ -16,7 +16,7 @@ namespace Engine::Renderer
     glm::mat4 viewMatrix;
 
     Shader shaderLit;
-    Shader shaderColor;
+    Shader shaderBounds;
 
     std::map<std::string, Material *> loadedMaterials;
 
@@ -47,7 +47,9 @@ namespace Engine::Renderer
         glPolygonOffset(-1.0f, -1.0f);
 
         shaderLit = Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl");
-        shaderColor = Shader("vertex/vertex.vs.glsl", "fragment/color.fs.glsl");
+        shaderBounds = Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl");
+        shaderBounds.addGeometryShader("geometry/bounds.gs.glsl");
+
         shaderUniformbufferMatrices = Uniformbuffer(matrixDataSize, 0);
         shaderUniformbufferLights = Uniformbuffer(lightDataSize + numberLightsDataSize, 1);
         shaderUniformbufferInput = Uniformbuffer(inputDataSize, 2);

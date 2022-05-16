@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "ShaderValues.glsl"
+#include "Values.glsl"
 
 in FRAGMENT
 {

@@ -52,36 +52,22 @@ namespace Engine
         glm::vec3 g((*maxX).position.x, (*minY).position.y, (*maxZ).position.z);
         glm::vec3 h((*maxX).position.x, (*maxY).position.y, (*maxZ).position.z);
 
-        bounds.center = g + (a - g) * 0.5f;
+        bounds.center = (a + b + c + d + e + f + g + h) / 4.f;
         bounds.size = glm::vec3((d - a).x, (b - a).y, (e - a).z);
-
-        bounds.updateCornerVertices();
     }
 
-    Bounds::Bounds() : m_Vertexbuffer(NULL, 48)
+    Bounds::Bounds() : m_Vertexbuffer(NULL, 1)
     {
     }
-    void Bounds::updateCornerVertices()
+    void Bounds::draw()
     {
-        glm::vec3 halfSize = size * 0.5f;
-        auto verts = GeomUtil::createLineCubeVertices(
-            center + glm::vec3(-halfSize.x, halfSize.y, -halfSize.z),
-            center + glm::vec3(-halfSize.x, -halfSize.y, -halfSize.z),
-            center + glm::vec3(halfSize.x, -halfSize.y, -halfSize.z),
-            center + glm::vec3(halfSize.x, halfSize.y, -halfSize.z),
-            center + glm::vec3(-halfSize.x, halfSize.y, halfSize.z),
-            center + glm::vec3(-halfSize.x, -halfSize.y, halfSize.z),
-            center + glm::vec3(halfSize.x, -halfSize.y, halfSize.z),
-            center + glm::vec3(halfSize.x, halfSize.y, halfSize.z));
-
-        m_Vertexbuffer.setData(&verts[0], 48);
-    }
-    void Bounds::draw() const
-    {
-        Renderer::shaderColor.use();
-        Renderer::shaderColor.setMat4("_ModelMatrix", glm::mat4(1.0));
+        Vertex vert(center, {0.0, 0.0, 0.0}, {0.0, 0.0});
+        m_Vertexbuffer.setData(&vert, 1);
+        Renderer::shaderBounds.use();
+        Renderer::shaderBounds.setVec3("size", size);
+        Renderer::shaderBounds.setMat4("_ModelMatrix", glm::mat4(1.0));
         m_Vertexbuffer.bind();
-        glDrawArrays(GL_LINES, 0, 48);
+        glDrawArrays(GL_POINTS, 0, 1);
         m_Vertexbuffer.unbind();
     }
 }

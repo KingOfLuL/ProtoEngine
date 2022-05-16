@@ -93,19 +93,14 @@ namespace Engine
     void MeshRenderer::drawMesh()
     {
         glm::mat4 transformation = entity->transform.getTransformationMatrix();
-        bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0);
-        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 0.0);
+
+        bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0f);
+        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 0.0f);
 
         m_Mesh.vertexbuffer.draw();
-    }
-    void MeshRenderer::drawBounds()
-    {
-        glm::mat4 transformation = entity->transform.getTransformationMatrix();
-        bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0);
-        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 0.0);
 
-        bounds.updateCornerVertices();
-        bounds.draw();
+        if (drawBounds)
+            bounds.draw();
     }
 
     ///

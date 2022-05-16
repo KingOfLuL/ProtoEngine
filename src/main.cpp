@@ -117,10 +117,14 @@ int main()
     scene.mainCamera = camera->getComponent<Camera>();
 
     Entity *tree = loadModel("Tree.fbx", &Renderer::shaderLit);
-    tree->transform.position = glm::vec3(10, 20, 10);
+    tree->transform.position = glm::vec3(10, 10, 0);
+    tree->forEachChildren([&](Entity *ent)
+                          { auto renderer = ent->getComponent<MeshRenderer>();
+                            if (renderer)
+                                renderer->drawBounds = true; });
 
     Entity *box = loadModel("Box.fbx", &Renderer::shaderLit);
-    box->addComponent<Move>();
+    box->getComponent<MeshRenderer>()->drawBounds = true;
 
     Entity *sun = new Entity;
     sun->addComponent(new DirectionalLight(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1));
