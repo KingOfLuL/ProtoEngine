@@ -1,7 +1,7 @@
-#include "VertexShader.glsl"
+#include "Vertexshader.glsl"
 
 void main()
 {
-    setFragment();
+    setVertex();
     gl_Position = calculatePosition();
 }

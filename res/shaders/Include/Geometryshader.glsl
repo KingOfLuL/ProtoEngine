@@ -14,4 +14,4 @@ out FRAGMENT
     vec2 UV;
     vec3 Normal;
     vec3 VertexColor;
-} _Fragment;
+} _Vertex;

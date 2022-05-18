@@ -2,6 +2,6 @@
 
 void main()
 {
-    setFragment();
+    setVertex();
     gl_Position = calculatePosition();
 }

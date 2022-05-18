@@ -52,7 +52,7 @@ namespace Engine
         glm::vec3 g((*maxX).position.x, (*minY).position.y, (*maxZ).position.z);
         glm::vec3 h((*maxX).position.x, (*maxY).position.y, (*maxZ).position.z);
 
-        bounds.center = (a + b + c + d + e + f + g + h) / 4.f;
+        bounds.center = (a + b + c + d + e + f + g + h) / 8.f;
         bounds.size = glm::vec3((d - a).x, (b - a).y, (e - a).z);
     }
 
@@ -61,7 +61,7 @@ namespace Engine
     }
     void Bounds::draw()
     {
-        Vertex vert(center, {0.0, 0.0, 0.0}, {0.0, 0.0});
+        Vertex vert(center, size, {0.0, 0.0});
         m_Vertexbuffer.setData(&vert, 1);
         Renderer::shaderBounds.use();
         Renderer::shaderBounds.setVec3("size", size);

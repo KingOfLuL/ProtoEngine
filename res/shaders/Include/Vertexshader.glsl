@@ -14,14 +14,14 @@ out FRAGMENT
     vec2 UV;
     vec3 Normal;
     vec3 VertexColor;
-} _Fragment;
+} _Vertex;
 
-void setFragment()
+void setVertex()
 {
-    _Fragment.UV = m_UV;
-    _Fragment.Normal = mat3(transpose(inverse(_ModelMatrix))) * m_Normal;
-    _Fragment.Position = (_ModelMatrix * vec4(m_Position, 1.0)).xyz;
-    _Fragment.VertexColor = m_Color;
+    _Vertex.UV = m_UV;
+    _Vertex.Normal = mat3(transpose(inverse(_ModelMatrix))) * m_Normal;
+    _Vertex.Position = (_ModelMatrix * vec4(m_Position, 1.0)).xyz;
+    _Vertex.VertexColor = m_Color;
 }
 vec4 calculatePosition()
 {
