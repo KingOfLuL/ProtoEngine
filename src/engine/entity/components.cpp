@@ -12,8 +12,6 @@
 
 #include <stb/stb_image.h>
 
-#include <glm/gtx/rotate_vector.hpp>
-
 namespace Engine
 {
     Transform::Transform(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl)
@@ -94,7 +92,7 @@ namespace Engine
     {
         glm::mat4 transformation = entity->transform.getTransformationMatrix();
 
-        bounds.center = transformation * glm::vec4(m_Mesh.bounds.center, 1.0f);
+        bounds.center = (transformation * glm::vec4(m_Mesh.bounds.center, 1.0f));
         bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 0.0f);
 
         m_Mesh.vertexbuffer.draw();

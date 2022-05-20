@@ -69,7 +69,7 @@ namespace Engine
         return nullptr;
     }
 
-    Entity *loadModel(const std::string &path, Shader *shader)
+    Entity *loadModel(const std::string &path, Shader *shader) // TODO: if meshes share same material, combine them
     {
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
         if (loadedModels.find(filePath) != loadedModels.end())

@@ -61,10 +61,9 @@ namespace Engine
     }
     void Bounds::draw()
     {
-        Vertex vert(center, size, {0.0, 0.0});
+        Vertex vert(center * 2.f, size, {0.0, 0.0});
         m_Vertexbuffer.setData(&vert, 1);
         Renderer::shaderBounds.use();
-        Renderer::shaderBounds.setVec3("size", size);
         Renderer::shaderBounds.setMat4("_ModelMatrix", glm::mat4(1.0));
         m_Vertexbuffer.bind();
         glDrawArrays(GL_POINTS, 0, 1);

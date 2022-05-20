@@ -116,15 +116,28 @@ int main()
     camera->addComponent<PlayerMovement>();
     scene.mainCamera = camera->getComponent<Camera>();
 
-    Entity *tree = loadModel("Tree.fbx", &Renderer::shaderLit);
-    tree->transform.position = glm::vec3(10, 10, 0);
-    tree->forEachChildren([&](Entity *ent)
-                          { auto renderer = ent->getComponent<MeshRenderer>();
-                            if (renderer)
-                                renderer->drawBounds = true; });
-
     Entity *box = loadModel("Box.fbx", &Renderer::shaderLit);
     box->getComponent<MeshRenderer>()->drawBounds = true;
+
+    Entity *tree = loadModel("Tree.fbx", &Renderer::shaderLit);
+    tree->forEachChildren(
+        [&](Entity *ent)
+        {
+            auto r = ent->getComponent<MeshRenderer>();
+            if (r)
+                r->drawBounds = true;
+        });
+    tree->transform.position = glm::vec3(10, 10, 0);
+
+    Entity *backpack = loadModel("Backpack.fbx", &Renderer::shaderLit);
+    backpack->forEachChildren(
+        [&](Entity *ent)
+        {
+            auto r = ent->getComponent<MeshRenderer>();
+            if (r)
+                r->drawBounds = true;
+        });
+    backpack->transform.position = glm::vec3(0, -10, 10);
 
     Entity *sun = new Entity;
     sun->addComponent(new DirectionalLight(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1));
