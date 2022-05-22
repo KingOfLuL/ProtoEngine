@@ -9,6 +9,8 @@
 
 namespace Engine
 {
+    std::vector<Texture2D> loadedTextures;
+
     void Texture::setParameter(GLenum parameter, GLenum value)
     {
         glTexParameteri(GL_TEXTURE_2D, parameter, value);
@@ -94,8 +96,21 @@ namespace Engine
             loadedTextures.push_back(texture);
         }
     }
+    void loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
+    {
+        for (auto &tex : loadedTextures)
+            if (tex.getPath() == path)
+            {
+                material->textures.push_back(tex);
+                return;
+            }
+        Texture2D tex = loadTextureFromFile(path, texType);
+        material->textures.push_back(tex);
+        loadedTextures.push_back(tex);
+    }
 
-    Texture2D loadTextureFromFile(const std::string &path, TextureType type)
+    Texture2D
+    loadTextureFromFile(const std::string &path, TextureType type)
     {
         std::string fileName = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + path;
 

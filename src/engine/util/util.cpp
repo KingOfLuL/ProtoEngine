@@ -17,16 +17,14 @@ namespace Engine
     void Event::call()
     {
         for (auto func : m_Functions)
-        {
             func();
-        }
     }
 
-    void internal_util_init()
+    void engine_util_init()
     {
         using namespace PathUtil;
 
-        Random::internal_init();
+        Random::engine_init();
 
         FULL_PATH = std::filesystem::current_path().string();
         std::replace(FULL_PATH.begin(), FULL_PATH.end(), char(92), '/');

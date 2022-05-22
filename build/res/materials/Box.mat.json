@@ -1,0 +1,12 @@
+{
+    "shader": "Lit",
+    "diffuse": "box_diffuse.png",
+    "specular": "box_specular.png",
+    "diffuseColor": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "shininess": 32,
+    "twoSided": false
+}

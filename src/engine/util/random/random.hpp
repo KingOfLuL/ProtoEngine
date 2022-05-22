@@ -5,7 +5,7 @@
 
 namespace Engine::Random
 {
-    void internal_init();
+    void engine_init();
 
     float float_(float min, float max);
     double double_(double min, double max);

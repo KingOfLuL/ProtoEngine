@@ -1,8 +1,11 @@
+#include "libs.hpp"
+
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "engine.hpp"
 #include "time/time.hpp"
 #include "input/input.hpp"
+#include "renderer/material/shader/shader.hpp"
 
 #include <stb/stb_image.h>
 
@@ -19,7 +22,7 @@ namespace Engine
 
         stbi_set_flip_vertically_on_load(false);
         glfwInit();
-        internal_util_init();
+        engine_util_init();
 
         activeWindow = new Window(windowName, windowW, windowH);
 

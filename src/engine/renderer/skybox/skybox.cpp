@@ -7,7 +7,7 @@ namespace Engine
 {
     Skybox::Skybox(const std::array<std::string, 6> &faces)
         : m_Cubemap(faces),
-          m_Shader("vertex/cubemap.vs.glsl", "fragment/cubemap.fs.glsl"),
+          m_Shader("vertex/cubemap.vs.glsl", "fragment/cubemap.fs.glsl", "Cubemap"),
           m_Vertexbuffer(&CUBEMAP_VERTICES, 36)
     {
     }

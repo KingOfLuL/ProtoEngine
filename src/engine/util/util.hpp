@@ -10,7 +10,7 @@ namespace Engine
     public:
         void subscribe(std::function<void(void)> func);
         void operator+=(std::function<void(void)> func);
-        // void removeEvent(std::function<void(void)> func); // TODO: implement event removing
+        // void removeEvent(std::function<void(void)> func);
         // void operator-=(std::function<void(void)> func);
         void call();
 
@@ -18,7 +18,7 @@ namespace Engine
         std::vector<std::function<void(void)>> m_Functions;
     };
 
-    void internal_util_init();
+    void engine_util_init();
 
     namespace PathUtil
     {
@@ -27,7 +27,7 @@ namespace Engine
         const std::string SHADER_INCLUDE_PATH = "/res/shaders/Include/";
         const std::string MODEL_PATH = "/res/models/";
         const std::string TEXTURE_PATH = "/res/textures/";
-        const std::string DEFAULT_MESHES_PATH = "/res/models/Default/";
+        const std::string MATERIAL_PATH = "/res/materials/";
 
         std::string getRelativePath(std::string &path, const std::string &type);
         std::string toUnixStylePath(const std::string &path);

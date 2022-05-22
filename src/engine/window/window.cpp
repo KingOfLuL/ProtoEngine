@@ -53,7 +53,7 @@ namespace Engine
 
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 
-        shader = Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl");
+        shader = Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
         screen = Vertexbuffer(&QUAD_VERTICES[0], 4);
         screen.addIndexbuffer(&QUAD_INDICES[0], 6);
     }
@@ -71,12 +71,12 @@ namespace Engine
     void Window::mouse_callback(GLFWwindow *window, double xOffset, double yOffset)
     {
         (void)window;
-        Input::internal_updateMouseMovement(xOffset, yOffset);
+        Input::engine_updateMouseMovement(xOffset, yOffset);
     }
     void Window::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
     {
         (void)window;
-        Input::internal_keyCallback(key, scancode, action, mods);
+        Input::engine_keyCallback(key, scancode, action, mods);
     }
     GLFWwindow *Window::getGLFWwindow() const
     {

@@ -4,10 +4,13 @@
 
 #include "util/util.hpp"
 #include "glad/glad.h"
+#include "renderer/renderer.hpp"
 
 namespace Engine
 {
-    Shader::Shader(const char *vertexPath, const char *fragmentPath)
+    std::vector<Shader *> Shader::s_Shaders;
+
+    Shader::Shader(const char *vertexPath, const char *fragmentPath, const std::string &name) : name(name)
     {
         m_VertexCode = loadTextFile(PathUtil::SHADER_PATH + vertexPath);
         m_FragmentCode = loadTextFile(PathUtil::SHADER_PATH + fragmentPath);
@@ -37,6 +40,8 @@ namespace Engine
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+
+        s_Shaders.push_back(this);
     }
     void Shader::addGeometryShader(const std::string &path)
     {
@@ -154,5 +159,12 @@ namespace Engine
         for (std::string line; std::getline(iss, line); num++)
             std::cout << "(" << num << ") " << line << '\n';
         std::cout << "----------------------------------------------------------" << std::endl;
+    }
+    Shader *Shader::getShaderByName(const std::string &name)
+    {
+        for (Shader *shader : s_Shaders)
+            if (shader->name == name)
+                return shader;
+        return nullptr;
     }
 }

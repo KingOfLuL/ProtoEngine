@@ -5,7 +5,7 @@
 
 namespace Engine
 {
-    Entity *loadModel(const std::string &path, Shader *shader);
+    Entity *loadModel(const std::string &path);
 
     class Entity
     {

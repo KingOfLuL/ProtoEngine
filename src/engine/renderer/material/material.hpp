@@ -1,27 +1,35 @@
 #ifndef SRC_ENGINE_RENDERER_MATERIAL_MATERIAL
 #define SRC_ENGINE_RENDERER_MATERIAL_MATERIAL
 
-#include "Shader/Shader.hpp"
-#include "Renderer/Texture/Texture.hpp"
+#include <vector>
+#include "shader/shader.hpp"
+#include "renderer/texture/texture.hpp"
 
 namespace Engine
 {
+    class Texture2D;
+
     struct Material
     {
+    public:
         Material() = default;
-        Material(Shader *shader);
+        Material(const std::string &name);
 
+    public:
+        std::string name;
         Shader *shader;
-
-        bool twoSided = false;
-
         std::vector<Texture2D> textures;
         bool hasDiffuseTexture;
         bool hasSpecularTexture;
-
         glm::vec3 diffuseColor = glm::vec3(1.f);
-
         float shininess = 32.f;
+        bool twoSided = false;
+
+    public:
+        static Material *getMaterialByName(const std::string &matName);
+
+    private:
+        static std::vector<Material *> s_LoadedMaterials;
     };
 }
 #endif // SRC_ENGINE_RENDERER_MATERIAL_MATERIAL

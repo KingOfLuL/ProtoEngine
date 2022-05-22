@@ -4,6 +4,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <cstdint>
+#include <vector>
 
 namespace Engine
 {
@@ -11,7 +12,9 @@ namespace Engine
     {
     public:
         Shader() = default;
-        Shader(const char *vertexPath, const char *fragmentPath);
+        Shader(const char *vertexPath, const char *fragmentPath, const std::string &name);
+
+    public:
         void use() const;
         void setBool(const std::string &name, bool value) const;
         void setInt(const std::string &name, int value) const;
@@ -23,11 +26,18 @@ namespace Engine
         void setMat4(const std::string &name, const glm::mat4 &mat) const;
         void addGeometryShader(const std::string &path);
 
+        static Shader *getShaderByName(const std::string &name);
+
+    public:
+        std::string name;
+
     private:
         uint32_t m_ID;
         std::string m_VertexCode;
         std::string m_FragmentCode;
         std::string m_GeometryCode;
+
+        static std::vector<Shader *> s_Shaders;
 
     private:
         void checkCompileErrors(uint32_t shader, const std::string &type, const std::string &path);

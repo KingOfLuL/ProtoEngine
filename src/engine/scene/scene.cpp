@@ -33,7 +33,7 @@ namespace Engine
             if (m_DirectionalLights[i] == nullptr)
             {
                 m_DirectionalLights[i] = light;
-                light->internal_setIndex(i);
+                light->engine_setIndex(i);
                 canCreate = true;
                 break;
             }
@@ -43,7 +43,7 @@ namespace Engine
     }
     void Scene::removeDirectionalLight(DirectionalLight *light)
     {
-        m_DirectionalLights[light->internal_getIndex()] = nullptr;
+        m_DirectionalLights[light->engine_getIndex()] = nullptr;
     }
     void Scene::addSpotLight(SpotLight *light)
     {
@@ -53,7 +53,7 @@ namespace Engine
             if (m_SpotLights[i] == nullptr)
             {
                 m_SpotLights[i] = light;
-                light->internal_setIndex(i);
+                light->engine_setIndex(i);
                 canCreate = true;
                 break;
             }
@@ -63,7 +63,7 @@ namespace Engine
     }
     void Scene::removeSpotLight(SpotLight *light)
     {
-        m_SpotLights[light->internal_getIndex()] = nullptr;
+        m_SpotLights[light->engine_getIndex()] = nullptr;
     }
     void Scene::addPointLight(PointLight *light)
     {
@@ -73,7 +73,7 @@ namespace Engine
             if (!m_PointLights[i])
             {
                 m_PointLights[i] = light;
-                light->internal_setIndex(i);
+                light->engine_setIndex(i);
                 canCreate = true;
                 break;
             }
@@ -83,7 +83,7 @@ namespace Engine
     }
     void Scene::removePointLight(PointLight *light)
     {
-        m_PointLights[light->internal_getIndex()] = nullptr;
+        m_PointLights[light->engine_getIndex()] = nullptr;
     }
     void Scene::addBehavior(Behavior *behavior)
     {

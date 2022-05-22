@@ -18,7 +18,7 @@ namespace Engine::Input
 
     float lastX, lastY;
     bool firstMove = true;
-    void internal_updateMouseMovement(float xOff, float yOff)
+    void engine_updateMouseMovement(float xOff, float yOff)
     {
         if (firstMove)
         {
@@ -38,7 +38,7 @@ namespace Engine::Input
 
         MouseMoveEvent.call();
     }
-    void internal_keyCallback(int key, int scancode, int action, int mods)
+    void engine_keyCallback(int key, int scancode, int action, int mods)
     {
         (void)key;
         (void)scancode;

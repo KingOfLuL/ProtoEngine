@@ -18,8 +18,6 @@ namespace Engine::Renderer
     Shader shaderLit;
     Shader shaderBounds;
 
-    std::map<std::string, Material *> loadedMaterials;
-
     Uniformbuffer shaderUniformbufferMatrices;
     Uniformbuffer shaderUniformbufferLights;
     Uniformbuffer shaderUniformbufferInput;
@@ -46,8 +44,8 @@ namespace Engine::Renderer
         glEnable(GL_POLYGON_OFFSET_LINE);
         glPolygonOffset(-1.0f, -1.0f);
 
-        shaderLit = Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl");
-        shaderBounds = Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl");
+        shaderLit = Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit");
+        shaderBounds = Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds");
         shaderBounds.addGeometryShader("geometry/bounds.gs.glsl");
 
         shaderUniformbufferMatrices = Uniformbuffer(matrixDataSize, 0);
@@ -158,14 +156,15 @@ namespace Engine::Renderer
                     material->shader->setBool("_Material.hasTransparency", true);
                 material->textures[i].bind();
             }
+
             material->shader->setVec3("_Material.diffuseColor", material->diffuseColor);
             material->shader->setFloat("_Material.shininess", 32.f);
 
             material->shader->setBool("_Material.hasDiffuse", material->hasDiffuseTexture);
             material->shader->setBool("_Material.hasSpecular", material->hasSpecularTexture);
 
-            glActiveTexture(GL_TEXTURE0);
             renderer->drawMesh();
+            glActiveTexture(GL_TEXTURE0);
         }
 
         activeScene->mainCamera->targetTexture.unbindFramebuffer();

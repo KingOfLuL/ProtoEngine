@@ -69,7 +69,7 @@ namespace Engine
         return nullptr;
     }
 
-    Entity *loadModel(const std::string &path, Shader *shader) // TODO: if meshes share same material, combine them
+    Entity *loadModel(const std::string &path) // TODO: if meshes share same material, combine them
     {
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
         if (loadedModels.find(filePath) != loadedModels.end())
@@ -90,8 +90,6 @@ namespace Engine
         Entity *rootEntity = new Entity;
         Entity *entity = rootEntity;
         entity->name = rootNode->mName.C_Str();
-
-        std::vector<Texture2D> loadedTextures;
 
         for (unsigned int i = 0; i < rootNode->mNumChildren; i++) // go through all (children) nodes
         {
@@ -114,29 +112,21 @@ namespace Engine
                 for (unsigned int k = 0; k < mesh->mNumVertices; k++) // vertices
                 {
                     Vertex vertex;
-                    glm::vec3 vector;
 
-                    vector.x = mesh->mVertices[k].x;
-                    vector.y = mesh->mVertices[k].y;
-                    vector.z = mesh->mVertices[k].z;
-
-                    vertex.position = vector;
+                    vertex.position.x = mesh->mVertices[k].x;
+                    vertex.position.y = mesh->mVertices[k].y;
+                    vertex.position.z = mesh->mVertices[k].z;
 
                     if (mesh->HasNormals())
                     {
-                        vector.x = mesh->mNormals[k].x;
-                        vector.y = mesh->mNormals[k].y;
-                        vector.z = mesh->mNormals[k].z;
-
-                        vertex.normal = vector;
+                        vertex.normal.x = mesh->mNormals[k].x;
+                        vertex.normal.y = mesh->mNormals[k].y;
+                        vertex.normal.z = mesh->mNormals[k].z;
                     }
                     if (mesh->mTextureCoords[0])
                     {
-                        vector.x = mesh->mTextureCoords[0][k].x;
-                        vector.y = mesh->mTextureCoords[0][k].y;
-
-                        vertex.uv.x = vector.x;
-                        vertex.uv.y = vector.y;
+                        vertex.uv.x = mesh->mTextureCoords[0][k].x;
+                        vertex.uv.y = mesh->mTextureCoords[0][k].y;
                     }
                     if (mesh->HasVertexColors(0))
                     {
@@ -162,43 +152,19 @@ namespace Engine
                 MeshRenderer *renderer = entity->addComponent<MeshRenderer>();
                 renderer->setMesh(newMesh);
 
-                // textures
+                // material
                 aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-                auto loadedIndex = Renderer::loadedMaterials.find(material->GetName().C_Str());
-                if (loadedIndex != Renderer::loadedMaterials.end())
+                std::string matName = material->GetName().C_Str();
+                Material *mat = Material::getMaterialByName(matName);
+                if (mat)
                 {
-                    renderer->material = Renderer::loadedMaterials[material->GetName().C_Str()];
+                    renderer->material = mat;
                 }
                 else
                 {
-                    renderer->material = new Material(shader);
-
-                    float shininess = 32.f;
-                    material->Get(AI_MATKEY_SHININESS, shininess);
-                    renderer->material->shininess = shininess;
-
-                    if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-                    {
-                        loadMaterialTextures(material, aiTextureType_DIFFUSE, TextureType::DIFFUSE, renderer->material->textures, loadedTextures);
-                        renderer->material->hasDiffuseTexture = true;
-                    }
-                    else
-                    {
-                        renderer->material->hasDiffuseTexture = false;
-                        aiColor3D color;
-                        material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-                        renderer->material->diffuseColor = {color.r, color.g, color.b};
-                    }
-                    if (material->GetTextureCount(aiTextureType_SPECULAR) > 0)
-                    {
-                        loadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::SPECULAR, renderer->material->textures, loadedTextures);
-                        renderer->material->hasSpecularTexture = true;
-                    }
-                    else
-                    {
-                        renderer->material->hasSpecularTexture = false;
-                    }
+                    mat = new Material(matName);
+                    renderer->material = mat;
                 }
             }
         }

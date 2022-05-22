@@ -115,11 +115,11 @@ namespace Engine
     {
         return {0.f};
     }
-    int Light::internal_getIndex() const
+    int Light::engine_getIndex() const
     {
         return m_Index;
     }
-    void Light::internal_setIndex(int i)
+    void Light::engine_setIndex(int i)
     {
         m_Index = i;
     }
