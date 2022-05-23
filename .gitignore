@@ -7,3 +7,6 @@ lib/libs.hpp.gch
 !ft2build.h
 !lib/freetype/*
 !lib/freetype/*/*
+
+capture.csv
+capture.sleepy
