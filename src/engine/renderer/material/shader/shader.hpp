@@ -13,6 +13,7 @@ namespace Engine
     public:
         Shader() = default;
         Shader(const char *vertexPath, const char *fragmentPath, const std::string &name);
+        ~Shader();
 
     public:
         void use() const;

@@ -118,11 +118,15 @@ int main()
 
     Entity *box = loadModel("Box.fbx");
     box->transform.position = glm::vec3(-10, 0, 0);
+
     Entity *box2 = loadModel("Box.fbx");
     box2->transform.position = glm::vec3(10, 0, 0);
 
     Entity *tree = loadModel("Tree.fbx");
     tree->transform.position = glm::vec3(0, 0, 10);
+
+    Entity *backpack = loadModel("Backpack.fbx");
+    backpack->transform.position = glm::vec3(0, 0, -10);
 
     Entity *sun = new Entity;
     sun->addComponent(new DirectionalLight(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1));

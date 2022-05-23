@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-    std::vector<Texture2D> loadedTextures;
+    std::vector<Texture2D *> loadedTextures;
 
     void Texture::setParameter(GLenum parameter, GLenum value)
     {
@@ -98,19 +98,18 @@ namespace Engine
     }
     void loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
     {
-        for (auto &tex : loadedTextures)
-            if (tex.getPath() == path)
+        for (Texture2D *tex : loadedTextures)
+            if (tex->getPath() == path)
             {
                 material->textures.push_back(tex);
                 return;
             }
-        Texture2D tex = loadTextureFromFile(path, texType);
+        Texture2D *tex = new Texture2D(loadTextureFromFile(path, texType)); // FIXME: No free
         material->textures.push_back(tex);
         loadedTextures.push_back(tex);
     }
 
-    Texture2D
-    loadTextureFromFile(const std::string &path, TextureType type)
+    Texture2D loadTextureFromFile(const std::string &path, TextureType type)
     {
         std::string fileName = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + path;
 
@@ -141,6 +140,7 @@ namespace Engine
     void createGLTexture(uint32_t &id, int w, int h, GLenum colorFormat, const void *data, GLenum minFilter, GLenum maxFilter, GLenum wrapS, GLenum wrapT, bool mipmap)
     {
         glGenTextures(1, &id);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, id);
         glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, w, h, 0, colorFormat, GL_UNSIGNED_BYTE, data);
         if (mipmap)

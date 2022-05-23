@@ -53,9 +53,13 @@ namespace Engine
 
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 
-        shader = Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
+        shader = (new Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen"));
         screen = Vertexbuffer(&QUAD_VERTICES[0], 4);
         screen.addIndexbuffer(&QUAD_INDICES[0], 6);
+    }
+    Window::~Window()
+    {
+        delete shader;
     }
     void Window::sizeCallback(int width, int height)
     {

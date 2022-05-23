@@ -69,7 +69,7 @@ namespace Engine
         return nullptr;
     }
 
-    Entity *loadModel(const std::string &path) // TODO: if meshes share same material, combine them
+    Entity *loadModel(const std::string &path) // TODO: make it faster
     {
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
         if (loadedModels.find(filePath) != loadedModels.end())
@@ -147,7 +147,7 @@ namespace Engine
                         indices.push_back(face.mIndices[l]);
                 }
 
-                Mesh newMesh(vertices, indices);
+                Mesh newMesh(vertices, indices); // TODO: combining meshes with same material
 
                 MeshRenderer *renderer = entity->addComponent<MeshRenderer>();
                 renderer->setMesh(newMesh);

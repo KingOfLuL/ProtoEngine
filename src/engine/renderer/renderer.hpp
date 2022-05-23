@@ -11,8 +11,8 @@
 
 namespace Engine::Renderer
 {
-    extern Shader shaderLit;
-    extern Shader shaderBounds;
+    extern Shader *shaderLit;
+    extern Shader *shaderBounds;
 
     void init();
     void updateLights();

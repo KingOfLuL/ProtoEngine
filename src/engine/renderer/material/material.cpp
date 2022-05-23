@@ -11,7 +11,7 @@ namespace Engine
 {
     std::vector<Material *> Material::s_LoadedMaterials;
 
-    Material::Material(const std::string &name) : name(name)
+    Material::Material(const std::string &name) : name(name) // FIXME: sometimes textures are not loaded
     {
         boost::property_tree::ptree mat;
         boost::property_tree::read_json(PathUtil::FULL_PATH + PathUtil::MATERIAL_PATH + name + ".mat.json", mat);
@@ -32,11 +32,7 @@ namespace Engine
         loadMaterialTexture(diffusePath, TextureType::DIFFUSE, this);
         loadMaterialTexture(specularPath, TextureType::SPECULAR, this);
 
-        Shader *s = Shader::getShaderByName(mat.get<std::string>("shader"));
-        if (s)
-            shader = s;
-        else
-            shader = &Renderer::shaderLit;
+        shader = Shader::getShaderByName(mat.get<std::string>("shader"));
 
         s_LoadedMaterials.push_back(this);
     }

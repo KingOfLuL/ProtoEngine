@@ -13,12 +13,15 @@ namespace Engine
     {
     public:
         int width, height;
-        Shader shader;
+        Shader *shader;
         Vertexbuffer screen;
 
     public:
         Window() = default;
         Window(const std::string &name, int w, int h);
+        ~Window();
+
+    public:
         GLFWwindow *getGLFWwindow() const;
 
     private:

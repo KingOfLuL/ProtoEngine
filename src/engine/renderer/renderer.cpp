@@ -15,8 +15,8 @@ namespace Engine::Renderer
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
 
-    Shader shaderLit;
-    Shader shaderBounds;
+    Shader *shaderLit;
+    Shader *shaderBounds;
 
     Uniformbuffer shaderUniformbufferMatrices;
     Uniformbuffer shaderUniformbufferLights;
@@ -44,9 +44,9 @@ namespace Engine::Renderer
         glEnable(GL_POLYGON_OFFSET_LINE);
         glPolygonOffset(-1.0f, -1.0f);
 
-        shaderLit = Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit");
-        shaderBounds = Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds");
-        shaderBounds.addGeometryShader("geometry/bounds.gs.glsl");
+        shaderLit = (new Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit"));
+        shaderBounds = (new Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds"));
+        shaderBounds->addGeometryShader("geometry/bounds.gs.glsl");
 
         shaderUniformbufferMatrices = Uniformbuffer(matrixDataSize, 0);
         shaderUniformbufferLights = Uniformbuffer(lightDataSize + numberLightsDataSize, 1);
@@ -148,13 +148,13 @@ namespace Engine::Renderer
             for (size_t i = 0; i < material->textures.size(); i++)
             {
                 glActiveTexture(GL_TEXTURE0 + i);
-                if (material->textures[i].getType() == TextureType::DIFFUSE)
+                if (material->textures[i]->getType() == TextureType::DIFFUSE)
                     material->shader->setInt("_Material.diffuseTexture", i);
-                else if (material->textures[i].getType() == TextureType::SPECULAR)
+                else if (material->textures[i]->getType() == TextureType::SPECULAR)
                     material->shader->setInt("_Material.specularTexture", i);
-                if (material->textures[i].colorFormat == GL_RGBA)
+                if (material->textures[i]->colorFormat == GL_RGBA)
                     material->shader->setBool("_Material.hasTransparency", true);
-                material->textures[i].bind();
+                material->textures[i]->bind();
             }
 
             material->shader->setVec3("_Material.diffuseColor", material->diffuseColor);
@@ -164,12 +164,11 @@ namespace Engine::Renderer
             material->shader->setBool("_Material.hasSpecular", material->hasSpecularTexture);
 
             renderer->drawMesh();
-            glActiveTexture(GL_TEXTURE0);
         }
 
         activeScene->mainCamera->targetTexture.unbindFramebuffer();
         glClear(GL_COLOR_BUFFER_BIT);
-        activeWindow->shader.use();
+        activeWindow->shader->use();
         activeWindow->screen.bind();
         activeScene->mainCamera->targetTexture.bindTexture();
         glDrawElements(GL_TRIANGLES, activeWindow->screen.getIndicesCount(), GL_UNSIGNED_INT, 0);

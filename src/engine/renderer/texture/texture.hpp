@@ -74,7 +74,7 @@ namespace Engine
         std::array<std::string, 6> m_FacePaths;
     };
 
-    extern std::vector<Texture2D> loadedTextures;
+    extern std::vector<Texture2D *> loadedTextures;
 
     class Material;
 

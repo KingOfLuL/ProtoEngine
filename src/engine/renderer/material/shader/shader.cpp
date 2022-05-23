@@ -43,6 +43,10 @@ namespace Engine
 
         s_Shaders.push_back(this);
     }
+    Shader::~Shader()
+    {
+        std::cout << "Shader " << name << " destroyed" << std::endl;
+    }
     void Shader::addGeometryShader(const std::string &path)
     {
         m_GeometryCode = loadTextFile(PathUtil::SHADER_PATH + path);
