@@ -104,7 +104,7 @@ namespace Engine
                 material->textures.push_back(tex);
                 return;
             }
-        Texture2D *tex = new Texture2D(loadTextureFromFile(path, texType)); // FIXME: No free
+        Texture2D *tex = new Texture2D(loadTextureFromFile(path, texType)); // FIXME: mem leak
         material->textures.push_back(tex);
         loadedTextures.push_back(tex);
     }
