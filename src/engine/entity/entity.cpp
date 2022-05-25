@@ -91,18 +91,18 @@ namespace Engine
         Entity *entity = rootEntity;
         entity->name = rootNode->mName.C_Str();
 
+        if (rootNode->mNumChildren > 1)
+        {
+            entity = new Entity;
+            entity->parent = rootEntity;
+            rootEntity->children.push_back(entity);
+        }
+
         for (unsigned int i = 0; i < rootNode->mNumChildren; i++) // go through all (children) nodes
         {
             aiNode *node = rootNode->mChildren[i];
             for (unsigned int j = 0; j < node->mNumMeshes; j++) // mesh of (children) node
             {
-                if (rootNode->mNumChildren > 1)
-                {
-                    entity = new Entity;
-                    entity->parent = rootEntity;
-                    rootEntity->children.push_back(entity);
-                }
-
                 aiMesh *mesh = scene->mMeshes[node->mMeshes[j]];
                 entity->name = mesh->mName.C_Str();
 
@@ -147,10 +147,10 @@ namespace Engine
                         indices.push_back(face.mIndices[l]);
                 }
 
-                Mesh newMesh(vertices, indices); // TODO: combining meshes with same material
+                // Mesh newMesh(vertices, indices); // TODO: combining meshes with same material
 
-                MeshRenderer *renderer = entity->addComponent<MeshRenderer>();
-                renderer->setMesh(newMesh);
+                // MeshRenderer *renderer = entity->addComponent<MeshRenderer>();
+                // renderer->setMesh(newMesh);
 
                 // material
                 aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
@@ -159,11 +159,19 @@ namespace Engine
                 Material *mat = Material::getMaterialByName(matName);
                 if (mat)
                 {
-                    renderer->material = mat;
+                    auto renderer = entity->getComponent<MeshRenderer>();
+                    renderer->addToMesh({vertices, indices});
                 }
                 else
                 {
+                    entity = new Entity;
+                    entity->parent = rootEntity;
+                    rootEntity->children.push_back(entity);
+
                     mat = new Material(matName);
+
+                    auto renderer = entity->addComponent<MeshRenderer>();
+                    renderer->setMesh({vertices, indices});
                     renderer->material = mat;
                 }
             }

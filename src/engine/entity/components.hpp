@@ -71,6 +71,7 @@ namespace Engine
 
     public:
         void setMesh(const Mesh &mesh);
+        void addToMesh(const Mesh &mesh);
         void drawMesh();
 
     public:

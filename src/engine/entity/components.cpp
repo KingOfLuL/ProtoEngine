@@ -88,6 +88,15 @@ namespace Engine
 
         bounds = m_Mesh.bounds;
     }
+    void MeshRenderer::addToMesh(const Mesh &mesh)
+    {
+        m_Mesh.vertices.insert(m_Mesh.vertices.end(), mesh.vertices.begin(), mesh.vertices.end());
+        m_Mesh.indices.insert(m_Mesh.indices.end(), mesh.indices.begin(), mesh.indices.end());
+
+        m_Mesh.vertexbuffer = Vertexbuffer(&m_Mesh.vertices[0], m_Mesh.vertices.size());
+
+        m_Mesh.calculateBounds();
+    }
     void MeshRenderer::drawMesh()
     {
         glm::mat4 transformation = entity->transform.getTransformationMatrix();
