@@ -34,6 +34,12 @@ namespace Engine
 
         return matrix;
     }
+    glm::vec3 Transform::getWorldPosition() const
+    {
+        if (entity->parent)
+            return entity->parent->transform.getTransformationMatrix() * glm::vec4(position, 1.f);
+        return position;
+    }
     void Transform::update()
     {
         localFront = glm::vec3(sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.z)),
@@ -77,38 +83,38 @@ namespace Engine
     MeshRenderer::~MeshRenderer()
     {
         activeScene->removeMeshRenderer(this);
-        m_Mesh.vertexbuffer.deleteBuffers();
+        mesh.vertexbuffer.deleteBuffers();
     }
-    MeshRenderer::MeshRenderer(const MeshRenderer &other) : material(other.material)
+    MeshRenderer::MeshRenderer(const MeshRenderer &other) : material(other.material), drawBounds(other.drawBounds)
     {
-        m_Mesh = other.m_Mesh;
+        setMesh(other.mesh);
         activeScene->addMeshRenderer(this);
     }
-    void MeshRenderer::setMesh(const Mesh &mesh)
+    void MeshRenderer::setMesh(const Mesh &other)
     {
-        m_Mesh = mesh;
-        m_Mesh.vertexbuffer = Vertexbuffer(&m_Mesh.vertices[0], m_Mesh.vertices.size());
-        m_Mesh.vertexbuffer.addIndexbuffer(&m_Mesh.indices[0], m_Mesh.indices.size());
+        mesh = other;
+        mesh.vertexbuffer = Vertexbuffer(&mesh.vertices[0], mesh.vertices.size());
+        mesh.vertexbuffer.addIndexbuffer(&mesh.indices[0], mesh.indices.size());
 
-        bounds = m_Mesh.bounds;
+        bounds = mesh.bounds;
     }
-    void MeshRenderer::addToMesh(const Mesh &mesh)
+    void MeshRenderer::addToMesh(const Mesh &other)
     {
-        m_Mesh.vertices.insert(m_Mesh.vertices.end(), mesh.vertices.begin(), mesh.vertices.end());
-        m_Mesh.indices.insert(m_Mesh.indices.end(), mesh.indices.begin(), mesh.indices.end());
+        mesh.vertices.insert(mesh.vertices.end(), other.vertices.begin(), other.vertices.end());
+        mesh.indices.insert(mesh.indices.end(), other.indices.begin(), other.indices.end());
 
-        m_Mesh.vertexbuffer = Vertexbuffer(&m_Mesh.vertices[0], m_Mesh.vertices.size());
+        mesh.vertexbuffer = Vertexbuffer(&mesh.vertices[0], mesh.vertices.size());
 
-        m_Mesh.calculateBounds();
+        mesh.calculateBounds();
     }
     void MeshRenderer::drawMesh()
     {
         glm::mat4 transformation = entity->transform.getTransformationMatrix();
 
-        bounds.center = (transformation * glm::vec4(m_Mesh.bounds.center, 1.0f));
-        bounds.size = transformation * glm::vec4(m_Mesh.bounds.size, 0.0f);
+        bounds.center = (transformation * glm::vec4(mesh.bounds.center, 1.0f));
+        bounds.size = transformation * glm::vec4(mesh.bounds.size, 0.0f);
 
-        m_Mesh.vertexbuffer.draw();
+        mesh.vertexbuffer.draw();
 
         if (drawBounds)
             bounds.draw();

@@ -21,6 +21,7 @@ namespace Engine::Renderer
     Uniformbuffer shaderUniformbufferMatrices;
     Uniformbuffer shaderUniformbufferLights;
     Uniformbuffer shaderUniformbufferInput;
+
     const uint32_t matrixDataSize = 2 * sizeof(glm::mat4);
     const uint32_t lightDataSize =
         16 * sizeof(float) * MAX_NR_DIRLIGHTS +   /* directional lights */
@@ -39,7 +40,7 @@ namespace Engine::Renderer
         glEnable(GL_CULL_FACE);
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // TODO: Add transparency -> sorting transparent meshes using their world bounds
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glEnable(GL_POLYGON_OFFSET_LINE);
         glPolygonOffset(-1.0f, -1.0f);
@@ -131,7 +132,8 @@ namespace Engine::Renderer
         if (activeScene->skybox)
             activeScene->skybox->draw();
 
-        for (auto renderer : activeScene->getRenderers())
+        auto &renderers = activeScene->getRenderers();
+        for (auto &renderer : renderers)
         {
             Material *material = renderer->material;
 

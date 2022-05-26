@@ -11,14 +11,14 @@
 
 namespace Engine
 {
-    std::map<std::string, Entity *> loadedModels;
+    std::map<std::string, Entity> loadedModels;
 
     Entity::Entity(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name("NULL"), transform(pos, rot, scl)
     {
         transform.entity = this;
         activeScene->addEntity(this);
     }
-    Entity::Entity(const Entity &entity)
+    Entity::Entity(const Entity &entity) // FIXME: fix entity copying
     {
         name = entity.name;
         parent = entity.parent;
@@ -74,7 +74,7 @@ namespace Engine
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
         if (loadedModels.find(filePath) != loadedModels.end())
         {
-            return new Entity(*loadedModels[filePath]);
+            return new Entity(loadedModels[filePath]);
         }
 
         Assimp::Importer importer;
@@ -173,7 +173,7 @@ namespace Engine
         }
         if (boost::algorithm::ends_with(filePath, ".fbx"))
             rootEntity->transform.rotation = glm::vec3(-90, 0, 0);
-        loadedModels.insert({filePath, rootEntity});
+        loadedModels.insert({filePath, Entity(*rootEntity)});
 
         return rootEntity;
     }

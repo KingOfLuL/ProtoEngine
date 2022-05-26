@@ -2,12 +2,14 @@
 
 #include "scene.hpp"
 
+#include "engine.hpp"
 #include "util/util.hpp"
 
 namespace Engine
 {
     Scene::Scene(const std::string &name) : m_Name(name)
     {
+        m_Arr = {new int(1), new int(5), new int(3), new int(2), new int(4)};
     }
     void Scene::addEntity(Entity *entity)
     {
@@ -105,8 +107,15 @@ namespace Engine
     {
         return m_PointLights;
     }
-    const std::vector<MeshRenderer *> &Scene::getRenderers() const
+    const std::vector<MeshRenderer *> &Scene::getRenderers()
     {
+        std::sort(m_Renderers.begin(), m_Renderers.end(),
+                  [](MeshRenderer *a, MeshRenderer *b)
+                  {
+                      float distA = glm::length(activeScene->mainCamera->entity->transform.position - a->bounds.center);
+                      float distB = glm::length(activeScene->mainCamera->entity->transform.position - b->bounds.center);
+                      return distA > distB;
+                  });
         return m_Renderers;
     }
     void Scene::update()
@@ -115,13 +124,11 @@ namespace Engine
             e->transform.update();
 
         for (auto i : m_Behaviors)
-            if (i)
-                i->update();
+            i->update();
     }
     void Scene::start()
     {
         for (auto i : m_Behaviors)
-            if (i)
-                i->start();
+            i->start();
     }
 }

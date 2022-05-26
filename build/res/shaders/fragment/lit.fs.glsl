@@ -4,8 +4,6 @@
 void main() 
 {
     getTextureColors();
-    // if (_TextureDiffuseColor.a < 0.08)
-    //     discard;
 
     vec3 norm = normalize(_Fragment.Normal);
     vec3 viewDir = normalize(_ViewPosition - _Fragment.Position);

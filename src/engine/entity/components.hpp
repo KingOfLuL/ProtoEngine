@@ -37,6 +37,7 @@ namespace Engine
 
     public:
         glm::mat4 getTransformationMatrix() const;
+        glm::vec3 getWorldPosition() const;
         void update();
     };
 
@@ -76,11 +77,9 @@ namespace Engine
 
     public:
         Material *material;
+        Mesh mesh;
         Bounds bounds;
         bool drawBounds = false;
-
-    private:
-        Mesh m_Mesh;
     };
 
     ///

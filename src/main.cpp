@@ -140,6 +140,18 @@ int main()
     backpack->transform.position = glm::vec3(0, 0, -10);
     backpack->forEachChildren(showBounds);
 
+    Entity *window = loadModel("Window.fbx");
+    window->transform.position = glm::vec3(5, 10, -10);
+
+    Entity *window2 = loadModel("Window.fbx");
+    window2->transform.position = glm::vec3(-10, 10, -10);
+
+    Entity *window3 = loadModel("Window.fbx");
+    window3->transform.position = glm::vec3(15, -10, 5);
+
+    Entity *window4 = loadModel("Window.fbx");
+    window4->transform.position = glm::vec3(0, 5, 25);
+
     Entity *sun = new Entity;
     sun->addComponent(new DirectionalLight(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1));
     sun->addComponent<Rotate>();
