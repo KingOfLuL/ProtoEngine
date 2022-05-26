@@ -1,5 +1,7 @@
 #include "Random.hpp"
 
+#include <random>
+
 namespace Engine::Random
 {
     std::random_device rd;
@@ -18,19 +20,19 @@ namespace Engine::Random
         mt = std::mt19937(rd());
     }
 
-    float float_(float min, float max)
+    float range(float min, float max)
     {
         floatParamType t(min, max);
         floatDist.param(t);
         return floatDist(mt);
     }
-    double double_(double min, double max)
+    double range(double min, double max)
     {
         doubleParamType t(min, max);
         doubleDist.param(t);
         return doubleDist(mt);
     }
-    int int_(int min, int max)
+    int range(int min, int max)
     {
         intParamType t(min, max);
         intDist.param(t);

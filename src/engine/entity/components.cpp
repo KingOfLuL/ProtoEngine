@@ -16,7 +16,9 @@ namespace Engine
 {
     Transform::Transform(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl)
         : position(pos), scale(scl), rotation(rot),
-          localUp(0.0f, 1.0f, 0.0f), localRight(1.0f, 0.0f, 0.0f), localFront(0.0f, 0.0f, 1.0f) {}
+          localUp(0.0f, 1.0f, 0.0f), localRight(1.0f, 0.0f, 0.0f), localFront(0.0f, 0.0f, 1.0f)
+    {
+    }
 
     glm::mat4 Transform::getTransformationMatrix() const
     {
@@ -44,7 +46,9 @@ namespace Engine
     ///
     ///
     ///
-    Camera::Camera() : targetTexture(activeWindow->width, activeWindow->height), fov(75.f) {}
+    Camera::Camera() : targetTexture(activeWindow->width, activeWindow->height), fov(75.f)
+    {
+    }
     Camera::~Camera()
     {
         if (activeScene->mainCamera == this)

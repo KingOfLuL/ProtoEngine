@@ -8,7 +8,7 @@
 
 namespace Engine
 {
-    inline Indexbuffer::Indexbuffer(const void *data, int count) : m_Count(count)
+    Indexbuffer::Indexbuffer(const void *data, int count) : m_Count(count)
     {
         glGenBuffers(1, &m_ID);
 

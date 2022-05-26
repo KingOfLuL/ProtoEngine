@@ -14,7 +14,9 @@ struct Rotate : public Behavior
         update = [&]()
         {
             angle += Time::deltaTime * speed;
-            entity->transform.rotation = glm::vec3(sin(glm::radians(angle)), 0, cos(glm::radians(angle)));
+            entity->transform.rotation = glm::vec3(glm::sin(glm::radians(angle)),
+                                                   0,
+                                                   glm::cos(glm::radians(angle)));
         };
     }
 };
