@@ -72,7 +72,9 @@ namespace Engine
 
     public:
         void setMesh(const Mesh &mesh);
+        void setMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
         void addToMesh(const Mesh &mesh);
+        void addToMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
         void drawMesh();
 
     public:

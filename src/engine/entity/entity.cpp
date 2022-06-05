@@ -11,18 +11,21 @@
 
 namespace Engine
 {
-    std::map<std::string, Entity> loadedModels;
+    std::map<std::string, Entity *> loadedModels;
 
     Entity::Entity(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name("NULL"), transform(pos, rot, scl)
     {
         transform.entity = this;
         activeScene->addEntity(this);
     }
-    Entity::Entity(const Entity &entity) // FIXME: fix entity copying
+    Entity::Entity(const Entity &entity)
     {
+        activeScene->addEntity(this);
+
         name = entity.name;
         parent = entity.parent;
         transform = entity.transform;
+        transform.entity = this;
 
         for (auto component : entity.m_Components)
         {
@@ -39,15 +42,18 @@ namespace Engine
                 addComponent(new MeshRenderer(*c_meshRenderer));
             auto c_behavior = dynamic_cast<Behavior *>(component);
             if (c_behavior)
-                addComponent(component);
+                addComponent(new Behavior(*c_behavior));
         }
         for (auto c : entity.children)
-            children.push_back(new Entity(*c));
-
-        activeScene->addEntity(this);
+        {
+            Entity *newChild = new Entity(*c);
+            newChild->parent = this;
+            children.push_back(newChild);
+        }
     }
     Entity::~Entity()
     {
+        std::cout << "destroying Entity " << this << std::endl;
         activeScene->removeEntity(this);
         for (auto c : m_Components)
             delete c;
@@ -68,13 +74,28 @@ namespace Engine
                 return child;
         return nullptr;
     }
+    std::ostream &operator<<(std::ostream &out, const Entity &ent)
+    {
+        out << "this: " << &ent << '\n'
+            << "transform: " << &ent.transform
+            << '\n'
+            << "components: " << '\n';
+        for (auto c : ent.m_Components)
+            out << c << '\n';
+
+        out << "children: " << '\n';
+        for (auto child : ent.children)
+            out << *child;
+
+        return out;
+    }
 
     Entity *loadModel(const std::string &path)
     {
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
         if (loadedModels.find(filePath) != loadedModels.end())
         {
-            return new Entity(loadedModels[filePath]);
+            return new Entity(*loadedModels[filePath]);
         }
 
         Assimp::Importer importer;
@@ -155,7 +176,16 @@ namespace Engine
                 if (mat)
                 {
                     auto renderer = entity->getComponent<MeshRenderer>();
-                    renderer->addToMesh({vertices, indices});
+                    if (renderer)
+                    {
+                        renderer->addToMesh(vertices, indices);
+                    }
+                    else
+                    {
+                        renderer = entity->addComponent<MeshRenderer>();
+                        renderer->setMesh(vertices, indices);
+                        renderer->material = mat;
+                    }
                 }
                 else
                 {
@@ -166,14 +196,14 @@ namespace Engine
                     mat = new Material(matName);
 
                     auto renderer = entity->addComponent<MeshRenderer>();
-                    renderer->setMesh({vertices, indices});
+                    renderer->setMesh(vertices, indices);
                     renderer->material = mat;
                 }
             }
         }
         if (boost::algorithm::ends_with(filePath, ".fbx"))
             rootEntity->transform.rotation = glm::vec3(-90, 0, 0);
-        loadedModels.insert({filePath, Entity(*rootEntity)});
+        loadedModels.insert(std::pair<std::string, Entity *>(filePath, rootEntity));
 
         return rootEntity;
     }

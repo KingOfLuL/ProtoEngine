@@ -98,10 +98,31 @@ namespace Engine
 
         bounds = mesh.bounds;
     }
+    void MeshRenderer::setMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices)
+    {
+        mesh.vertices = vertices;
+        mesh.indices = indices;
+
+        mesh.calculateBounds();
+
+        mesh.vertexbuffer = Vertexbuffer(&mesh.vertices[0], mesh.vertices.size());
+        mesh.vertexbuffer.addIndexbuffer(&mesh.indices[0], mesh.indices.size());
+
+        bounds = mesh.bounds;
+    }
     void MeshRenderer::addToMesh(const Mesh &other)
     {
         mesh.vertices.insert(mesh.vertices.end(), other.vertices.begin(), other.vertices.end());
         mesh.indices.insert(mesh.indices.end(), other.indices.begin(), other.indices.end());
+
+        mesh.vertexbuffer = Vertexbuffer(&mesh.vertices[0], mesh.vertices.size());
+
+        mesh.calculateBounds();
+    }
+    void MeshRenderer::addToMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices)
+    {
+        mesh.vertices.insert(mesh.vertices.end(), vertices.begin(), vertices.end());
+        mesh.indices.insert(mesh.indices.end(), indices.begin(), indices.end());
 
         mesh.vertexbuffer = Vertexbuffer(&mesh.vertices[0], mesh.vertices.size());
 

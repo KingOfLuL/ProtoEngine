@@ -52,6 +52,8 @@ namespace Engine
             return component;
         }
 
+        friend std::ostream &operator<<(std::ostream &out, const Entity &ent);
+
     public:
         std::string name;
         Transform transform; // not listed in components

@@ -107,13 +107,6 @@ private:
     }
 };
 
-void showBounds(Entity *ent)
-{
-    auto r = ent->getComponent<MeshRenderer>();
-    if (r)
-        r->drawBounds = true;
-}
-
 int main()
 {
     Scene scene("Game");
@@ -130,15 +123,12 @@ int main()
 
     Entity *box2 = loadModel("Box.fbx");
     box2->transform.position = glm::vec3(10, 0, 0);
-    box2->forEachChildren(showBounds);
 
     Entity *tree = loadModel("Tree.fbx");
     tree->transform.position = glm::vec3(0, 0, 10);
-    tree->forEachChildren(showBounds);
 
     Entity *backpack = loadModel("Backpack.fbx");
     backpack->transform.position = glm::vec3(0, 0, -10);
-    backpack->forEachChildren(showBounds);
 
     Entity *window = loadModel("Window.fbx");
     window->transform.position = glm::vec3(5, 10, -10);
