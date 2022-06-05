@@ -3,11 +3,11 @@
 
 namespace Engine::Random
 {
-    void engine_init();
+    void internal_engine_init();
 
-    float range(float min, float max);
-    double range(double min, double max);
-    int range(int min, int max);
+    float rangeI(float min, float max);
+    double rangeF(double min, double max);
+    int rangeD(int min, int max);
 }
 
 #endif // SRC_ENGINE_UTIL_RANDOM_RANDOM

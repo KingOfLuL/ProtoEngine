@@ -15,24 +15,24 @@ namespace Engine::Random
     typedef std::uniform_real_distribution<double>::param_type doubleParamType;
     typedef std::uniform_int_distribution<int>::param_type intParamType;
 
-    void engine_init()
+    void internal_engine_init()
     {
         mt = std::mt19937(rd());
     }
 
-    float range(float min, float max)
+    float rangeF(float min, float max)
     {
         floatParamType t(min, max);
         floatDist.param(t);
         return floatDist(mt);
     }
-    double range(double min, double max)
+    double rangeD(double min, double max)
     {
         doubleParamType t(min, max);
         doubleDist.param(t);
         return doubleDist(mt);
     }
-    int range(int min, int max)
+    int rangeI(int min, int max)
     {
         intParamType t(min, max);
         intDist.param(t);

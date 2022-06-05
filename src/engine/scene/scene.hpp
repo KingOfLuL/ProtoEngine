@@ -26,7 +26,8 @@ namespace Engine
         void removeBehavior(Behavior *behavior);
         void update();
         void start();
-        const std::vector<MeshRenderer *> &getRenderers(); /// sorts renderers before returning them
+        // sorts renderers before returning them
+        const std::vector<MeshRenderer *> &getRenderers();
         const std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> &getDirectionalLights() const;
         const std::array<SpotLight *, MAX_NR_SPOTLIGHTS> &getSpotLights() const;
         const std::array<PointLight *, MAX_NR_POINTLIGHTS> &getPointLights() const;

@@ -75,12 +75,12 @@ namespace Engine
     void Window::mouse_callback(GLFWwindow *window, double xOffset, double yOffset)
     {
         (void)window;
-        Input::engine_updateMouseMovement(xOffset, yOffset);
+        Input::internal_engine_updateMouseMovement(xOffset, yOffset);
     }
     void Window::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
     {
         (void)window;
-        Input::engine_keyCallback(key, scancode, action, mods);
+        Input::internal_engine_keyCallback(key, scancode, action, mods);
     }
     GLFWwindow *Window::getGLFWwindow() const
     {

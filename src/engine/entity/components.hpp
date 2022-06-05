@@ -95,8 +95,8 @@ namespace Engine
 
     public:
         virtual std::vector<float> getData() const;
-        int engine_getIndex() const;
-        void engine_setIndex(int i);
+        int internal_engine_getIndex() const;
+        void internal_engine_setIndex(int i);
 
     public:
         glm::vec3 ambient;

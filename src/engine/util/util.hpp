@@ -18,7 +18,7 @@ namespace Engine
         std::vector<std::function<void(void)>> m_Functions;
     };
 
-    void engine_util_init();
+    void internal_engine_util_init();
 
     namespace PathUtil
     {

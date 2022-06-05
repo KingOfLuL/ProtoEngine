@@ -22,7 +22,7 @@ namespace Engine
 
         stbi_set_flip_vertically_on_load(false);
         glfwInit();
-        engine_util_init();
+        internal_engine_util_init();
 
         activeWindow = new Window(windowName, windowW, windowH);
 
