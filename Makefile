@@ -15,45 +15,26 @@ CFLAGS += $(INCLUDES)
 
 PCH = lib/libs.hpp
 
-GLAD_SRC = lib/glad/src
-GLAD_BIN = lib/glad/bin
-
 debug:
 	$(CC) $(SRC) $(CFLAGS) $(LIBS_DYN) -o $(BIN)/$(NAME)
 
 
-
-build: copy_res
-	$(CC) $(SRC) $(CFLAGS) $(LIBS_STATIC) -o $(BUILD)/$(NAME)
-
-copy_res: clean_res
-	cp -r $(RES) $(BUILD)/$(RES)
-
-clean_res:
-	rm -r -f $(BUILD)/$(RES)
-
+build:
+	rm -r -f $(BUILD)/$(RES);		\
+	cp -r $(RES) $(BUILD)/$(RES);	\
+	$(CC) $(SRC) $(CFLAGS) $(LIBS_STATIC) -o $(BUILD)/$(NAME);
 
 
 pch:
 	$(CC) -c $(PCH) $(CFLAGS)
 
 
+glad_static:
+	cd lib/glad; \
+	make static;
 
-glad_static: glad_create_static
-	rm $(GLAD_BIN)/glad.o
+glad_shared:
+	cd lib/glad; \
+	make shared;
 
-glad_create_static: glad_compile_static
-	ar rcs $(GLAD_BIN)/libGLAD.dll.a $(GLAD_BIN)/glad.o
-
-glad_compile_static:
-	$(CC) -c $(GLAD_SRC)/glad.c -o $(GLAD_BIN)/glad.o
-
-
-glad_shared: glad_create_shared
-	rm $(GLAD_BIN)/glad.o
-
-glad_create_shared: glad_compile_shared
-	$(CC) -shared $(GLAD_BIN)/glad.o -o $(GLAD_BIN)/libGLAD.dll
-
-glad_compile_shared:
-	$(CC) -c -fPIC $(GLAD_SRC)/glad.c  -o $(GLAD_BIN)/glad.o
+.PHONY: build debug

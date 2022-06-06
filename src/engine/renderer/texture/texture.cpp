@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-    std::vector<Texture2D *> loadedTextures;
+    std::vector<Texture2D> loadedTextures;
 
     void Texture::setParameter(GLenum parameter, GLenum value)
     {
@@ -20,12 +20,13 @@ namespace Engine
         glBindTexture(GL_TEXTURE_2D, ID);
     }
 
-    Texture2D::Texture2D(uint32_t id, int w, int h, GLenum colorFormat, const TextureType &type, const std::string &path) : m_Type(type), m_Path(path)
+    Texture2D::Texture2D(uint32_t id, int w, int h, GLenum colorFormat, const TextureType &type, const std::string &path)
+        : m_Type(type), m_Path(path)
     {
         ID = id;
         width = w;
         height = h;
-        colorFormat = colorFormat;
+        this->colorFormat = colorFormat;
     }
     std::string Texture2D::getPath() const
     {
@@ -74,37 +75,15 @@ namespace Engine
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
     }
-
-    void loadMaterialTextures(aiMaterial *mat, aiTextureType type, TextureType typeName, std::vector<Texture2D> &textures, std::vector<Texture2D> &loadedTextures)
-    {
-        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-        {
-            aiString texPath;
-            mat->GetTexture(type, i, &texPath);
-
-            std::string path = PathUtil::toUnixStylePath(texPath.C_Str());
-            path = PathUtil::getRelativePath(path, PathUtil::TEXTURE_PATH);
-
-            // check if texture has already been loaded
-            for (auto tex : loadedTextures)
-            {
-                if (tex.getPath() == path)
-                    return;
-            }
-            Texture2D texture = loadTextureFromFile(path, typeName);
-            textures.push_back(texture);
-            loadedTextures.push_back(texture);
-        }
-    }
     void loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
     {
-        for (Texture2D *tex : loadedTextures)
-            if (tex->getPath() == path)
+        for (Texture2D tex : loadedTextures)
+            if (tex.getPath() == path)
             {
                 material->textures.push_back(tex);
                 return;
             }
-        Texture2D *tex = new Texture2D(loadTextureFromFile(path, texType)); // FIXME: mem leak
+        Texture2D tex(loadTextureFromFile(path, texType));
         material->textures.push_back(tex);
         loadedTextures.push_back(tex);
     }

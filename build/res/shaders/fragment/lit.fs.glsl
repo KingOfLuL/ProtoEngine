@@ -20,5 +20,4 @@ void main()
         result += CalcSpotLight(_SpotLights[i], norm, _Fragment.Position, viewDir);
         
     _OutputColor = result;
-    // _OutputColor = vec4(1.0, 0.0, 1.0, 1.0);
 }

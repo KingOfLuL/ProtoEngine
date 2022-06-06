@@ -1,4 +1,4 @@
-layout (std140, binding = 2) uniform Values // 20 bytes (5 floats)
+layout (std140, binding = 2) uniform Values 
 {
     vec3 _ViewPosition;
     float _DeltaTime;

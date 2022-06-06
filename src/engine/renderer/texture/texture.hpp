@@ -74,11 +74,10 @@ namespace Engine
         std::array<std::string, 6> m_FacePaths;
     };
 
-    extern std::vector<Texture2D *> loadedTextures;
+    extern std::vector<Texture2D> loadedTextures;
 
     class Material;
 
-    void loadMaterialTextures(aiMaterial *mat, aiTextureType type, TextureType typeName, std::vector<Texture2D> &textures, std::vector<Texture2D> &loadedTextures);
     void loadMaterialTexture(const std::string &path, TextureType texType, Material *material);
     Texture2D loadTextureFromFile(const std::string &path, TextureType type);
     void createGLTexture(uint32_t &id, int w, int h, GLenum colorFormat, const void *data, GLenum minFilter, GLenum maxFilter, GLenum wrapS, GLenum wrapT, bool mipmap);

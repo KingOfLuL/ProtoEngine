@@ -150,13 +150,13 @@ namespace Engine::Renderer
             for (size_t i = 0; i < material->textures.size(); i++)
             {
                 glActiveTexture(GL_TEXTURE0 + i);
-                if (material->textures[i]->getType() == TextureType::DIFFUSE)
+                if (material->textures[i].getType() == TextureType::DIFFUSE)
                     material->shader->setInt("_Material.diffuseTexture", i);
-                else if (material->textures[i]->getType() == TextureType::SPECULAR)
+                else if (material->textures[i].getType() == TextureType::SPECULAR)
                     material->shader->setInt("_Material.specularTexture", i);
-                if (material->textures[i]->colorFormat == GL_RGBA)
+                if (material->textures[i].colorFormat == GL_RGBA)
                     material->shader->setBool("_Material.hasTransparency", true);
-                material->textures[i]->bind();
+                material->textures[i].bind();
             }
 
             material->shader->setVec3("_Material.diffuseColor", material->diffuseColor);

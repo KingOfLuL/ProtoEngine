@@ -18,7 +18,7 @@ namespace Engine
     public:
         std::string name;
         Shader *shader;
-        std::vector<Texture2D *> textures;
+        std::vector<Texture2D> textures;
         bool hasDiffuseTexture;
         bool hasSpecularTexture;
         glm::vec3 diffuseColor = glm::vec3(1.f);
