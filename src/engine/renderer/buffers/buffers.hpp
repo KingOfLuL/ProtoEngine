@@ -57,7 +57,7 @@ namespace Engine
     private:
         uint32_t m_ID;
         uint32_t m_Renderbuffer;
-        uint32_t m_Texturecolorbuffer;
+        uint32_t m_Colorbuffer;
     };
 
     class Uniformbuffer

@@ -129,6 +129,7 @@ namespace Engine::Renderer
         shaderUniformbufferInput.setData(&activeWindow->width, sizeof(float), 5 * sizeof(float));
         shaderUniformbufferInput.setData(&activeWindow->height, sizeof(float), 6 * sizeof(float));
 
+        glActiveTexture(GL_TEXTURE0);
         if (activeScene->skybox)
             activeScene->skybox->draw();
 

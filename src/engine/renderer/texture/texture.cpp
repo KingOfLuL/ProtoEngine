@@ -11,22 +11,50 @@ namespace Engine
 {
     std::vector<Texture2D> loadedTextures;
 
+    Texture::~Texture()
+    {
+        // free(data);
+    }
     void Texture::setParameter(GLenum parameter, GLenum value)
     {
-        glTexParameteri(GL_TEXTURE_2D, parameter, value);
+        glTexParameteri(m_GLTextureType, parameter, value);
     }
     void Texture::bind() const
     {
-        glBindTexture(GL_TEXTURE_2D, ID);
+        glBindTexture(m_GLTextureType, m_ID);
+    }
+    void Texture::setTextureWrapMode(GLenum wrapS, GLenum wrapT)
+    {
+        setParameter(GL_TEXTURE_WRAP_S, wrapS);
+        setParameter(GL_TEXTURE_WRAP_T, wrapT);
+    }
+    void Texture::setTextureFilterMode(GLenum min, GLenum mag)
+    {
+        setParameter(GL_TEXTURE_MIN_FILTER, min);
+        setParameter(GL_TEXTURE_MAG_FILTER, mag);
+    }
+    uint32_t Texture::getID() const
+    {
+        return m_ID;
     }
 
-    Texture2D::Texture2D(uint32_t id, int w, int h, GLenum colorFormat, const TextureType &type, const std::string &path)
-        : m_Type(type), m_Path(path)
+    Texture2D::Texture2D(void *textureData, int w, int h, GLenum colFormat, const TextureType &texType, const std::string &path)
+        : m_Type(texType), m_Path(path)
     {
-        ID = id;
+        m_GLTextureType = GL_TEXTURE_2D;
+
+        data = textureData;
         width = w;
         height = h;
-        this->colorFormat = colorFormat;
+        colorFormat = colFormat;
+
+        glGenTextures(1, &m_ID);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(m_GLTextureType, m_ID);
+        glTexImage2D(m_GLTextureType, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(m_GLTextureType);
+        setTextureWrapMode(GL_REPEAT, GL_REPEAT);
+        setTextureFilterMode(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     }
     std::string Texture2D::getPath() const
     {
@@ -36,44 +64,61 @@ namespace Engine
     {
         return m_Type;
     }
+    Texture2D Texture2D::loadFromFile(const std::string &path, const TextureType &type)
+    {
+        std::string fileName = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + path;
+
+        int width, height, nrComponents;
+        void *data = stbi_load(fileName.c_str(), &width, &height, &nrComponents, 0);
+
+        if (data == nullptr)
+        {
+            std::cout << "Texture failed to load at path: " << fileName << std::endl;
+            return Texture2D();
+        }
+
+        GLenum format = GL_RGBA;
+        switch (nrComponents)
+        {
+        case 1:
+            format = GL_RED;
+            break;
+        case 3:
+            format = GL_RGB;
+            break;
+        case 4:
+            format = GL_RGBA;
+            break;
+        }
+        return Texture2D(data, width, height, format, type, path);
+    }
 
     Cubemap::Cubemap(const std::array<std::string, 6> &faces) : m_FacePaths(faces)
     {
-        glGenTextures(1, &ID);
+        m_GLTextureType = GL_TEXTURE_CUBE_MAP;
+
+        glGenTextures(1, &m_ID);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 
         int w, h, nrChannels;
+        colorFormat = GL_RGB;
 
         for (size_t i = 0; i < faces.size(); i++)
         {
             auto path = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + faces[i];
-            unsigned char *data = stbi_load(path.c_str(), &w, &h, &nrChannels, 0);
+            data = stbi_load(path.c_str(), &w, &h, &nrChannels, 0);
             if (data)
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             else
                 std::cout << "failed to load Cubemap at: " << faces[i] << std::endl;
-            stbi_image_free(data);
         }
 
-        setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        setParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+        setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
         setParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-        colorFormat = GL_RGB;
-    }
-    void Cubemap::setParameter(GLenum parameter, GLenum value)
-    {
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, parameter, value);
-    }
-    void Cubemap::bind() const
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
     }
     void loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
     {
@@ -83,51 +128,9 @@ namespace Engine
                 material->textures.push_back(tex);
                 return;
             }
-        Texture2D tex(loadTextureFromFile(path, texType));
+        Texture2D tex = Texture2D::loadFromFile(path, texType);
         material->textures.push_back(tex);
         loadedTextures.push_back(tex);
-    }
-
-    Texture2D loadTextureFromFile(const std::string &path, TextureType type)
-    {
-        std::string fileName = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + path;
-
-        uint32_t textureID;
-
-        int width, height, nrComponents;
-        unsigned char *data = stbi_load(fileName.c_str(), &width, &height, &nrComponents, 0);
-        GLenum format = GL_RGBA;
-        if (data)
-        {
-            if (nrComponents == 1)
-                format = GL_RED;
-            else if (nrComponents == 3)
-                format = GL_RGB;
-            else if (nrComponents == 4)
-                format = GL_RGBA;
-
-            createGLTexture(textureID, width, height, format, data, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT, true);
-        }
-        else
-        {
-            std::cout << "Texture failed to load at path: " << fileName << std::endl;
-        }
-        stbi_image_free(data);
-
-        return Texture2D(textureID, width, height, format, type, path);
-    }
-    void createGLTexture(uint32_t &id, int w, int h, GLenum colorFormat, const void *data, GLenum minFilter, GLenum maxFilter, GLenum wrapS, GLenum wrapT, bool mipmap)
-    {
-        glGenTextures(1, &id);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, id);
-        glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, w, h, 0, colorFormat, GL_UNSIGNED_BYTE, data);
-        if (mipmap)
-            glGenerateMipmap(GL_TEXTURE_2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);
     }
 
     RenderTexture::RenderTexture(int w, int h) : m_Framebuffer(w, h)

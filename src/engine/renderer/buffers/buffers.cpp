@@ -104,8 +104,16 @@ namespace Engine
         glGenFramebuffers(1, &m_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 
-        createGLTexture(m_Texturecolorbuffer, w, h, GL_RGB, NULL, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, false);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texturecolorbuffer, 0);
+        glGenTextures(1, &m_Colorbuffer);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_Colorbuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Colorbuffer, 0);
 
         glGenRenderbuffers(1, &m_Renderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, m_Renderbuffer);
@@ -130,7 +138,7 @@ namespace Engine
     void Framebuffer::bindTextureBuffer() const
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_Texturecolorbuffer);
+        glBindTexture(GL_TEXTURE_2D, m_Colorbuffer);
     }
 
     Uniformbuffer::Uniformbuffer(uint32_t size, uint32_t bindingPoint)
