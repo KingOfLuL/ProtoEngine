@@ -94,7 +94,7 @@ namespace Engine
         virtual ~Light();
 
     public:
-        virtual std::vector<float> getData() const;
+        virtual const std::vector<float> getData() const;
         int internal_engine_getIndex() const;
         void internal_engine_setIndex(int i);
 
@@ -116,7 +116,10 @@ namespace Engine
 
     public:
         glm::vec3 getDirection() const;
-        std::vector<float> getData() const override;
+        const std::vector<float> getData() const override;
+
+    public:
+        static const uint32_t dataSize = 16 * sizeof(float);
     };
 
     class PointLight : public Light
@@ -126,10 +129,12 @@ namespace Engine
         ~PointLight();
 
     public:
-        std::vector<float> getData() const override;
+        const std::vector<float> getData() const override;
 
     public:
         float range;
+
+        static const uint32_t dataSize = 20 * sizeof(float);
     };
 
     class SpotLight : public Light
@@ -140,12 +145,14 @@ namespace Engine
 
     public:
         glm::vec3 getDirection() const;
-        std::vector<float> getData() const override;
+        const std::vector<float> getData() const override;
 
     public:
         float innerCutoff;
         float outerCutoff;
         float range;
+
+        static const uint32_t dataSize = 24 * sizeof(float);
     };
 
     ///

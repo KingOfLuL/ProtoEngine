@@ -151,7 +151,7 @@ namespace Engine
     Light::~Light()
     {
     }
-    inline std::vector<float> Light::getData() const
+    const std::vector<float> Light::getData() const
     {
         return {0.f};
     }
@@ -177,7 +177,7 @@ namespace Engine
     {
         return entity->transform.rotation;
     }
-    std::vector<float> DirectionalLight::getData() const
+    const std::vector<float> DirectionalLight::getData() const
     {
         return {
             getDirection().x,
@@ -209,7 +209,7 @@ namespace Engine
     {
         activeScene->removePointLight(this);
     }
-    std::vector<float> PointLight::getData() const
+    const std::vector<float> PointLight::getData() const
     {
         return {
             entity->transform.position.x,
@@ -248,7 +248,7 @@ namespace Engine
     {
         return entity->transform.localFront;
     }
-    std::vector<float> SpotLight::getData() const
+    const std::vector<float> SpotLight::getData() const
     {
         return {
             entity->transform.position.x,
