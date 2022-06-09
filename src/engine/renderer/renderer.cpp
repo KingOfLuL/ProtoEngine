@@ -48,8 +48,8 @@ namespace Engine::Renderer
         glEnable(GL_POLYGON_OFFSET_LINE);
         glPolygonOffset(-1.0f, -1.0f);
 
-        shaderLit = (new Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit"));
-        shaderBounds = (new Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds"));
+        shaderLit = new Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit");
+        shaderBounds = new Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds");
         shaderBounds->addGeometryShader("geometry/bounds.gs.glsl");
 
         shaderUniformbufferMatrices = Uniformbuffer(MATRIX_DATA_SIZE, 0);
@@ -153,8 +153,8 @@ namespace Engine::Renderer
         if (activeScene->skybox)
             activeScene->skybox->draw();
 
-        auto &renderers = activeScene->getRenderers();
-        for (auto &renderer : renderers)
+        const auto &renderers = activeScene->getRenderers();
+        for (const auto &renderer : renderers)
         {
             Material *material = renderer->material;
 
@@ -168,15 +168,17 @@ namespace Engine::Renderer
             material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
             material->shader->setBool("_Material.hasTransparency", false);
 
-            for (size_t i = 0; i < material->textures.size(); i++)
+            for (uint32_t i = 0; i < material->textures.size(); i++)
             {
                 glActiveTexture(GL_TEXTURE0 + i);
+
                 if (material->textures[i].getType() == TextureType::DIFFUSE)
                     material->shader->setInt("_Material.diffuseTexture", i);
                 else if (material->textures[i].getType() == TextureType::SPECULAR)
                     material->shader->setInt("_Material.specularTexture", i);
                 if (material->textures[i].colorFormat == GL_RGBA)
                     material->shader->setBool("_Material.hasTransparency", true);
+
                 material->textures[i].bind();
             }
 

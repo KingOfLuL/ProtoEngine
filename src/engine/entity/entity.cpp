@@ -74,21 +74,6 @@ namespace Engine
                 return child;
         return nullptr;
     }
-    std::ostream &operator<<(std::ostream &out, const Entity &ent)
-    {
-        out << "this: " << &ent << '\n'
-            << "transform: " << &ent.transform
-            << '\n'
-            << "components: " << '\n';
-        for (auto c : ent.m_Components)
-            out << c << '\n';
-
-        out << "children: " << '\n';
-        for (auto child : ent.children)
-            out << *child;
-
-        return out;
-    }
 
     Entity *loadModel(const std::string &path)
     {

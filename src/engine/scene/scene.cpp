@@ -9,7 +9,6 @@ namespace Engine
 {
     Scene::Scene(const std::string &name) : m_Name(name)
     {
-        m_Arr = {new int(1), new int(5), new int(3), new int(2), new int(4)};
     }
     void Scene::addEntity(Entity *entity)
     {

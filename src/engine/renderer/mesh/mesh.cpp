@@ -20,8 +20,8 @@ namespace Engine
 
     Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices) : vertices(vertices), indices(indices)
     {
-        vertexbuffer = Vertexbuffer(&vertices[0], vertices.size());
-        vertexbuffer.addIndexbuffer(&indices[0], indices.size());
+        vertexbuffer = Vertexbuffer(&this->vertices[0], this->vertices.size());
+        vertexbuffer.addIndexbuffer(&this->indices[0], this->indices.size());
 
         calculateBounds();
     }

@@ -34,11 +34,14 @@ namespace Engine
         activeScene->start();
         while (!glfwWindowShouldClose(activeWindow->getGLFWwindow()))
         {
+            if (glfwGetKey(activeWindow->getGLFWwindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            {
+                glfwSetWindowShouldClose(activeWindow->getGLFWwindow(), true);
+                break;
+            }
+
             onRenderUpdate.call();
             activeScene->update();
-
-            if (glfwGetKey(activeWindow->getGLFWwindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-                glfwSetWindowShouldClose(activeWindow->getGLFWwindow(), true);
 
             Renderer::render();
 

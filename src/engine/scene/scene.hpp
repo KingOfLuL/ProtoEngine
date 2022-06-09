@@ -45,8 +45,6 @@ namespace Engine
         std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> m_DirectionalLights{nullptr};
         std::array<SpotLight *, MAX_NR_SPOTLIGHTS> m_SpotLights{nullptr};
         std::array<PointLight *, MAX_NR_POINTLIGHTS> m_PointLights{nullptr};
-
-        std::vector<int *> m_Arr;
     };
 }
 #endif // SRC_ENGINE_SCENE_SCENE
