@@ -169,6 +169,7 @@ namespace Engine::Renderer
             renderer->drawMesh();
         }
 
+        // TODO: clean that up
         activeScene->mainCamera->targetTexture.unbindFramebuffer();
         glClear(GL_COLOR_BUFFER_BIT);
         activeWindow->shader->use();

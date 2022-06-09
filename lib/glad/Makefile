@@ -7,11 +7,11 @@ OUT_STATIC = $(BIN)/libGLAD.dll.a
 OUT_SHARED = $(BIN)/libGLAD.dll
 
 static:
-	$(CC) -c $(SRC) -o $(OBJ); 		\
-	ar rcs $(OUT_STATIC) $(OBJ); 	\
+	$(CC) -c $(SRC) -o $(OBJ); \
+	ar rcs $(OUT_STATIC) $(OBJ); \
 	rm $(OBJ);
 
 shared:
-	$(CC) -c -fPIC $(SRC) -o $(OBJ); 			\
-	$(CC) -shared $(OBJ) -o $(OUT_SHARED); 		\
+	$(CC) -c -fPIC $(SRC) -o $(OBJ); \
+	$(CC) -shared $(OBJ) -o $(OUT_SHARED); \
 	rm $(OBJ);

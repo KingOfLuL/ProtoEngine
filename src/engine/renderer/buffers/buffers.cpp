@@ -8,6 +8,11 @@
 
 namespace Engine
 {
+    uint32_t Buffer::getID() const
+    {
+        return m_ID;
+    }
+
     Indexbuffer::Indexbuffer(const void *data, int count) : m_Count(count)
     {
         glGenBuffers(1, &m_ID);
@@ -42,16 +47,16 @@ namespace Engine
         glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
         glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(Vertex), data, GL_STATIC_DRAW);
 
-        // // vertex Positions
+        // vertex Positions
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
-        // // vertex normals
+        // vertex normals
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
-        // // vertex texture coords
+        // vertex texture coords
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, uv));
-        // // vertex Colors
+        // vertex Colors
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
@@ -99,26 +104,24 @@ namespace Engine
         glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(Vertex), data, GL_STATIC_DRAW);
     }
 
-    Framebuffer::Framebuffer(int w, int h)
+    Renderbuffer::Renderbuffer(int w, int h, GLenum storageType)
+        : width(w), height(h), m_StorageType(storageType)
+    {
+        glGenRenderbuffers(1, &m_ID);
+        glBindRenderbuffer(GL_RENDERBUFFER, m_ID);
+        glRenderbufferStorage(GL_RENDERBUFFER, m_StorageType, width, height);
+    }
+
+    Framebuffer::Framebuffer(int w, int h, RenderTexture *renderTexture)
+        : width(w), height(h), m_RenderTexture(renderTexture)
     {
         glGenFramebuffers(1, &m_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 
-        glGenTextures(1, &m_Colorbuffer);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_Colorbuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture->getID(), 0);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Colorbuffer, 0);
-
-        glGenRenderbuffers(1, &m_Renderbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, m_Renderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, w, h);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Renderbuffer);
+        m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Renderbuffer.getID());
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             std::cout << "ERROR: Framebuffer is not complete" << std::endl;
@@ -135,24 +138,14 @@ namespace Engine
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glDisable(GL_DEPTH_TEST);
     }
-    void Framebuffer::bindTextureBuffer() const
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_Colorbuffer);
-    }
 
     Uniformbuffer::Uniformbuffer(uint32_t size, uint32_t bindingPoint)
+        : m_Size(size), m_BindingPoint(bindingPoint)
     {
         glGenBuffers(1, &m_ID);
         bind();
         glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
         glBindBufferRange(GL_UNIFORM_BUFFER, bindingPoint, m_ID, 0, size);
-        unbind();
-    }
-    void Uniformbuffer::addBindingPoint(uint32_t point, uint32_t size, uint32_t offset)
-    {
-        bind();
-        glBindBufferRange(GL_UNIFORM_BUFFER, point, m_ID, offset, size);
         unbind();
     }
     void Uniformbuffer::setData(const void *data, uint32_t size, uint32_t offset)

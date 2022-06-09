@@ -58,7 +58,6 @@ namespace Engine
         std::string m_Path;
     };
 
-    // TODO: Improve RenderTexture and Framebuffer
     class RenderTexture : public Texture
     {
     public:

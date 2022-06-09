@@ -13,7 +13,7 @@ namespace Engine
 
     Texture::~Texture()
     {
-        // free(data);
+        // free(data); //FIXME: this here
     }
     void Texture::setParameter(GLenum parameter, GLenum value)
     {
@@ -133,11 +133,22 @@ namespace Engine
         loadedTextures.push_back(tex);
     }
 
-    RenderTexture::RenderTexture(int w, int h) : m_Framebuffer(w, h)
+    RenderTexture::RenderTexture(int w, int h)
     {
+        m_GLTextureType = GL_TEXTURE_2D;
+
         width = w;
         height = h;
         colorFormat = GL_RGB;
+
+        glGenTextures(1, &m_ID);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_ID);
+        glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, NULL);
+        setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+        setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+
+        m_Framebuffer = Framebuffer(width, height, this);
     }
     void RenderTexture::bindFramebuffer() const
     {
@@ -149,6 +160,7 @@ namespace Engine
     }
     void RenderTexture::bindTexture() const
     {
-        m_Framebuffer.bindTextureBuffer();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_ID);
     }
 }
