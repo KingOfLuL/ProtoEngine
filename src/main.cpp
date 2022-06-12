@@ -118,6 +118,14 @@ int main()
     camera->addComponent<PlayerMovement>();
     scene.mainCamera = camera->getComponent<Camera>();
 
+    Entity *flashlight = new Entity;
+    flashlight->addComponent(new SpotLight(glm::vec3(0.f), glm::vec3(1, 0, 1), glm::vec3(1, 0, 1), 3, 20, 30, 45));
+    flashlight->addComponent<PlayerMovement>();
+    // flashlight->parent = camera;
+
+    Entity *light = new Entity;
+    light->addComponent(new PointLight(glm::vec3(0.f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 3, 45));
+
     Entity *box = loadModel("Box.fbx");
     box->transform.position = glm::vec3(-10, 0, 0);
 

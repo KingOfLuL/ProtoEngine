@@ -6,16 +6,16 @@ struct DirLight // 64 bytes -> 64 bytes (16 floats) => 0 bytes padding
     vec3 diffuse;
     vec3 specular;
 };
-struct PointLight // 76 bytes -> 80 bytes (20 floats) => 4 bytes padding (1 float)
+struct PointLight // 72 bytes -> 80 bytes (20 floats) => 8 bytes padding (2 floats)
 {
-    vec3 position;
-
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec3 position; 
+    
+    vec3 ambient;  
+    vec3 diffuse;   
+    vec3 specular; 
 
     float constant;
-    float linear;
+    float linear;   
     float quadratic;
 };
 struct SpotLight // 96 bytes -> 96 bytes (24 floats) => 0 bytes padding

@@ -24,11 +24,11 @@ namespace Engine::Renderer
 
     const uint32_t MATRIX_DATA_SIZE = 2 * sizeof(glm::mat4);
 
-    const uint32_t DIRLIGHTS_DATA_SIZE = DirectionalLight::dataSize * MAX_NR_DIRLIGHTS;
-    const uint32_t POINTLIGHTS_DATA_SIZE = PointLight::dataSize * MAX_NR_POINTLIGHTS;
-    const uint32_t SPOTLIGHTS_DATA_SIZE = SpotLight::dataSize * MAX_NR_SPOTLIGHTS;
+    const uint32_t DIRLIGHTS_DATA_SIZE = DirectionalLight::numData * MAX_NR_DIRLIGHTS;
+    const uint32_t POINTLIGHTS_DATA_SIZE = PointLight::numData * MAX_NR_POINTLIGHTS;
+    const uint32_t SPOTLIGHTS_DATA_SIZE = SpotLight::numData * MAX_NR_SPOTLIGHTS;
 
-    const uint32_t LIGHT_DATA_SIZE = DIRLIGHTS_DATA_SIZE + POINTLIGHTS_DATA_SIZE + SPOTLIGHTS_DATA_SIZE;
+    const uint32_t LIGHT_DATA_SIZE = (DIRLIGHTS_DATA_SIZE + POINTLIGHTS_DATA_SIZE + SPOTLIGHTS_DATA_SIZE) * sizeof(float);
     const uint32_t NUMBER_LIGHTS_DATA_SIZE = 3 * sizeof(int);
 
     const uint32_t INPUT_DATA_SIZE = 7 * sizeof(float);
@@ -75,56 +75,81 @@ namespace Engine::Renderer
                 numberLights[2]++;
         shaderUniformbufferLights.setData(&numberLights[0], NUMBER_LIGHTS_DATA_SIZE, LIGHT_DATA_SIZE);
 
-        std::array<float, LIGHT_DATA_SIZE> lightData;
+        std::array<float, LIGHT_DATA_SIZE / sizeof(float)> lightData;
+
         int offset = 0;
 
+        // std::cout << "---------------- DIRECTIONAL LIGHTS --------------\n";
         for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
         {
-            const uint32_t localOffset = offset + i * DirectionalLight::dataSize;
+            // std::cout << "Directional light number " << i << "\n";
+            const uint32_t localOffset = offset + i * DirectionalLight::numData;
 
             if (dirLights[i])
             {
                 const auto &data = dirLights[i]->getData();
-                for (uint32_t j = 0; j < DirectionalLight::dataSize; j++)
+                for (uint32_t j = 0; j < DirectionalLight::numData; j++)
+                {
                     lightData[localOffset + j] = data[j];
+                    // std::cout << lightData[localOffset + j] << "\n";
+                }
             }
             else
-                for (uint32_t j = 0; j < DirectionalLight::dataSize; j++)
+                for (uint32_t j = 0; j < DirectionalLight::numData; j++)
+                {
                     lightData[localOffset + j] = 0.f;
+                    // std::cout << lightData[localOffset + j] << "\n";
+                }
         }
 
         offset += DIRLIGHTS_DATA_SIZE;
 
+        // std::cout << "---------------- POINT LIGHTS --------------\n";
         for (int i = 0; i < MAX_NR_POINTLIGHTS; i++)
         {
-            const uint32_t localOffset = offset + i * PointLight::dataSize;
+            // std::cout << "Point light number " << i << "\n";
+            const uint32_t localOffset = offset + i * PointLight::numData;
 
             if (pointLights[i])
             {
                 const auto &data = pointLights[i]->getData();
-                for (uint32_t j = 0; j < PointLight::dataSize; j++)
+                for (uint32_t j = 0; j < PointLight::numData; j++)
+                {
                     lightData[localOffset + j] = data[j];
+                    // std::cout << lightData[localOffset + j] << "\n";
+                }
             }
             else
-                for (uint32_t j = 0; j < PointLight::dataSize; j++)
+                for (uint32_t j = 0; j < PointLight::numData; j++)
+                {
                     lightData[localOffset + j] = 0.f;
+                    // std::cout << lightData[localOffset + j] << "\n";
+                }
         }
 
         offset += POINTLIGHTS_DATA_SIZE;
 
+        // std::cout << "---------------- SPOT LIGHTS --------------\n";
         for (int i = 0; i < MAX_NR_SPOTLIGHTS; i++)
         {
-            const uint32_t localOffset = offset + i * SpotLight::dataSize;
+            // std::cout << "Spot light number " << i << "\n";
+            const uint32_t localOffset = offset + i * SpotLight::numData;
 
             if (spotLights[i])
             {
                 const auto &data = spotLights[i]->getData();
-                for (uint32_t j = 0; j < SpotLight::dataSize; j++)
+                for (uint32_t j = 0; j < SpotLight::numData; j++)
+                {
                     lightData[localOffset + j] = data[j];
+                    // std::cout << lightData[localOffset + j] << "\n";
+                }
             }
             else
-                for (uint32_t j = 0; j < SpotLight::dataSize; j++)
+                for (uint32_t j = 0; j < SpotLight::numData; j++)
+                {
                     lightData[localOffset + j] = 0.f;
+                    // std::cout << lightData[localOffset + j] << "\n";
+                }
         }
 
         shaderUniformbufferLights.setData(&lightData[0], LIGHT_DATA_SIZE, 0);

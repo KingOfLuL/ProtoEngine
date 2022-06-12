@@ -10,8 +10,6 @@ namespace Engine
     public:
         void subscribe(std::function<void(void)> func);
         void operator+=(std::function<void(void)> func);
-        // void removeEvent(std::function<void(void)> func);
-        // void operator-=(std::function<void(void)> func);
         void call();
 
     private:

@@ -119,7 +119,7 @@ namespace Engine
         const std::vector<float> getData() const override;
 
     public:
-        static const uint32_t dataSize = 16 * sizeof(float);
+        static const uint32_t numData = 16;
     };
 
     class PointLight : public Light
@@ -134,7 +134,7 @@ namespace Engine
     public:
         float range;
 
-        static const uint32_t dataSize = 20 * sizeof(float);
+        static const uint32_t numData = 20;
     };
 
     class SpotLight : public Light
@@ -152,7 +152,7 @@ namespace Engine
         float outerCutoff;
         float range;
 
-        static const uint32_t dataSize = 24 * sizeof(float);
+        static const uint32_t numData = 24;
     };
 
     ///
