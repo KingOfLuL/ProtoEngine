@@ -5,8 +5,6 @@
 
 namespace Engine
 {
-    Entity *loadModel(const std::string &path);
-
     class Entity
     {
     public:
@@ -51,6 +49,8 @@ namespace Engine
             }
             return component;
         }
+
+        static Entity *loadModel(const std::string &path);
 
     public:
         std::string name;

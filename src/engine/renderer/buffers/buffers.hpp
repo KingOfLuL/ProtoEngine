@@ -76,8 +76,8 @@ namespace Engine
         Framebuffer() = default;
         Framebuffer(int w, int h, RenderTexture *renderTexture);
 
-        void bind() const;
-        void unbind() const;
+        void bind() const override;
+        void unbind() const override;
 
     public:
         int width;

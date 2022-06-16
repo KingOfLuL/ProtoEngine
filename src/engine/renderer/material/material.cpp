@@ -45,4 +45,16 @@ namespace Engine
                 return mat;
         return nullptr;
     }
+    void Material::loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
+    {
+        for (Texture2D tex : loadedTextures)
+            if (tex.getPath() == path)
+            {
+                material->textures.push_back(tex);
+                return;
+            }
+        Texture2D tex = Texture2D::loadFromFile(path, texType);
+        material->textures.push_back(tex);
+        loadedTextures.push_back(tex);
+    }
 }

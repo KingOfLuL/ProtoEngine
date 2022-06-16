@@ -16,11 +16,11 @@ namespace Engine
         NORMAL,
     };
 
-    struct Texture
+    class Texture
     {
     public:
         Texture() = default;
-        virtual ~Texture();
+        virtual ~Texture() = default;
 
     public:
         void bind() const;
@@ -31,7 +31,6 @@ namespace Engine
         uint32_t getID() const;
 
     public:
-        void *data = nullptr;
         int width;
         int height;
         GLenum colorFormat;
@@ -84,9 +83,5 @@ namespace Engine
     };
 
     extern std::vector<Texture2D> loadedTextures;
-
-    class Material;
-
-    void loadMaterialTexture(const std::string &path, TextureType texType, Material *material);
 }
 #endif // SRC_ENGINE_RENDERER_TEXTURE_TEXTURE

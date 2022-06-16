@@ -11,10 +11,6 @@ namespace Engine
 {
     std::vector<Texture2D> loadedTextures;
 
-    Texture::~Texture()
-    {
-        // free(data); //FIXME: this here
-    }
     void Texture::setParameter(GLenum parameter, GLenum value)
     {
         glTexParameteri(m_GLTextureType, parameter, value);
@@ -43,7 +39,6 @@ namespace Engine
     {
         m_GLTextureType = GL_TEXTURE_2D;
 
-        data = textureData;
         width = w;
         height = h;
         colorFormat = colFormat;
@@ -51,7 +46,7 @@ namespace Engine
         glGenTextures(1, &m_ID);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(m_GLTextureType, m_ID);
-        glTexImage2D(m_GLTextureType, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(m_GLTextureType, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, textureData);
         glGenerateMipmap(m_GLTextureType);
         setTextureWrapMode(GL_REPEAT, GL_REPEAT);
         setTextureFilterMode(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
@@ -107,11 +102,12 @@ namespace Engine
         for (size_t i = 0; i < faces.size(); i++)
         {
             auto path = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + faces[i];
-            data = stbi_load(path.c_str(), &w, &h, &nrChannels, 0);
+            void *data = stbi_load(path.c_str(), &w, &h, &nrChannels, 0);
             if (data)
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             else
                 std::cout << "failed to load Cubemap at: " << faces[i] << std::endl;
+            stbi_image_free(data);
         }
 
         setTextureFilterMode(GL_LINEAR, GL_LINEAR);
@@ -120,19 +116,7 @@ namespace Engine
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
-    void loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
-    {
-        for (Texture2D tex : loadedTextures)
-            if (tex.getPath() == path)
-            {
-                material->textures.push_back(tex);
-                return;
-            }
-        Texture2D tex = Texture2D::loadFromFile(path, texType);
-        material->textures.push_back(tex);
-        loadedTextures.push_back(tex);
-    }
-
+    
     RenderTexture::RenderTexture(int w, int h)
     {
         m_GLTextureType = GL_TEXTURE_2D;

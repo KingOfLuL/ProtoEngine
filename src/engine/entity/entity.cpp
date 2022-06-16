@@ -75,7 +75,7 @@ namespace Engine
         return nullptr;
     }
 
-    Entity *loadModel(const std::string &path)
+    Entity *Entity::loadModel(const std::string &path)
     {
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
         if (loadedModels.find(filePath) != loadedModels.end())

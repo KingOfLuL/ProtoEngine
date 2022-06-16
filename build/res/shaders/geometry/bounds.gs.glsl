@@ -6,11 +6,11 @@ layout(line_strip, max_vertices = 18) out;
 
 #define matrices _ProjectionMatrix * _ViewMatrix * _ModelMatrix
 
-const float epsilon = 0.001;
+const float offset = 0.001;
 
 void main()
 {
-    vec3 size = _Vertices[0].Normal + vec3(epsilon); 
+    vec3 size = _Vertices[0].Normal + vec3(offset); 
     vec4 center = gl_in[0].gl_Position;
 
     // front

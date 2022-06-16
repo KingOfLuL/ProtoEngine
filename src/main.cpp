@@ -126,28 +126,28 @@ int main()
     Entity *light = new Entity;
     light->addComponent(new PointLight(glm::vec3(0.f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 3, 45));
 
-    Entity *box = loadModel("Box.fbx");
+    Entity *box = Entity::loadModel("Box.fbx");
     box->transform.position = glm::vec3(-10, 0, 0);
 
-    Entity *box2 = loadModel("Box.fbx");
+    Entity *box2 = Entity::loadModel("Box.fbx");
     box2->transform.position = glm::vec3(10, 0, 0);
 
-    Entity *tree = loadModel("Tree.fbx");
+    Entity *tree = Entity::loadModel("Tree.fbx");
     tree->transform.position = glm::vec3(0, 0, 10);
 
-    Entity *backpack = loadModel("Backpack.fbx");
+    Entity *backpack = Entity::loadModel("Backpack.fbx");
     backpack->transform.position = glm::vec3(0, 0, -10);
 
-    Entity *window = loadModel("Window.fbx");
+    Entity *window = Entity::loadModel("Window.fbx");
     window->transform.position = glm::vec3(5, 10, -10);
 
-    Entity *window2 = loadModel("Window.fbx");
+    Entity *window2 = Entity::loadModel("Window.fbx");
     window2->transform.position = glm::vec3(-10, 10, -10);
 
-    Entity *window3 = loadModel("Window.fbx");
+    Entity *window3 = Entity::loadModel("Window.fbx");
     window3->transform.position = glm::vec3(15, -10, 5);
 
-    Entity *window4 = loadModel("Window.fbx");
+    Entity *window4 = Entity::loadModel("Window.fbx");
     window4->transform.position = glm::vec3(0, 5, 25);
 
     Entity *sun = new Entity;
