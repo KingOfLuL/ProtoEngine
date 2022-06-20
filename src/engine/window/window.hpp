@@ -22,6 +22,7 @@ namespace Engine
         ~Window();
 
     public:
+        void drawToWindow(const RenderTexture &tex);
         GLFWwindow *getGLFWwindow() const;
 
     private:

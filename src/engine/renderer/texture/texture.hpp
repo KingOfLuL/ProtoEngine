@@ -57,6 +57,7 @@ namespace Engine
         std::string m_Path;
     };
 
+    // TODO: make RenderTexture usable as Material Textures
     class RenderTexture : public Texture
     {
     public:

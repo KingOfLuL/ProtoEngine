@@ -14,6 +14,10 @@ namespace Engine::Renderer
     extern Shader *shaderLit;
     extern Shader *shaderBounds;
 
+    extern Uniformbuffer shaderUniformbufferMatrices;
+    extern Uniformbuffer shaderUniformbufferLights;
+    extern Uniformbuffer shaderUniformbufferInput;
+
     void init();
     void updateLights();
     void render();

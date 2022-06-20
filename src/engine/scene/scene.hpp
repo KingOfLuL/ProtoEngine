@@ -24,10 +24,13 @@ namespace Engine
         void removePointLight(PointLight *light);
         void addBehavior(Behavior *behavior);
         void removeBehavior(Behavior *behavior);
+        void addCamera(Camera *camera);
+        void removeCamera(Camera *camera);
         void update();
         void start();
         // sorts renderers before returning them
         const std::vector<MeshRenderer *> &getRenderers();
+        const std::vector<Camera *> &getCameras() const;
         const std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> &getDirectionalLights() const;
         const std::array<SpotLight *, MAX_NR_SPOTLIGHTS> &getSpotLights() const;
         const std::array<PointLight *, MAX_NR_POINTLIGHTS> &getPointLights() const;

@@ -34,7 +34,6 @@ namespace Engine
             if (m_DirectionalLights[i] == nullptr)
             {
                 m_DirectionalLights[i] = light;
-                light->internal_engine_setIndex(i);
                 canCreate = true;
                 break;
             }
@@ -44,7 +43,16 @@ namespace Engine
     }
     void Scene::removeDirectionalLight(DirectionalLight *light)
     {
-        m_DirectionalLights[light->internal_engine_getIndex()] = nullptr;
+        int index = 0;
+        for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
+        {
+            if (m_DirectionalLights[i] == light)
+            {
+                index = i;
+                break;
+            }
+        }
+        m_DirectionalLights[index] = nullptr;
     }
     void Scene::addSpotLight(SpotLight *light)
     {
@@ -54,7 +62,6 @@ namespace Engine
             if (m_SpotLights[i] == nullptr)
             {
                 m_SpotLights[i] = light;
-                light->internal_engine_setIndex(i);
                 canCreate = true;
                 break;
             }
@@ -64,7 +71,16 @@ namespace Engine
     }
     void Scene::removeSpotLight(SpotLight *light)
     {
-        m_SpotLights[light->internal_engine_getIndex()] = nullptr;
+        int index = 0;
+        for (int i = 0; i < MAX_NR_SPOTLIGHTS; i++)
+        {
+            if (m_SpotLights[i] == light)
+            {
+                index = i;
+                break;
+            }
+        }
+        m_SpotLights[index] = nullptr;
     }
     void Scene::addPointLight(PointLight *light)
     {
@@ -74,7 +90,6 @@ namespace Engine
             if (!m_PointLights[i])
             {
                 m_PointLights[i] = light;
-                light->internal_engine_setIndex(i);
                 canCreate = true;
                 break;
             }
@@ -84,7 +99,16 @@ namespace Engine
     }
     void Scene::removePointLight(PointLight *light)
     {
-        m_PointLights[light->internal_engine_getIndex()] = nullptr;
+        int index = 0;
+        for (int i = 0; i < MAX_NR_POINTLIGHTS; i++)
+        {
+            if (m_PointLights[i] == light)
+            {
+                index = i;
+                break;
+            }
+        }
+        m_PointLights[index] = nullptr;
     }
     void Scene::addBehavior(Behavior *behavior)
     {
@@ -93,6 +117,14 @@ namespace Engine
     void Scene::removeBehavior(Behavior *behavior)
     {
         m_Behaviors.erase(std::find(m_Behaviors.begin(), m_Behaviors.end(), behavior));
+    }
+    void Scene::addCamera(Camera *camera)
+    {
+        m_Cameras.push_back(camera);
+    }
+    void Scene::removeCamera(Camera *camera)
+    {
+        m_Cameras.erase(std::find(m_Cameras.begin(), m_Cameras.end(), camera));
     }
     const std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> &Scene::getDirectionalLights() const
     {
@@ -116,6 +148,10 @@ namespace Engine
                       return distA > distB;
                   });
         return m_Renderers;
+    }
+    const std::vector<Camera *> &Scene::getCameras() const
+    {
+        return m_Cameras;
     }
     void Scene::update()
     {

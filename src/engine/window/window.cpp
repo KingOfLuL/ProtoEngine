@@ -57,6 +57,15 @@ namespace Engine
         screen = Vertexbuffer(&QUAD_VERTICES[0], 4);
         screen.addIndexbuffer(&QUAD_INDICES[0], 6);
     }
+    void Window::drawToWindow(const RenderTexture &tex)
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+        shader->use();
+        tex.bindTexture();
+        screen.draw();
+        glEnable(GL_DEPTH_TEST);
+    }
     Window::~Window()
     {
         delete shader;

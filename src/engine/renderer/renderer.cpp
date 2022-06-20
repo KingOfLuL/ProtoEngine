@@ -12,9 +12,6 @@
 
 namespace Engine::Renderer
 {
-    glm::mat4 projectionMatrix;
-    glm::mat4 viewMatrix;
-
     Shader *shaderLit;
     Shader *shaderBounds;
 
@@ -24,12 +21,11 @@ namespace Engine::Renderer
 
     const uint32_t MATRIX_DATA_SIZE = 2 * sizeof(glm::mat4);
 
-    const uint32_t DIRLIGHTS_DATA_SIZE = DirectionalLight::numData * MAX_NR_DIRLIGHTS;
-    const uint32_t POINTLIGHTS_DATA_SIZE = PointLight::numData * MAX_NR_POINTLIGHTS;
-    const uint32_t SPOTLIGHTS_DATA_SIZE = SpotLight::numData * MAX_NR_SPOTLIGHTS;
+    const uint32_t NUN_DIRLIGHTS_DATA = DirectionalLight::NUM_DATA * MAX_NR_DIRLIGHTS;
+    const uint32_t NUM_POINTLIGHTS_DATA = PointLight::NUM_DATA * MAX_NR_POINTLIGHTS;
+    const uint32_t NUM_SPOTLIGHTS_DATA = SpotLight::NUM_DATA * MAX_NR_SPOTLIGHTS;
 
-    const uint32_t LIGHT_DATA_SIZE = (DIRLIGHTS_DATA_SIZE + POINTLIGHTS_DATA_SIZE + SPOTLIGHTS_DATA_SIZE) * sizeof(float);
-    const uint32_t NUMBER_LIGHTS_DATA_SIZE = 3 * sizeof(int);
+    const uint32_t LIGHT_DATA_SIZE = (NUN_DIRLIGHTS_DATA + NUM_POINTLIGHTS_DATA + NUM_SPOTLIGHTS_DATA) * sizeof(float);
 
     const uint32_t INPUT_DATA_SIZE = 7 * sizeof(float);
 
@@ -53,7 +49,7 @@ namespace Engine::Renderer
         shaderBounds->addGeometryShader("geometry/bounds.gs.glsl");
 
         shaderUniformbufferMatrices = Uniformbuffer(MATRIX_DATA_SIZE, 0);
-        shaderUniformbufferLights = Uniformbuffer(LIGHT_DATA_SIZE + NUMBER_LIGHTS_DATA_SIZE, 1);
+        shaderUniformbufferLights = Uniformbuffer(LIGHT_DATA_SIZE, 1);
         shaderUniformbufferInput = Uniformbuffer(INPUT_DATA_SIZE, 2);
     }
     void updateLights()
@@ -62,167 +58,98 @@ namespace Engine::Renderer
         auto pointLights = activeScene->getPointLights();
         auto spotLights = activeScene->getSpotLights();
 
-        int numberLights[3] = {0, 0, 0}; // [0] -> numDirLights, [1] -> numPointLights, [2] -> numSpotLights
-
-        for (auto i : dirLights)
-            if (i != nullptr)
-                numberLights[0]++;
-        for (auto i : pointLights)
-            if (i != nullptr)
-                numberLights[1]++;
-        for (auto i : spotLights)
-            if (i != nullptr)
-                numberLights[2]++;
-        shaderUniformbufferLights.setData(&numberLights[0], NUMBER_LIGHTS_DATA_SIZE, LIGHT_DATA_SIZE);
-
         std::array<float, LIGHT_DATA_SIZE / sizeof(float)> lightData;
 
         int offset = 0;
 
-        // std::cout << "---------------- DIRECTIONAL LIGHTS --------------\n";
         for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
         {
-            // std::cout << "Directional light number " << i << "\n";
-            const uint32_t localOffset = offset + i * DirectionalLight::numData;
+            const uint32_t localOffset = offset + i * DirectionalLight::NUM_DATA;
 
             if (dirLights[i])
             {
                 const auto &data = dirLights[i]->getData();
-                for (uint32_t j = 0; j < DirectionalLight::numData; j++)
+                for (uint32_t j = 0; j < DirectionalLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = data[j];
-                    // std::cout << lightData[localOffset + j] << "\n";
                 }
             }
             else
-                for (uint32_t j = 0; j < DirectionalLight::numData; j++)
+            {
+                for (uint32_t j = 0; j < DirectionalLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = 0.f;
-                    // std::cout << lightData[localOffset + j] << "\n";
                 }
+            }
         }
 
-        offset += DIRLIGHTS_DATA_SIZE;
+        offset += NUN_DIRLIGHTS_DATA;
 
-        // std::cout << "---------------- POINT LIGHTS --------------\n";
         for (int i = 0; i < MAX_NR_POINTLIGHTS; i++)
         {
-            // std::cout << "Point light number " << i << "\n";
-            const uint32_t localOffset = offset + i * PointLight::numData;
+            const uint32_t localOffset = offset + i * PointLight::NUM_DATA;
 
             if (pointLights[i])
             {
                 const auto &data = pointLights[i]->getData();
-                for (uint32_t j = 0; j < PointLight::numData; j++)
+                for (uint32_t j = 0; j < PointLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = data[j];
-                    // std::cout << lightData[localOffset + j] << "\n";
                 }
             }
             else
-                for (uint32_t j = 0; j < PointLight::numData; j++)
+            {
+                for (uint32_t j = 0; j < PointLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = 0.f;
-                    // std::cout << lightData[localOffset + j] << "\n";
                 }
+            }
         }
 
-        offset += POINTLIGHTS_DATA_SIZE;
+        offset += NUM_POINTLIGHTS_DATA;
 
-        // std::cout << "---------------- SPOT LIGHTS --------------\n";
         for (int i = 0; i < MAX_NR_SPOTLIGHTS; i++)
         {
-            // std::cout << "Spot light number " << i << "\n";
-            const uint32_t localOffset = offset + i * SpotLight::numData;
+            const uint32_t localOffset = offset + i * SpotLight::NUM_DATA;
 
             if (spotLights[i])
             {
                 const auto &data = spotLights[i]->getData();
-                for (uint32_t j = 0; j < SpotLight::numData; j++)
+                for (uint32_t j = 0; j < SpotLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = data[j];
-                    // std::cout << lightData[localOffset + j] << "\n";
                 }
             }
             else
-                for (uint32_t j = 0; j < SpotLight::numData; j++)
+            {
+                for (uint32_t j = 0; j < SpotLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = 0.f;
-                    // std::cout << lightData[localOffset + j] << "\n";
                 }
+            }
         }
 
         shaderUniformbufferLights.setData(&lightData[0], LIGHT_DATA_SIZE, 0);
     }
     void render()
     {
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0);
-        activeScene->mainCamera->targetTexture.bindFramebuffer();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        projectionMatrix = activeScene->mainCamera->getProjectionMatrix();
-        viewMatrix = activeScene->mainCamera->getViewMatrix();
-
-        shaderUniformbufferMatrices.setData(glm::value_ptr(viewMatrix), sizeof(glm::mat4), 0);
-        shaderUniformbufferMatrices.setData(glm::value_ptr(projectionMatrix), sizeof(glm::mat4), sizeof(glm::mat4));
-
         updateLights();
 
-        shaderUniformbufferInput.setData(glm::value_ptr(activeScene->mainCamera->entity->transform.position), sizeof(glm::vec3), 0);
-        shaderUniformbufferInput.setData(&Time::deltaTime, sizeof(float), sizeof(glm::vec3));
-        shaderUniformbufferInput.setData(&Time::time, sizeof(float), 4 * sizeof(float));
-        shaderUniformbufferInput.setData(&activeWindow->width, sizeof(float), 5 * sizeof(float));
-        shaderUniformbufferInput.setData(&activeWindow->height, sizeof(float), 6 * sizeof(float));
+        float shaderData[] = {
+            Time::deltaTime,
+            Time::time,
+            activeWindow->width,
+            activeWindow->height,
+        };
 
-        glActiveTexture(GL_TEXTURE0);
-        if (activeScene->skybox)
-            activeScene->skybox->draw();
+        shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData) * sizeof(float), sizeof(glm::vec3));
 
-        const auto &renderers = activeScene->getRenderers();
-        for (const auto &renderer : renderers)
+        for (const auto &camera : activeScene->getCameras())
         {
-            Material *material = renderer->material;
-
-            if (material->twoSided)
-                glDisable(GL_CULL_FACE);
-            else
-                glEnable(GL_CULL_FACE);
-
-            material->shader->use();
-
-            material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
-            material->shader->setBool("_Material.hasTransparency", false);
-
-            for (uint32_t i = 0; i < material->textures.size(); i++)
-            {
-                glActiveTexture(GL_TEXTURE0 + i);
-
-                if (material->textures[i].getType() == TextureType::DIFFUSE)
-                    material->shader->setInt("_Material.diffuseTexture", i);
-                else if (material->textures[i].getType() == TextureType::SPECULAR)
-                    material->shader->setInt("_Material.specularTexture", i);
-                if (material->textures[i].colorFormat == GL_RGBA)
-                    material->shader->setBool("_Material.hasTransparency", true);
-
-                material->textures[i].bind();
-            }
-
-            material->shader->setVec3("_Material.diffuseColor", material->diffuseColor);
-            material->shader->setFloat("_Material.shininess", 32.f);
-
-            material->shader->setBool("_Material.hasDiffuse", material->hasDiffuseTexture);
-            material->shader->setBool("_Material.hasSpecular", material->hasSpecularTexture);
-
-            renderer->drawMesh();
+            camera->renderToTexture();
         }
+        activeScene->mainCamera->renderToTexture();
 
-        // TODO: clean that up
-        activeScene->mainCamera->targetTexture.unbindFramebuffer();
-        glClear(GL_COLOR_BUFFER_BIT);
-        activeWindow->shader->use();
-        activeWindow->screen.bind();
-        activeScene->mainCamera->targetTexture.bindTexture();
-        glDrawElements(GL_TRIANGLES, activeWindow->screen.getIndicesCount(), GL_UNSIGNED_INT, 0);
-        activeWindow->screen.unbind();
+        activeWindow->drawToWindow(activeScene->mainCamera->targetTexture);
     }
 }

@@ -131,12 +131,10 @@ namespace Engine
     void Framebuffer::bind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
-        glEnable(GL_DEPTH_TEST);
     }
     void Framebuffer::unbind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
     }
 
     Uniformbuffer::Uniformbuffer(uint32_t size, uint32_t bindingPoint)

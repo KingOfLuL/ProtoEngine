@@ -114,14 +114,13 @@ int main()
 
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
-    Entity *camera = (new Entity)->addComponent<Camera>()->entity;
+    Entity *camera = new Entity;
+    camera->addComponent(new Camera(true));
     camera->addComponent<PlayerMovement>();
-    scene.mainCamera = camera->getComponent<Camera>();
 
     Entity *flashlight = new Entity;
     flashlight->addComponent(new SpotLight(glm::vec3(0.f), glm::vec3(1, 0, 1), glm::vec3(1, 0, 1), 3, 20, 30, 45));
     flashlight->addComponent<PlayerMovement>();
-    // flashlight->parent = camera;
 
     Entity *light = new Entity;
     light->addComponent(new PointLight(glm::vec3(0.f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 3, 45));

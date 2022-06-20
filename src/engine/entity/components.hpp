@@ -43,17 +43,19 @@ namespace Engine
 
     ///
     ///
-    ///
+    /// TODO: Have every camera render to an assigned RenderTexture, lastly render the main camera to the screen RenderTexture
     class Camera : public Component
     {
     public:
-        Camera();
+        Camera(bool isMainCamera = false);
         ~Camera();
 
     public:
         glm::mat4 getViewMatrix() const;
         glm::mat4 getProjectionMatrix() const;
         glm::mat4 getOrthoProjectionMatrix() const;
+
+        void renderToTexture();
 
     public:
         RenderTexture targetTexture;
@@ -95,17 +97,12 @@ namespace Engine
 
     public:
         virtual const std::vector<float> getData() const;
-        int internal_engine_getIndex() const;
-        void internal_engine_setIndex(int i);
 
     public:
         glm::vec3 ambient;
         glm::vec3 diffuse;
         glm::vec3 specular;
         float intensity;
-
-    private:
-        int m_Index;
     };
 
     class DirectionalLight : public Light
@@ -119,7 +116,7 @@ namespace Engine
         const std::vector<float> getData() const override;
 
     public:
-        static const uint32_t numData = 16;
+        static const uint32_t NUM_DATA = 16;
     };
 
     class PointLight : public Light
@@ -134,7 +131,7 @@ namespace Engine
     public:
         float range;
 
-        static const uint32_t numData = 20;
+        static const uint32_t NUM_DATA = 20;
     };
 
     class SpotLight : public Light
@@ -152,7 +149,7 @@ namespace Engine
         float outerCutoff;
         float range;
 
-        static const uint32_t numData = 24;
+        static const uint32_t NUM_DATA = 28;
     };
 
     ///

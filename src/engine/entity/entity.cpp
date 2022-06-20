@@ -53,7 +53,6 @@ namespace Engine
     }
     Entity::~Entity()
     {
-        std::cout << "destroying Entity " << this << std::endl;
         activeScene->removeEntity(this);
         for (auto c : m_Components)
             delete c;
