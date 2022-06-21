@@ -11,7 +11,7 @@ namespace Engine
 {
     std::vector<Material *> Material::s_LoadedMaterials;
 
-    Material::Material(const std::string &name) : name(name), hasDiffuseTexture(true), hasSpecularTexture(true)
+    Material::Material(const std::string &name) : name(name)
     {
         boost::property_tree::ptree mat;
         boost::property_tree::read_json(PathUtil::FULL_PATH + PathUtil::MATERIAL_PATH + name + ".mat.json", mat);
@@ -25,14 +25,20 @@ namespace Engine
         std::string diffusePath = mat.get<std::string>("diffuse");
         std::string specularPath = mat.get<std::string>("specular");
 
-        if (diffusePath != "")
-            loadMaterialTexture(diffusePath, TextureType::DIFFUSE, this);
-        else
-            hasDiffuseTexture = false;
-        if (specularPath != "")
-            loadMaterialTexture(specularPath, TextureType::SPECULAR, this);
-        else
-            hasSpecularTexture = false;
+        if (diffusePath != "RenderTexture")
+        {
+            if (diffusePath != "")
+                loadMaterialTexture(diffusePath, TextureType::DIFFUSE, this);
+            else
+                hasDiffuseTexture = false;
+        }
+        if (specularPath != "RenderTexture")
+        {
+            if (specularPath != "")
+                loadMaterialTexture(specularPath, TextureType::SPECULAR, this);
+            else if (specularPath != "RenderTexture")
+                hasSpecularTexture = false;
+        }
 
         shader = Shader::getShaderByName(mat.get<std::string>("shader"));
 
@@ -47,14 +53,23 @@ namespace Engine
     }
     void Material::loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
     {
-        for (Texture2D tex : loadedTextures)
-            if (tex.getPath() == path)
+        // check if texture already is loaded
+        for (uint32_t i = 0; i < Texture2D::s_LoadedTextures.size(); i++)
+        {
+            // retrieve texture from list of loaded textures
+            auto front = Texture2D::s_LoadedTextures.begin();
+            std::advance(front, i);
+            Texture2D *tex = &(*front);
+
+            if (tex->getPath() == path)
             {
                 material->textures.push_back(tex);
                 return;
             }
+        }
+        // otherwise create a new one
         Texture2D tex = Texture2D::loadFromFile(path, texType);
-        material->textures.push_back(tex);
-        loadedTextures.push_back(tex);
+        Texture2D::s_LoadedTextures.push_back(tex);
+        material->textures.push_back(&(Texture2D::s_LoadedTextures.back()));
     }
 }

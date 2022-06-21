@@ -8,7 +8,7 @@ namespace Engine
     class Entity
     {
     public:
-        Entity(const glm::vec3 &pos = glm::vec3(0.0f), const glm::vec3 &rot = glm::vec3(0.0f), const glm::vec3 &scl = glm::vec3(1.0f));
+        Entity(const std::string &name, const glm::vec3 &pos = glm::vec3(0.0f), const glm::vec3 &rot = glm::vec3(0.0f), const glm::vec3 &scl = glm::vec3(1.0f));
         Entity(const Entity &entity);
         ~Entity();
 
@@ -27,21 +27,10 @@ namespace Engine
             return nullptr;
         }
 
-        template <typename T>
-        inline T *addComponent()
+        template <typename T, typename... Ts>
+        inline T *addComponent(Ts... args)
         {
-            T *component = new T();
-            if (dynamic_cast<Component *>(component))
-            {
-                component->entity = this;
-                m_Components.push_back(component);
-            }
-            return component;
-        }
-
-        template <typename T>
-        inline T *addComponent(T *component)
-        {
+            T *component = new T(args...);
             if (dynamic_cast<Component *>(component))
             {
                 component->entity = this;

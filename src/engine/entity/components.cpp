@@ -5,7 +5,6 @@
 #include "engine.hpp"
 #include "util/util.hpp"
 #include "renderer/material/shader/shader.hpp"
-#include "util/vertices.hpp"
 #include "renderer/texture/texture.hpp"
 #include "time/time.hpp"
 #include "input/input.hpp"
@@ -52,19 +51,29 @@ namespace Engine
     ///
     ///
     ///
-    Camera::Camera(bool isMainCamera) : targetTexture(activeWindow->width, activeWindow->height), fov(75.f)
+    Camera::Camera(bool isMainCamera) : fov(75.f)
     {
         if (isMainCamera)
+        {
             activeScene->mainCamera = this;
+            targetTexture = &activeWindow->getWindowRenderTexture();
+        }
         else
+        {
             activeScene->addCamera(this);
+        }
     }
     Camera::~Camera()
     {
         if (activeScene->mainCamera == this)
+        {
             activeScene->mainCamera = nullptr;
+        }
         else
+        {
             activeScene->removeCamera(this);
+            delete targetTexture;
+        }
     }
     glm::mat4 Camera::getViewMatrix() const
     {
@@ -72,16 +81,16 @@ namespace Engine
     }
     glm::mat4 Camera::getProjectionMatrix() const
     {
-        return glm::perspective<float>(glm::radians(fov), float(activeWindow->width) / float(activeWindow->height), 0.01f, 100.0f);
+        return glm::perspective<float>(glm::radians(fov), float(targetTexture->width) / float(targetTexture->height), 0.01f, 100.0f);
     }
     glm::mat4 Camera::getOrthoProjectionMatrix() const
     {
-        return glm::ortho<float>(0.f, activeWindow->width, 0.f, activeWindow->height);
+        return glm::ortho<float>(0.f, targetTexture->width, 0.f, targetTexture->height);
     }
     void Camera::renderToTexture()
     {
-        targetTexture.bindFramebuffer();
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0);
+        targetTexture->bindFramebuffer();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         Renderer::shaderUniformbufferInput.setData(glm::value_ptr(entity->transform.position), sizeof(glm::vec3), 0);
@@ -92,7 +101,6 @@ namespace Engine
         };
         Renderer::shaderUniformbufferMatrices.setData(&matrices[0], sizeof(matrices), 0);
 
-        glActiveTexture(GL_TEXTURE0);
         if (activeScene->skybox)
             activeScene->skybox->draw();
 
@@ -113,16 +121,18 @@ namespace Engine
 
             for (uint32_t i = 0; i < material->textures.size(); i++)
             {
+                auto tex = material->textures[i];
+
                 glActiveTexture(GL_TEXTURE0 + i);
 
-                if (material->textures[i].getType() == TextureType::DIFFUSE)
+                if (tex->getType() == TextureType::DIFFUSE)
                     material->shader->setInt("_Material.diffuseTexture", i);
-                else if (material->textures[i].getType() == TextureType::SPECULAR)
+                else if (tex->getType() == TextureType::SPECULAR)
                     material->shader->setInt("_Material.specularTexture", i);
-                if (material->textures[i].colorFormat == GL_RGBA)
+                if (tex->colorFormat == GL_RGBA)
                     material->shader->setBool("_Material.hasTransparency", true);
 
-                material->textures[i].bind();
+                tex->bind();
             }
 
             material->shader->setVec3("_Material.diffuseColor", material->diffuseColor);
@@ -133,15 +143,16 @@ namespace Engine
 
             renderer->drawMesh();
         }
-        targetTexture.unbindFramebuffer();
+        targetTexture->unbindFramebuffer();
     }
 
     ///
     ///
     ///
-    MeshRenderer::MeshRenderer()
+    MeshRenderer::MeshRenderer(bool addToScene)
     {
-        activeScene->addMeshRenderer(this);
+        if (addToScene)
+            activeScene->addMeshRenderer(this);
     }
     MeshRenderer::~MeshRenderer()
     {

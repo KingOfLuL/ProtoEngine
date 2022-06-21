@@ -13,7 +13,7 @@ namespace Engine
 {
     std::map<std::string, Entity *> loadedModels;
 
-    Entity::Entity(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name("NULL"), transform(pos, rot, scl)
+    Entity::Entity(const std::string &name, const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name(name), transform(pos, rot, scl)
     {
         transform.entity = this;
         activeScene->addEntity(this);
@@ -31,18 +31,27 @@ namespace Engine
         {
             auto c_camera = dynamic_cast<Camera *>(component);
             if (c_camera)
-                addComponent(new Camera(*c_camera));
+                addComponent<Camera>(*c_camera);
 
-            auto c_light = dynamic_cast<Light *>(component);
-            if (c_light)
-                addComponent(new Light(*c_light));
+            auto c_dirLight = dynamic_cast<DirectionalLight *>(component);
+            if (c_dirLight)
+                addComponent<DirectionalLight>(*c_dirLight);
+
+            auto c_PointLight = dynamic_cast<PointLight *>(component);
+            if (c_PointLight)
+                addComponent<PointLight>(*c_PointLight);
+
+            auto c_SpotLight = dynamic_cast<SpotLight *>(component);
+            if (c_SpotLight)
+                addComponent<SpotLight>(*c_SpotLight);
 
             auto c_meshRenderer = dynamic_cast<MeshRenderer *>(component);
             if (c_meshRenderer)
-                addComponent(new MeshRenderer(*c_meshRenderer));
+                addComponent<MeshRenderer>(*c_meshRenderer);
+
             auto c_behavior = dynamic_cast<Behavior *>(component);
             if (c_behavior)
-                addComponent(new Behavior(*c_behavior));
+                addComponent<Behavior>(*c_behavior);
         }
         for (auto c : entity.children)
         {
@@ -92,13 +101,13 @@ namespace Engine
         }
         aiNode *rootNode = scene->mRootNode;
 
-        Entity *rootEntity = new Entity;
+        Entity *rootEntity = new Entity(rootNode->mName.C_Str());
         Entity *entity = rootEntity;
         entity->name = rootNode->mName.C_Str();
 
         if (rootNode->mNumChildren > 1)
         {
-            entity = new Entity;
+            entity = new Entity(rootNode->mName.C_Str());
             entity->parent = rootEntity;
             rootEntity->children.push_back(entity);
         }
@@ -173,7 +182,7 @@ namespace Engine
                 }
                 else
                 {
-                    entity = new Entity;
+                    entity = new Entity(node->mName.C_Str());
                     entity->parent = rootEntity;
                     rootEntity->children.push_back(entity);
 

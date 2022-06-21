@@ -19,7 +19,6 @@ namespace Engine
 
     private:
         Cubemap m_Cubemap;
-        Shader m_Shader;
         Vertexbuffer m_Vertexbuffer;
     };
 }

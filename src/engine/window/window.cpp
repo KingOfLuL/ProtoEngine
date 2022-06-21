@@ -2,13 +2,14 @@
 
 #include "window.hpp"
 #include "engine.hpp"
-#include "util/vertices.hpp"
 #include "input/input.hpp"
 
 namespace Engine
 {
     Window::Window(const std::string &name, int w, int h)
+        : width(w), height(h)
     {
+        glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -17,20 +18,8 @@ namespace Engine
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 
-        bool fullscreen = mode->width == w && mode->height == h;
-
+        bool fullscreen = width == mode->width && height == mode->height;
         glfwWindowHint(GLFW_DECORATED, !fullscreen);
-
-        if (fullscreen)
-        {
-            width = mode->width;
-            height = mode->height;
-        }
-        else
-        {
-            width = w;
-            height = h;
-        }
 
         m_Window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
         if (!m_Window)
@@ -53,22 +42,36 @@ namespace Engine
 
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 
-        shader = (new Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen"));
-        screen = Vertexbuffer(&QUAD_VERTICES[0], 4);
-        screen.addIndexbuffer(&QUAD_INDICES[0], 6);
+        const Vertex verts[] = {
+            Vertex({-1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}),
+            Vertex({-1.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}),
+            Vertex({1.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}),
+            Vertex({1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}),
+        };
+        const int indices[] = {0, 1, 3, 1, 2, 3};
+        m_Screen = Vertexbuffer(&verts[0], 4);
+        m_Screen.addIndexbuffer(&indices[0], 6);
+
+        Renderer::shaderScreen = new Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
+        m_WindowTexture = RenderTexture(width, height);
     }
-    void Window::drawToWindow(const RenderTexture &tex)
+    RenderTexture &Window::getWindowRenderTexture()
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        return m_WindowTexture;
+    }
+    void Window::drawToWindow()
+    {
+        Renderer::shaderScreen->use();
+
+        glActiveTexture(GL_TEXTURE0);
+        m_WindowTexture.bindTexture();
+
         glDisable(GL_DEPTH_TEST);
-        shader->use();
-        tex.bindTexture();
-        screen.draw();
+        m_Screen.draw();
         glEnable(GL_DEPTH_TEST);
     }
     Window::~Window()
     {
-        delete shader;
     }
     void Window::sizeCallback(int width, int height)
     {

@@ -27,6 +27,7 @@ namespace Engine
         Transform(const glm::vec3 &pos = glm::vec3(0.0f), const glm::vec3 &rot = glm::vec3(0.0f), const glm::vec3 &scl = glm::vec3(1.0f));
 
     public:
+        // TODO: have (working) local and global values
         glm::vec3 position;
         glm::vec3 scale;
         glm::vec3 rotation;
@@ -43,7 +44,7 @@ namespace Engine
 
     ///
     ///
-    /// TODO: Have every camera render to an assigned RenderTexture, lastly render the main camera to the screen RenderTexture
+    /// TODO: Add rendering layers (certain cameras only render certain layers)
     class Camera : public Component
     {
     public:
@@ -58,7 +59,7 @@ namespace Engine
         void renderToTexture();
 
     public:
-        RenderTexture targetTexture;
+        RenderTexture *targetTexture;
         float fov;
     };
 
@@ -68,7 +69,7 @@ namespace Engine
     class MeshRenderer : public Component
     {
     public:
-        MeshRenderer();
+        MeshRenderer(bool addToScene = true);
         MeshRenderer(const MeshRenderer &other);
         ~MeshRenderer();
 

@@ -112,18 +112,40 @@ int main()
     Scene scene("Game");
     Engine::init(scene, "Engine", 1920, 1080);
 
+    const std::vector<Vertex> backScreenVerts = {
+        Vertex({-0.4, 0.9, 0.0}, {0, 0, 0}, {0.f, 1.f}, {1.f, 1.f, 1.f}),
+        Vertex({-0.4, 0.2, 0.0}, {0, 0, 0}, {0.f, 0.f}, {1.f, 1.f, 1.f}),
+        Vertex({0.4, 0.2, 0.0}, {0, 0, 0}, {1.f, 0.f}, {1.f, 1.f, 1.f}),
+        Vertex({0.4, 0.9, 0.0}, {0, 0, 0}, {1.f, 1.f}, {1.f, 1.f, 1.f}),
+    };
+    const std::vector<uint32_t> backScreenIndices = {0, 1, 3, 1, 2, 3};
+
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
-    Entity *camera = new Entity;
-    camera->addComponent(new Camera(true));
+    Shader backScreenShader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "BackScreen");
+
+    Entity *camera = new Entity("Main Camera");
+    camera->addComponent<Camera>(true);
     camera->addComponent<PlayerMovement>();
 
-    Entity *flashlight = new Entity;
-    flashlight->addComponent(new SpotLight(glm::vec3(0.f), glm::vec3(1, 0, 1), glm::vec3(1, 0, 1), 3, 20, 30, 45));
+    Entity *backScreen = new Entity("BackScreen");
+    auto r = backScreen->addComponent<MeshRenderer>();
+    r->setMesh(backScreenVerts, backScreenIndices);
+    r->material = new Material("BackScreen");
+
+    Entity *backCamera = new Entity("Back Camera");
+    auto bc = backCamera->addComponent<Camera>();
+    backCamera->addComponent<PlayerMovement>();
+    bc->targetTexture = new RenderTexture(1280, 720);
+
+    r->material->textures.push_back(bc->targetTexture->getTexture());
+
+    Entity *flashlight = new Entity("Flashlight");
+    flashlight->addComponent<SpotLight>(glm::vec3(0.f), glm::vec3(1, 0, 1), glm::vec3(1, 0, 1), 3, 20, 30, 45);
     flashlight->addComponent<PlayerMovement>();
 
-    Entity *light = new Entity;
-    light->addComponent(new PointLight(glm::vec3(0.f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 3, 45));
+    Entity *light = new Entity("Light");
+    light->addComponent<PointLight>(glm::vec3(0.f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 2, 45);
 
     Entity *box = Entity::loadModel("Box.fbx");
     box->transform.position = glm::vec3(-10, 0, 0);
@@ -149,8 +171,8 @@ int main()
     Entity *window4 = Entity::loadModel("Window.fbx");
     window4->transform.position = glm::vec3(0, 5, 25);
 
-    Entity *sun = new Entity;
-    sun->addComponent(new DirectionalLight(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1));
+    Entity *sun = new Entity("Sun");
+    sun->addComponent<DirectionalLight>(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1);
     sun->addComponent<Rotate>();
 
     Engine::run();

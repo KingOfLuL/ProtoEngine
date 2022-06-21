@@ -1,0 +1,12 @@
+{
+    "shader": "BackScreen",
+    "diffuse": "RenderTexture",
+    "specular": "",
+    "diffuseColor": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "shininess": 32,
+    "twoSided": false
+}

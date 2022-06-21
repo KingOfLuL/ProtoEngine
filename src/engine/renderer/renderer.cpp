@@ -5,7 +5,6 @@
 #include "engine.hpp"
 #include "glad/glad.h"
 #include "util/util.hpp"
-#include "util/vertices.hpp"
 #include "time/time.hpp"
 
 #include <stb/stb_image.h>
@@ -14,6 +13,8 @@ namespace Engine::Renderer
 {
     Shader *shaderLit;
     Shader *shaderBounds;
+    Shader *shaderCubemap;
+    Shader *shaderScreen;
 
     Uniformbuffer shaderUniformbufferMatrices;
     Uniformbuffer shaderUniformbufferLights;
@@ -45,6 +46,7 @@ namespace Engine::Renderer
         glPolygonOffset(-1.0f, -1.0f);
 
         shaderLit = new Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit");
+        shaderCubemap = new Shader("vertex/cubemap.vs.glsl", "fragment/cubemap.fs.glsl", "Cubemap");
         shaderBounds = new Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds");
         shaderBounds->addGeometryShader("geometry/bounds.gs.glsl");
 
@@ -133,6 +135,7 @@ namespace Engine::Renderer
     }
     void render()
     {
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0);
         updateLights();
 
         float shaderData[] = {
@@ -150,6 +153,6 @@ namespace Engine::Renderer
         }
         activeScene->mainCamera->renderToTexture();
 
-        activeWindow->drawToWindow(activeScene->mainCamera->targetTexture);
+        activeWindow->drawToWindow();
     }
 }

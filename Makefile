@@ -18,11 +18,17 @@ PCH = lib/libs.hpp
 debug:
 	$(CC) $(SRC) $(CFLAGS) $(LIBS_DYN) -o $(BIN)/$(NAME)
 
+debug_run: debug
+	./bin/Engine
+
 
 build:
 	rm -r -f $(BUILD)/$(RES); \
 	cp -r $(RES) $(BUILD)/$(RES); \
 	$(CC) $(SRC) $(CFLAGS) $(LIBS_STATIC) -o $(BUILD)/$(NAME);
+
+build_run: build
+	./build/Engine
 
 
 pch:
@@ -37,4 +43,4 @@ glad_shared:
 	cd lib/glad; \
 	make shared;
 
-.PHONY: build debug
+.PHONY: build debug debug_run build_run

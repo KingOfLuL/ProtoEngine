@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-    std::vector<Texture2D> loadedTextures;
+    std::list<Texture2D> Texture2D::s_LoadedTextures;
 
     void Texture::setParameter(GLenum parameter, GLenum value)
     {
@@ -116,7 +116,7 @@ namespace Engine
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
-    
+
     RenderTexture::RenderTexture(int w, int h)
     {
         m_GLTextureType = GL_TEXTURE_2D;
@@ -125,14 +125,19 @@ namespace Engine
         height = h;
         colorFormat = GL_RGB;
 
-        glGenTextures(1, &m_ID);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, NULL);
-        setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-        setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+        m_Texture = new Texture2D(NULL, width, height, colorFormat, TextureType::RENDERTEXTURE);
+        m_Texture->setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+        m_Texture->setTextureFilterMode(GL_LINEAR, GL_LINEAR);
 
         m_Framebuffer = Framebuffer(width, height, this);
+    }
+    RenderTexture::~RenderTexture()
+    {
+        delete m_Texture;
+    }
+    Texture2D *RenderTexture::getTexture()
+    {
+        return m_Texture;
     }
     void RenderTexture::bindFramebuffer() const
     {
@@ -144,7 +149,6 @@ namespace Engine
     }
     void RenderTexture::bindTexture() const
     {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_ID);
+        m_Texture->bind();
     }
 }

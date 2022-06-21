@@ -4,6 +4,7 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 
+#include "entity/components.hpp"
 #include "renderer/texture/texture.hpp"
 #include "renderer/material/shader/shader.hpp"
 
@@ -13,8 +14,6 @@ namespace Engine
     {
     public:
         int width, height;
-        Shader *shader;
-        Vertexbuffer screen;
 
     public:
         Window() = default;
@@ -22,11 +21,14 @@ namespace Engine
         ~Window();
 
     public:
-        void drawToWindow(const RenderTexture &tex);
+        void drawToWindow();
+        RenderTexture &getWindowRenderTexture();
         GLFWwindow *getGLFWwindow() const;
 
     private:
         GLFWwindow *m_Window;
+        Vertexbuffer m_Screen;
+        RenderTexture m_WindowTexture;
 
     private:
         void sizeCallback(int width, int height);

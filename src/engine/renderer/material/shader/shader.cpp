@@ -165,6 +165,7 @@ namespace Engine
         for (Shader *shader : s_Shaders)
             if (shader->name == name)
                 return shader;
+        std::cout << name << '\n';
         return nullptr;
     }
 }

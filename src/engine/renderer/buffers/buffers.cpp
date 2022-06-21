@@ -42,7 +42,7 @@ namespace Engine
         glGenVertexArrays(1, &m_ID);
         glGenBuffers(1, &m_BufferID);
 
-        glBindVertexArray(m_ID);
+        bind();
 
         glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
         glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(Vertex), data, GL_STATIC_DRAW);
@@ -60,13 +60,13 @@ namespace Engine
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
-        glBindVertexArray(0);
+        unbind();
     }
     void Vertexbuffer::addIndexbuffer(const void *indexBufferData, int indexBufferDataCount)
     {
-        glBindVertexArray(m_ID);
+        bind();
         m_IndexBuffer = Indexbuffer(indexBufferData, indexBufferDataCount);
-        glBindVertexArray(0);
+        unbind();
         m_HasIndexbuffer = true;
     }
     void Vertexbuffer::bind() const
@@ -81,7 +81,7 @@ namespace Engine
     {
         bind();
         if (m_HasIndexbuffer)
-            glDrawElements(GL_TRIANGLES, getIndicesCount(), GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, m_IndexBuffer.getCount(), GL_UNSIGNED_INT, 0);
         else
             glDrawArrays(GL_TRIANGLES, 0, m_Count);
         unbind();
@@ -98,10 +98,12 @@ namespace Engine
     }
     void Vertexbuffer::setData(const void *data, int dataCount)
     {
+        m_Count = dataCount;
+
         glBindVertexArray(m_ID);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
-        glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(Vertex), data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, m_Count * sizeof(Vertex), data, GL_STATIC_DRAW);
     }
 
     Renderbuffer::Renderbuffer(int w, int h, GLenum storageType)
@@ -118,7 +120,7 @@ namespace Engine
         glGenFramebuffers(1, &m_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture->getID(), 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture->getTexture()->getID(), 0);
 
         m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Renderbuffer.getID());

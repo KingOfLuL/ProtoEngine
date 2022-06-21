@@ -4,7 +4,7 @@
 #include "glad/glad.h"
 #include "renderer/buffers/buffers.hpp"
 #include "renderer/material/material.hpp"
-#include <vector>
+#include <list>
 #include <assimp/material.h>
 
 namespace Engine
@@ -14,6 +14,7 @@ namespace Engine
         DIFFUSE,
         SPECULAR,
         NORMAL,
+        RENDERTEXTURE,
     };
 
     class Texture
@@ -44,33 +45,39 @@ namespace Engine
     {
     public:
         Texture2D() = default;
-        Texture2D(void *data, int w, int h, GLenum colFormat, const TextureType &texType = TextureType::DIFFUSE, const std::string &path = "NULL");
-
-        static Texture2D loadFromFile(const std::string &path, const TextureType &type);
+        Texture2D(void *data, int w, int h, GLenum colFormat, const TextureType &texType = TextureType::DIFFUSE, const std::string &path = "");
 
     public:
         std::string getPath() const;
         TextureType getType() const;
 
+        static Texture2D loadFromFile(const std::string &path, const TextureType &type);
+
+    public:
+        static std::list<Texture2D> s_LoadedTextures;
+
     private:
         TextureType m_Type;
-        std::string m_Path;
+        std::string m_Path = "";
     };
 
-    // TODO: make RenderTexture usable as Material Textures
     class RenderTexture : public Texture
     {
     public:
         RenderTexture() = default;
         RenderTexture(int w, int h);
+        ~RenderTexture() override;
 
     public:
         void bindFramebuffer() const;
         void unbindFramebuffer() const;
         void bindTexture() const;
 
+        Texture2D *getTexture();
+
     private:
         Framebuffer m_Framebuffer;
+        Texture2D *m_Texture = nullptr;
     };
 
     class Cubemap : public Texture
@@ -82,7 +89,5 @@ namespace Engine
     private:
         std::array<std::string, 6> m_FacePaths;
     };
-
-    extern std::vector<Texture2D> loadedTextures;
 }
 #endif // SRC_ENGINE_RENDERER_TEXTURE_TEXTURE

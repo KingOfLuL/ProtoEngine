@@ -18,10 +18,10 @@ namespace Engine
 
     public:
         std::string name;
-        Shader *shader;
-        std::vector<Texture2D> textures;
-        bool hasDiffuseTexture;
-        bool hasSpecularTexture;
+        Shader *shader = nullptr;
+        std::vector<Texture2D *> textures;
+        bool hasDiffuseTexture = true;
+        bool hasSpecularTexture = true;
         glm::vec3 diffuseColor = glm::vec3(1.f);
         float shininess = 32.f;
         bool twoSided = false;
