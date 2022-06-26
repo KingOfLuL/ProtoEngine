@@ -53,9 +53,9 @@ namespace Engine
         m_Screen.addIndexbuffer(&indices[0], 6);
 
         Renderer::shaderScreen = new Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
-        m_WindowTexture = RenderTexture(width, height);
+        m_WindowTexture = new RenderTexture(width, height);
     }
-    RenderTexture &Window::getWindowRenderTexture()
+    RenderTexture *Window::getWindowRenderTexture() const
     {
         return m_WindowTexture;
     }
@@ -64,7 +64,7 @@ namespace Engine
         Renderer::shaderScreen->use();
 
         glActiveTexture(GL_TEXTURE0);
-        m_WindowTexture.bindTexture();
+        m_WindowTexture->bindTexture();
 
         glDisable(GL_DEPTH_TEST);
         m_Screen.draw();
@@ -72,6 +72,7 @@ namespace Engine
     }
     Window::~Window()
     {
+        delete m_WindowTexture;
     }
     void Window::sizeCallback(int width, int height)
     {
@@ -87,12 +88,12 @@ namespace Engine
     void Window::mouse_callback(GLFWwindow *window, double xOffset, double yOffset)
     {
         (void)window;
-        Input::internal_engine_updateMouseMovement(xOffset, yOffset);
+        Input::internal_updateMouseMovement(xOffset, yOffset);
     }
     void Window::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
     {
         (void)window;
-        Input::internal_engine_keyCallback(key, scancode, action, mods);
+        Input::internal_keyCallback(key, scancode, action, mods);
     }
     GLFWwindow *Window::getGLFWwindow() const
     {

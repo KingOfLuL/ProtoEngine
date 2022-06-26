@@ -11,7 +11,7 @@
 
 namespace Engine
 {
-    std::map<std::string, Entity *> loadedModels;
+    std::map<std::string, Entity *> loadedModels; // TODO: improve
 
     Entity::Entity(const std::string &name, const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name(name), transform(pos, rot, scl)
     {
@@ -68,6 +68,11 @@ namespace Engine
 
         for (auto c : children)
             delete c;
+    }
+    void Entity::setParent(Entity *parent)
+    {
+        this->parent = parent;
+        parent->children.push_back(this);
     }
     void Entity::forEachChildren(const std::function<void(Entity *)> &function)
     {

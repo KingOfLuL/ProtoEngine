@@ -14,8 +14,8 @@ namespace Engine::Input
     bool keyIsDown(int key);
 
     // this function gets called when the mouse is moved
-    void internal_engine_updateMouseMovement(float xOff, float yOff);
-    void internal_engine_keyCallback(int key, int scancode, int action, int mods);
+    void internal_updateMouseMovement(float xOff, float yOff);
+    void internal_keyCallback(int key, int scancode, int action, int mods);
 }
 namespace Engine::Keys
 {

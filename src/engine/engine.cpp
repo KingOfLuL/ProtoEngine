@@ -21,7 +21,7 @@ namespace Engine
         activeScene = &scene;
 
         stbi_set_flip_vertically_on_load(false);
-        internal_engine_util_init();
+        internal_util_init();
 
         activeWindow = new Window(windowName, windowW, windowH);
 

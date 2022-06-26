@@ -8,6 +8,7 @@ namespace Engine::Time
     float time = 0.f;
 
     float lastFrame = 0;
+
     void init()
     {
         Engine::onRenderUpdate += []()

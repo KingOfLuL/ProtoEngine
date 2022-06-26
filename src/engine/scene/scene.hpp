@@ -26,8 +26,8 @@ namespace Engine
         void removeBehavior(Behavior *behavior);
         void addCamera(Camera *camera);
         void removeCamera(Camera *camera);
-        void update();
         void start();
+        void update();
         // sorts renderers before returning them
         const std::vector<MeshRenderer *> &getRenderers();
         const std::vector<Camera *> &getCameras() const;

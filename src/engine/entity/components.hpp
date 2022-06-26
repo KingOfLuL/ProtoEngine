@@ -39,12 +39,13 @@ namespace Engine
     public:
         glm::mat4 getTransformationMatrix() const;
         glm::vec3 getWorldPosition() const;
+        glm::vec3 getWorldFront() const;
         void update();
     };
 
     ///
     ///
-    /// TODO: Add rendering layers (certain cameras only render certain layers)
+    ///
     class Camera : public Component
     {
     public:
@@ -54,12 +55,12 @@ namespace Engine
     public:
         glm::mat4 getViewMatrix() const;
         glm::mat4 getProjectionMatrix() const;
-        glm::mat4 getOrthoProjectionMatrix() const;
 
         void renderToTexture();
 
     public:
         RenderTexture *targetTexture;
+        std::vector<std::string> layers = {"Default"};
         float fov;
     };
 

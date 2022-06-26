@@ -22,13 +22,13 @@ namespace Engine
 
     public:
         void drawToWindow();
-        RenderTexture &getWindowRenderTexture();
+        RenderTexture *getWindowRenderTexture() const;
         GLFWwindow *getGLFWwindow() const;
 
     private:
         GLFWwindow *m_Window;
         Vertexbuffer m_Screen;
-        RenderTexture m_WindowTexture;
+        RenderTexture *m_WindowTexture;
 
     private:
         void sizeCallback(int width, int height);

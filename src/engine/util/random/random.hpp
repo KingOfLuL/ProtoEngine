@@ -3,7 +3,7 @@
 
 namespace Engine::Random
 {
-    void internal_engine_init();
+    void internal_init();
 
     int rangeI(int min, int max);
     float rangeF(float min, float max);

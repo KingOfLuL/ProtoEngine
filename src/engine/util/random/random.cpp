@@ -15,7 +15,7 @@ namespace Engine::Random
     typedef std::uniform_real_distribution<double>::param_type doubleParamType;
     typedef std::uniform_int_distribution<int>::param_type intParamType;
 
-    void internal_engine_init()
+    void internal_init()
     {
         mt = std::mt19937(rd());
     }

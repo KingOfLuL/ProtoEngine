@@ -20,11 +20,11 @@ namespace Engine
             func();
     }
 
-    void internal_engine_util_init()
+    void internal_util_init()
     {
         using namespace PathUtil;
 
-        Random::internal_engine_init();
+        Random::internal_init();
 
         FULL_PATH = std::filesystem::current_path().string();
         std::replace(FULL_PATH.begin(), FULL_PATH.end(), char(92), '/');

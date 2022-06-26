@@ -116,7 +116,6 @@ namespace Engine
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
-
     RenderTexture::RenderTexture(int w, int h)
     {
         m_GLTextureType = GL_TEXTURE_2D;
@@ -125,7 +124,7 @@ namespace Engine
         height = h;
         colorFormat = GL_RGB;
 
-        m_Texture = new Texture2D(NULL, width, height, colorFormat, TextureType::RENDERTEXTURE);
+        m_Texture = new Texture2D(NULL, width, height, colorFormat);
         m_Texture->setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
         m_Texture->setTextureFilterMode(GL_LINEAR, GL_LINEAR);
 
@@ -135,7 +134,7 @@ namespace Engine
     {
         delete m_Texture;
     }
-    Texture2D *RenderTexture::getTexture()
+    Texture2D *RenderTexture::getTexture() const
     {
         return m_Texture;
     }

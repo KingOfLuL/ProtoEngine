@@ -39,11 +39,17 @@ namespace Engine
             return entity->parent->transform.getTransformationMatrix() * glm::vec4(position, 1.f);
         return position;
     }
+    glm::vec3 Transform::getWorldFront() const
+    {
+        if (entity->parent)
+            return entity->parent->transform.getTransformationMatrix() * glm::vec4(localFront, 0.f);
+        return localFront;
+    }
     void Transform::update()
     {
-        localFront = glm::vec3(sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.z)),
-                               sin(glm::radians(rotation.z)),
-                               cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.z)));
+        localFront = glm::vec3(glm::sin(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.z)),
+                               glm::sin(glm::radians(rotation.z)),
+                               glm::cos(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.z)));
         localRight = glm::normalize(glm::cross(localFront, {0.0f, 1.0f, 0.0f}));
         localUp = glm::normalize(glm::cross(localRight, localFront));
     }
@@ -56,7 +62,7 @@ namespace Engine
         if (isMainCamera)
         {
             activeScene->mainCamera = this;
-            targetTexture = &activeWindow->getWindowRenderTexture();
+            targetTexture = activeWindow->getWindowRenderTexture();
         }
         else
         {
@@ -77,15 +83,13 @@ namespace Engine
     }
     glm::mat4 Camera::getViewMatrix() const
     {
-        return glm::lookAt(entity->transform.position, entity->transform.position + entity->transform.localFront, entity->transform.localUp);
+        return glm::lookAt(entity->transform.getWorldPosition(),
+                           entity->transform.getWorldPosition() + entity->transform.localFront,
+                           entity->transform.localUp);
     }
     glm::mat4 Camera::getProjectionMatrix() const
     {
         return glm::perspective<float>(glm::radians(fov), float(targetTexture->width) / float(targetTexture->height), 0.01f, 100.0f);
-    }
-    glm::mat4 Camera::getOrthoProjectionMatrix() const
-    {
-        return glm::ortho<float>(0.f, targetTexture->width, 0.f, targetTexture->height);
     }
     void Camera::renderToTexture()
     {
@@ -93,7 +97,7 @@ namespace Engine
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Renderer::shaderUniformbufferInput.setData(glm::value_ptr(entity->transform.position), sizeof(glm::vec3), 0);
+        Renderer::shaderUniformbufferInput.setData(glm::value_ptr(entity->transform.getWorldPosition()), sizeof(glm::vec3), 0);
 
         glm::mat4 matrices[] = {
             getViewMatrix(),
@@ -101,12 +105,15 @@ namespace Engine
         };
         Renderer::shaderUniformbufferMatrices.setData(&matrices[0], sizeof(matrices), 0);
 
-        if (activeScene->skybox)
+        if (activeScene->skybox && std::find(layers.begin(), layers.end(), "Default") != layers.end())
             activeScene->skybox->draw();
 
-        const auto &renderers = activeScene->getRenderers();
-        for (const auto &renderer : renderers)
+        for (const auto &renderer : activeScene->getRenderers())
         {
+            // check if the renderer is on the same layer as the camera
+            if (std::find(layers.begin(), layers.end(), renderer->entity->layer) == layers.end())
+                continue;
+
             Material *material = renderer->material;
 
             if (material->twoSided)
@@ -263,7 +270,6 @@ namespace Engine
             specular.z * intensity,
             true,
         };
-        ;
     }
 
     PointLight::PointLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity, float range)
@@ -278,9 +284,9 @@ namespace Engine
     const std::vector<float> PointLight::getData() const
     {
         return {
-            entity->transform.position.x,
-            entity->transform.position.y,
-            entity->transform.position.z,
+            entity->transform.getWorldPosition().x,
+            entity->transform.getWorldPosition().y,
+            entity->transform.getWorldPosition().z,
             0.f, // padding
             ambient.x * intensity,
             ambient.y * intensity,
@@ -317,13 +323,13 @@ namespace Engine
     const std::vector<float> SpotLight::getData() const
     {
         return {
-            entity->transform.position.x,
-            entity->transform.position.y,
-            entity->transform.position.z,
+            entity->transform.getWorldPosition().x,
+            entity->transform.getWorldPosition().y,
+            entity->transform.getWorldPosition().z,
             0.f, // padding
-            getDirection().x,
-            getDirection().y,
-            getDirection().z,
+            entity->transform.getWorldFront().x,
+            entity->transform.getWorldFront().y,
+            entity->transform.getWorldFront().z,
             0.f, // padding
             ambient.r * intensity,
             ambient.g * intensity,

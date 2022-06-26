@@ -140,6 +140,7 @@ namespace Engine
     }
     const std::vector<MeshRenderer *> &Scene::getRenderers()
     {
+        // TODO: don´t sort every frame; only when camera moves
         std::sort(m_Renderers.begin(), m_Renderers.end(),
                   [](MeshRenderer *a, MeshRenderer *b)
                   {

@@ -12,7 +12,9 @@ namespace Engine
         Entity(const Entity &entity);
         ~Entity();
 
+    public:
         void forEachChildren(const std::function<void(Entity *)> &function);
+        void setParent(Entity *parent);
         Entity *getChildByName(const std::string &name) const;
 
     public:
@@ -43,6 +45,7 @@ namespace Engine
 
     public:
         std::string name;
+        std::string layer = "Default";
         Transform transform; // not listed in components
         Entity *parent = nullptr;
         std::vector<Entity *> children;

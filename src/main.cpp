@@ -112,40 +112,40 @@ int main()
     Scene scene("Game");
     Engine::init(scene, "Engine", 1920, 1080);
 
-    const std::vector<Vertex> backScreenVerts = {
-        Vertex({-0.4, 0.9, 0.0}, {0, 0, 0}, {0.f, 1.f}, {1.f, 1.f, 1.f}),
-        Vertex({-0.4, 0.2, 0.0}, {0, 0, 0}, {0.f, 0.f}, {1.f, 1.f, 1.f}),
-        Vertex({0.4, 0.2, 0.0}, {0, 0, 0}, {1.f, 0.f}, {1.f, 1.f, 1.f}),
-        Vertex({0.4, 0.9, 0.0}, {0, 0, 0}, {1.f, 1.f}, {1.f, 1.f, 1.f}),
-    };
-    const std::vector<uint32_t> backScreenIndices = {0, 1, 3, 1, 2, 3};
-
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
-    Shader backScreenShader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "BackScreen");
+    Shader backScreenShader("vertex/screen.vs.glsl", "fragment/back.fs.glsl", "BackScreen");
 
     Entity *camera = new Entity("Main Camera");
-    camera->addComponent<Camera>(true);
+    camera->addComponent<Camera>(true)->layers.push_back("Back");
     camera->addComponent<PlayerMovement>();
 
     Entity *backScreen = new Entity("BackScreen");
-    auto r = backScreen->addComponent<MeshRenderer>();
-    r->setMesh(backScreenVerts, backScreenIndices);
+    backScreen->layer = "Back";
+    MeshRenderer *r = backScreen->addComponent<MeshRenderer>();
+    r->setMesh({
+                   Vertex({-0.4, 0.9, 0.0}, {0, 0, 0}, {0.f, 1.f}, {1.f, 1.f, 1.f}),
+                   Vertex({-0.4, 0.2, 0.0}, {0, 0, 0}, {0.f, 0.f}, {1.f, 1.f, 1.f}),
+                   Vertex({0.4, 0.2, 0.0}, {0, 0, 0}, {1.f, 0.f}, {1.f, 1.f, 1.f}),
+                   Vertex({0.4, 0.9, 0.0}, {0, 0, 0}, {1.f, 1.f}, {1.f, 1.f, 1.f}),
+               },
+               {0, 1, 3, 1, 2, 3});
     r->material = new Material("BackScreen");
 
-    Entity *backCamera = new Entity("Back Camera");
-    auto bc = backCamera->addComponent<Camera>();
+    Entity *backCamera = new Entity("Back Camera"); // not rendering back but front
     backCamera->addComponent<PlayerMovement>();
-    bc->targetTexture = new RenderTexture(1280, 720);
+    Camera *bc = backCamera->addComponent<Camera>();
+    bc->targetTexture = new RenderTexture(960, 540);
 
     r->material->textures.push_back(bc->targetTexture->getTexture());
 
     Entity *flashlight = new Entity("Flashlight");
     flashlight->addComponent<SpotLight>(glm::vec3(0.f), glm::vec3(1, 0, 1), glm::vec3(1, 0, 1), 3, 20, 30, 45);
-    flashlight->addComponent<PlayerMovement>();
+    flashlight->setParent(camera);
 
     Entity *light = new Entity("Light");
     light->addComponent<PointLight>(glm::vec3(0.f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 2, 45);
+    light->setParent(camera);
 
     Entity *box = Entity::loadModel("Box.fbx");
     box->transform.position = glm::vec3(-10, 0, 0);
