@@ -62,6 +62,7 @@ namespace Engine
     void Window::drawToWindow()
     {
         Renderer::shaderScreen->use();
+        glViewport(0, 0, width, height);
 
         glActiveTexture(GL_TEXTURE0);
         m_WindowTexture->bindTexture();

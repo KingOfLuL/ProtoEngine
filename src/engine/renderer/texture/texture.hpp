@@ -61,18 +61,20 @@ namespace Engine
         std::string m_Path = "";
     };
 
-    // TODO: fix rendering to smaller resolutions (currently shrinks and shifts the image)
-    class RenderTexture : public Texture
+    class RenderTexture
     {
     public:
         RenderTexture() = default;
         RenderTexture(int w, int h);
-        ~RenderTexture() override;
+        ~RenderTexture();
 
     public:
         void bindFramebuffer() const;
         void unbindFramebuffer() const;
         void bindTexture() const;
+
+        int getWidth() const;
+        int getHeight() const;
 
         Texture2D *getTexture() const;
 

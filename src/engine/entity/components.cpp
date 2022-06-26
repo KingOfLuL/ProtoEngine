@@ -22,11 +22,12 @@ namespace Engine
     glm::mat4 Transform::getTransformationMatrix() const
     {
         glm::mat4 matrix(1.0f);
+        glm::quat quat_rotation(glm::radians(rotation));
+        glm::mat4 rotationMatrix = glm::toMat4(quat_rotation);
+
         matrix = glm::translate(matrix, position);
         matrix = glm::scale(matrix, scale);
-        matrix = glm::rotate(matrix, glm::radians(rotation.x), GeomUtil::X_AXIS); // TODO: Figure out how rotations work (quaternions)
-        matrix = glm::rotate(matrix, glm::radians(rotation.y), GeomUtil::Y_AXIS);
-        matrix = glm::rotate(matrix, glm::radians(rotation.z), GeomUtil::Z_AXIS);
+        matrix *= rotationMatrix;
 
         if (entity->parent)
             matrix = entity->parent->transform.getTransformationMatrix() * matrix;
@@ -45,11 +46,17 @@ namespace Engine
             return entity->parent->transform.getTransformationMatrix() * glm::vec4(localFront, 0.f);
         return localFront;
     }
+    glm::vec3 Transform::getWorldUp() const
+    {
+        if (entity->parent)
+            return entity->parent->transform.getTransformationMatrix() * glm::vec4(localUp, 0.f);
+        return localUp;
+    }
     void Transform::update()
     {
-        localFront = glm::vec3(glm::sin(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.z)),
-                               glm::sin(glm::radians(rotation.z)),
-                               glm::cos(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.z)));
+        localFront = glm::vec3(glm::sin(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.x)),
+                               -glm::sin(glm::radians(rotation.x)),
+                               glm::cos(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.x)));
         localRight = glm::normalize(glm::cross(localFront, {0.0f, 1.0f, 0.0f}));
         localUp = glm::normalize(glm::cross(localRight, localFront));
     }
@@ -84,16 +91,20 @@ namespace Engine
     glm::mat4 Camera::getViewMatrix() const
     {
         return glm::lookAt(entity->transform.getWorldPosition(),
-                           entity->transform.getWorldPosition() + entity->transform.localFront,
-                           entity->transform.localUp);
+                           entity->transform.getWorldPosition() + entity->transform.getWorldFront(),
+                           entity->transform.getWorldUp());
     }
     glm::mat4 Camera::getProjectionMatrix() const
     {
-        return glm::perspective<float>(glm::radians(fov), float(targetTexture->width) / float(targetTexture->height), 0.01f, 100.0f);
+        return glm::perspective<float>(glm::radians(fov),
+                                       float(targetTexture->getWidth()) / float(targetTexture->getHeight()),
+                                       0.01f,
+                                       100.0f);
     }
     void Camera::renderToTexture()
     {
         targetTexture->bindFramebuffer();
+        glViewport(0, 0, targetTexture->getWidth(), targetTexture->getHeight());
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -213,7 +224,7 @@ namespace Engine
     {
         glm::mat4 transformation = entity->transform.getTransformationMatrix();
 
-        bounds.center = (transformation * glm::vec4(mesh.bounds.center, 1.0f));
+        bounds.center = transformation * glm::vec4(mesh.bounds.center, 1.0f);
         bounds.size = transformation * glm::vec4(mesh.bounds.size, 0.0f);
 
         mesh.vertexbuffer.draw();

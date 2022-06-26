@@ -40,6 +40,7 @@ namespace Engine
         glm::mat4 getTransformationMatrix() const;
         glm::vec3 getWorldPosition() const;
         glm::vec3 getWorldFront() const;
+        glm::vec3 getWorldUp() const;
         void update();
     };
 

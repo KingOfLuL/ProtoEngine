@@ -118,21 +118,23 @@ namespace Engine
     }
     RenderTexture::RenderTexture(int w, int h)
     {
-        m_GLTextureType = GL_TEXTURE_2D;
-
-        width = w;
-        height = h;
-        colorFormat = GL_RGB;
-
-        m_Texture = new Texture2D(NULL, width, height, colorFormat);
+        m_Texture = new Texture2D(NULL, w, h, GL_RGB);
         m_Texture->setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
         m_Texture->setTextureFilterMode(GL_LINEAR, GL_LINEAR);
 
-        m_Framebuffer = Framebuffer(width, height, this);
+        m_Framebuffer = Framebuffer(w, h, this);
     }
     RenderTexture::~RenderTexture()
     {
         delete m_Texture;
+    }
+    int RenderTexture::getWidth() const
+    {
+        return m_Texture->width;
+    }
+    int RenderTexture::getHeight() const
+    {
+        return m_Texture->height;
     }
     Texture2D *RenderTexture::getTexture() const
     {

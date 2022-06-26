@@ -14,9 +14,7 @@ struct Rotate : public Behavior
         update = [&]()
         {
             angle += Time::deltaTime * speed;
-            entity->transform.rotation = glm::vec3(glm::sin(glm::radians(angle)),
-                                                   0,
-                                                   glm::cos(glm::radians(angle)));
+            entity->transform.rotation.y = angle;
         };
     }
 };
@@ -82,11 +80,11 @@ private:
         float yOff = Input::MouseMovement.y * Time::deltaTime * MOUSE_SENSITIVITY;
 
         entity->transform.rotation.y += xOff;
-        entity->transform.rotation.z += yOff;
-        if (entity->transform.rotation.z > 89.0f)
-            entity->transform.rotation.z = 89.0f;
-        if (entity->transform.rotation.z < -89.0f)
-            entity->transform.rotation.z = -89.0f;
+        entity->transform.rotation.x -= yOff;
+        if (entity->transform.rotation.x > 89.0f)
+            entity->transform.rotation.x = 89.0f;
+        if (entity->transform.rotation.x < -89.0f)
+            entity->transform.rotation.x = -89.0f;
     }
     void processKeyboard(Direction dir)
     {
@@ -114,28 +112,31 @@ int main()
 
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
-    Shader backScreenShader("vertex/screen.vs.glsl", "fragment/back.fs.glsl", "BackScreen");
+    Shader backScreenShader("vertex/back.vs.glsl", "fragment/back.fs.glsl", "BackScreen");
 
     Entity *camera = new Entity("Main Camera");
     camera->addComponent<Camera>(true)->layers.push_back("Back");
     camera->addComponent<PlayerMovement>();
 
     Entity *backScreen = new Entity("BackScreen");
+    backScreen->transform.scale *= 0.2f;
+    backScreen->transform.position = glm::vec3(0, 0.7, 0);
     backScreen->layer = "Back";
     MeshRenderer *r = backScreen->addComponent<MeshRenderer>();
     r->setMesh({
-                   Vertex({-0.4, 0.9, 0.0}, {0, 0, 0}, {0.f, 1.f}, {1.f, 1.f, 1.f}),
-                   Vertex({-0.4, 0.2, 0.0}, {0, 0, 0}, {0.f, 0.f}, {1.f, 1.f, 1.f}),
-                   Vertex({0.4, 0.2, 0.0}, {0, 0, 0}, {1.f, 0.f}, {1.f, 1.f, 1.f}),
-                   Vertex({0.4, 0.9, 0.0}, {0, 0, 0}, {1.f, 1.f}, {1.f, 1.f, 1.f}),
+                   Vertex({-1, 1, 0.0}, {0, 0, 0}, {0.f, 1.f}, {1.f, 1.f, 1.f}),
+                   Vertex({-1, -1, 0.0}, {0, 0, 0}, {0.f, 0.f}, {1.f, 1.f, 1.f}),
+                   Vertex({1, -1, 0.0}, {0, 0, 0}, {1.f, 0.f}, {1.f, 1.f, 1.f}),
+                   Vertex({1, 1, 0.0}, {0, 0, 0}, {1.f, 1.f}, {1.f, 1.f, 1.f}),
                },
                {0, 1, 3, 1, 2, 3});
     r->material = new Material("BackScreen");
 
     Entity *backCamera = new Entity("Back Camera"); // not rendering back but front
-    backCamera->addComponent<PlayerMovement>();
+    backCamera->transform.rotation.y = 180;
+    backCamera->setParent(camera);
     Camera *bc = backCamera->addComponent<Camera>();
-    bc->targetTexture = new RenderTexture(960, 540);
+    bc->targetTexture = new RenderTexture(480, 270);
 
     r->material->textures.push_back(bc->targetTexture->getTexture());
 
@@ -143,18 +144,12 @@ int main()
     flashlight->addComponent<SpotLight>(glm::vec3(0.f), glm::vec3(1, 0, 1), glm::vec3(1, 0, 1), 3, 20, 30, 45);
     flashlight->setParent(camera);
 
-    Entity *light = new Entity("Light");
-    light->addComponent<PointLight>(glm::vec3(0.f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), 2, 45);
-    light->setParent(camera);
-
-    Entity *box = Entity::loadModel("Box.fbx");
-    box->transform.position = glm::vec3(-10, 0, 0);
-
     Entity *box2 = Entity::loadModel("Box.fbx");
     box2->transform.position = glm::vec3(10, 0, 0);
 
     Entity *tree = Entity::loadModel("Tree.fbx");
     tree->transform.position = glm::vec3(0, 0, 10);
+    tree->addComponent<Rotate>();
 
     Entity *backpack = Entity::loadModel("Backpack.fbx");
     backpack->transform.position = glm::vec3(0, 0, -10);
@@ -173,7 +168,7 @@ int main()
 
     Entity *sun = new Entity("Sun");
     sun->addComponent<DirectionalLight>(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1);
-    sun->addComponent<Rotate>();
+    sun->transform.rotation.x = 1;
 
     Engine::run();
 
