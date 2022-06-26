@@ -10,7 +10,7 @@ LIBS_STATIC = -Llib/glad/bin -static -lglfw3 -opengl32 -lgdi32 -lassimp -lminizi
 LIBS_DYN = -lglfw3 -lassimp -Llib/glad/bin -lGLAD
 
 CFLAGS = -std=c++20 -Wall -Wextra -g3 -Wno-narrowing
-INCLUDES = -Ilib -Ilib/glad/include -Isrc -Isrc/Engine
+INCLUDES = -Ilib -Ilib/glad/include -Isrc -Isrc/ProtoEngine
 CFLAGS += $(INCLUDES)
 
 PCH = lib/libs.hpp
