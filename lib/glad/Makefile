@@ -3,7 +3,7 @@ CC = g++
 BIN = bin
 SRC = src/glad.c
 OBJ = $(BIN)/glad.o 
-OUT_STATIC = $(BIN)/libGLAD.dll.a
+OUT_STATIC = $(BIN)/libGLAD.a
 OUT_SHARED = $(BIN)/libGLAD.dll
 
 static:
