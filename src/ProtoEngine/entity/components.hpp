@@ -72,7 +72,7 @@ namespace Engine
 
     ///
     ///
-    /// TODO: add rendering priority / rendering order
+    ///
     class MeshRenderer : public Component
     {
     public:

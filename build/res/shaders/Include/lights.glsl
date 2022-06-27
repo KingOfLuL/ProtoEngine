@@ -54,7 +54,7 @@ layout (std140, binding = 1) uniform Lights
 
 
 // calculate directional light
-vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) 
+vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
 

@@ -47,8 +47,7 @@ debug_run: debug
 
 
 build: lib_static
-	rm -r -f $(BUILD)/$(RES); \
-	cp -r $(RES) $(BUILD)/$(RES); \
+	make update_res; \
 	$(CC) src/main.cpp $(CFLAGS) -static -L$(LIB_ENGINE) -l:$(LIB_ENGINE_STATIC) $(LIBS_STATIC) -o $(BUILD)/$(NAME);
 
 build_run: build
@@ -57,6 +56,9 @@ build_run: build
 pch:
 	$(CC) -c $(PCH) $(CFLAGS)
 
+update_res:
+	rm -r -f $(BUILD)/$(RES); \
+	cp -r $(RES) $(BUILD)/$(RES); \
 
 glad_static:
 	cd lib/glad; \
