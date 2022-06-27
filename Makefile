@@ -1,6 +1,6 @@
 CC = g++
 
-SRC = $(wildcard src/**/*.cpp) $(wildcard src/**/**/*.cpp) $(wildcard src/**/**/**/*.cpp) $(wildcard src/**/**/**/**/*.cpp)
+SRC = lib/glad/src/glad.cpp $(wildcard src/**/*.cpp) $(wildcard src/**/**/*.cpp) $(wildcard src/**/**/**/*.cpp) $(wildcard src/**/**/**/**/*.cpp)
 SRC_OBJ = $(SRC:.cpp=.o)
 RES = res
 BUILD = build
@@ -14,8 +14,8 @@ LIB_ENGINE_STATIC = libProtoEngine.a
 LIB_DYN_OUT = $(LIB_ENGINE)/$(LIB_ENGINE_DYN)
 LIB_STATIC_OUT = $(LIB_ENGINE)/$(LIB_ENGINE_STATIC)
 
-LIBS_STATIC = -Llib/glad/bin -lglfw3 -opengl32 -lgdi32 -lassimp -lminizip -lz -static-libgcc -static-libstdc++ -lpthread -l:libGLAD.a
-LIBS_DYN = -lglfw3 -lassimp -Llib/glad/bin -l:libGLAD.dll
+LIBS_STATIC = -lglfw3 -opengl32 -lgdi32 -lassimp -lminizip -lz -static-libgcc -static-libstdc++ -lpthread
+LIBS_DYN = -lglfw3 -lassimp
 
 CFLAGS = -std=c++20 -Wall -Wextra -g3 -Wno-narrowing
 INCLUDES = -Ilib -Ilib/glad/include -Isrc -Isrc/ProtoEngine
