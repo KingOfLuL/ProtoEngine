@@ -8,8 +8,8 @@ BIN = bin
 NAME = Engine
 
 LIB_ENGINE = lib/ProtoEngine
-LIB_ENGINE_DYN = libProtoEngine.dll
-LIB_ENGINE_STATIC = libProtoEngine.a
+LIB_ENGINE_DYN = ProtoEngine.dll
+LIB_ENGINE_STATIC = ProtoEngine.lib
 
 LIB_DYN_OUT = $(LIB_ENGINE)/$(LIB_ENGINE_DYN)
 LIB_STATIC_OUT = $(LIB_ENGINE)/$(LIB_ENGINE_STATIC)
@@ -40,7 +40,7 @@ clean:
 
 
 debug: lib_dyn
-	$(CC) src/main.cpp $(CFLAGS) -o $(BIN)/$(NAME) -l:$(LIB_ENGINE_DYN) $(LIBS_DYN)
+	$(CC) src/main.cpp $(CFLAGS) -o $(BIN)/$(NAME) -Lbin -l:$(LIB_ENGINE_DYN) $(LIBS_DYN)
 
 debug_run: debug
 	./bin/Engine

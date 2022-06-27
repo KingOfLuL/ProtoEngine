@@ -12,6 +12,15 @@
 #include <fstream>
 #include <typeinfo>
 #include <list>
+#include <string>
+#include <array>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <set>
+#include <unordered_set>
+#include <stack>
+#include <deque>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -23,13 +32,3 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string.hpp>
-
-#include <string>
-#include <array>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <set>
-#include <unordered_set>
-#include <stack>
-#include <deque>
