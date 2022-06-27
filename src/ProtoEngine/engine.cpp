@@ -44,6 +44,8 @@ namespace Engine
 
             Renderer::render();
 
+            activeScene->lateUpdate();
+
             glfwSwapBuffers(activeWindow->getGLFWwindow());
             glfwPollEvents();
         }

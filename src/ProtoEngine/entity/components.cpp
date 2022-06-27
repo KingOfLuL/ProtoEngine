@@ -52,6 +52,12 @@ namespace Engine
             return entity->parent->transform.getTransformationMatrix() * glm::vec4(localUp, 0.f);
         return localUp;
     }
+    glm::vec3 Transform::getWorldRight() const
+    {
+        if (entity->parent)
+            return entity->parent->transform.getTransformationMatrix() * glm::vec4(localRight, 0.f);
+        return localRight;
+    }
     void Transform::update()
     {
         localFront = glm::vec3(glm::sin(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.x)),
@@ -59,6 +65,14 @@ namespace Engine
                                glm::cos(glm::radians(rotation.y)) * glm::cos(glm::radians(rotation.x)));
         localRight = glm::normalize(glm::cross(localFront, {0.0f, 1.0f, 0.0f}));
         localUp = glm::normalize(glm::cross(localRight, localFront));
+    }
+    void Transform::lateUpdate()
+    {
+        lastPosition = getWorldPosition();
+    }
+    bool Transform::hasMoved() const
+    {
+        return getWorldPosition() != lastPosition;
     }
 
     ///
@@ -119,7 +133,7 @@ namespace Engine
         if (activeScene->skybox && std::find(layers.begin(), layers.end(), "Default") != layers.end())
             activeScene->skybox->draw();
 
-        for (const auto &renderer : activeScene->getRenderers())
+        for (const auto &renderer : activeScene->getRenderers(this))
         {
             // check if the renderer is on the same layer as the camera
             if (std::find(layers.begin(), layers.end(), renderer->entity->layer) == layers.end())

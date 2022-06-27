@@ -50,6 +50,8 @@ namespace Engine
         Entity *parent = nullptr;
         std::vector<Entity *> children;
 
+        static std::map<std::string, Entity *> s_LoadedModels;
+
     private:
         std::vector<Component *> m_Components;
     };

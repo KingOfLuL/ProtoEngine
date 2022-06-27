@@ -27,7 +27,6 @@ namespace Engine
         Transform(const glm::vec3 &pos = glm::vec3(0.0f), const glm::vec3 &rot = glm::vec3(0.0f), const glm::vec3 &scl = glm::vec3(1.0f));
 
     public:
-        // TODO: have (working) local and global values
         glm::vec3 position;
         glm::vec3 scale;
         glm::vec3 rotation;
@@ -41,7 +40,13 @@ namespace Engine
         glm::vec3 getWorldPosition() const;
         glm::vec3 getWorldFront() const;
         glm::vec3 getWorldUp() const;
+        glm::vec3 getWorldRight() const;
         void update();
+        void lateUpdate();
+        bool hasMoved() const;
+
+    private:
+        glm::vec3 lastPosition;
     };
 
     ///
@@ -67,7 +72,7 @@ namespace Engine
 
     ///
     ///
-    ///
+    /// TODO: add rendering priority / rendering order
     class MeshRenderer : public Component
     {
     public:
@@ -165,8 +170,9 @@ namespace Engine
         virtual ~Behavior();
 
     public:
-        std::function<void()> start;
-        std::function<void()> update;
+        std::function<void()> start = []() {};
+        std::function<void()> update = []() {};
+        std::function<void()> lateUpdate = []() {};
     };
 }
 #endif // SRC_ENGINE_ENTITY_COMPONENTS

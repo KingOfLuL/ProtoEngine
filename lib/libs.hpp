@@ -33,5 +33,3 @@
 #include <unordered_set>
 #include <stack>
 #include <deque>
-
-#include "ProtoEngine.hpp"

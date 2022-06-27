@@ -28,8 +28,8 @@ namespace Engine
         void removeCamera(Camera *camera);
         void start();
         void update();
-        // sorts renderers before returning them
-        const std::vector<MeshRenderer *> &getRenderers();
+        void lateUpdate();
+        const std::vector<MeshRenderer *> &getRenderers(Camera *camera);
         const std::vector<Camera *> &getCameras() const;
         const std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> &getDirectionalLights() const;
         const std::array<SpotLight *, MAX_NR_SPOTLIGHTS> &getSpotLights() const;

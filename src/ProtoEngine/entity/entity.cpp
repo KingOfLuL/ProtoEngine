@@ -11,7 +11,7 @@
 
 namespace Engine
 {
-    std::map<std::string, Entity *> loadedModels; // TODO: improve
+    std::map<std::string, Entity *> Entity::s_LoadedModels;
 
     Entity::Entity(const std::string &name, const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name(name), transform(pos, rot, scl)
     {
@@ -91,9 +91,9 @@ namespace Engine
     Entity *Entity::loadModel(const std::string &path)
     {
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
-        if (loadedModels.find(filePath) != loadedModels.end())
+        if (s_LoadedModels.find(filePath) != s_LoadedModels.end())
         {
-            return new Entity(*loadedModels[filePath]);
+            return new Entity(*s_LoadedModels[filePath]);
         }
 
         Assimp::Importer importer;
@@ -201,7 +201,7 @@ namespace Engine
         }
         if (boost::algorithm::ends_with(filePath, ".fbx"))
             rootEntity->transform.rotation = glm::vec3(-90, 0, 0);
-        loadedModels.insert(std::pair<std::string, Entity *>(filePath, rootEntity));
+        s_LoadedModels.insert(std::pair<std::string, Entity *>(filePath, rootEntity));
 
         return rootEntity;
     }

@@ -138,16 +138,18 @@ namespace Engine
     {
         return m_PointLights;
     }
-    const std::vector<MeshRenderer *> &Scene::getRenderers()
+    const std::vector<MeshRenderer *> &Scene::getRenderers(Camera *camera)
     {
-        // TODO: don´t sort every frame; only when camera moves
-        std::sort(m_Renderers.begin(), m_Renderers.end(),
-                  [](MeshRenderer *a, MeshRenderer *b)
-                  {
-                      float distA = glm::length(activeScene->mainCamera->entity->transform.position - a->bounds.center);
-                      float distB = glm::length(activeScene->mainCamera->entity->transform.position - b->bounds.center);
-                      return distA > distB;
-                  });
+        if (camera->entity->transform.hasMoved())
+        {
+            std::sort(m_Renderers.begin(), m_Renderers.end(),
+                      [](MeshRenderer *a, MeshRenderer *b)
+                      {
+                          float distA = glm::length(activeScene->mainCamera->entity->transform.position - a->bounds.center);
+                          float distB = glm::length(activeScene->mainCamera->entity->transform.position - b->bounds.center);
+                          return distA > distB;
+                      });
+        }
         return m_Renderers;
     }
     const std::vector<Camera *> &Scene::getCameras() const
@@ -156,15 +158,22 @@ namespace Engine
     }
     void Scene::update()
     {
-        for (auto e : m_Entities)
+        for (const auto &e : m_Entities)
             e->transform.update();
 
-        for (auto i : m_Behaviors)
+        for (const auto &i : m_Behaviors)
             i->update();
     }
     void Scene::start()
     {
-        for (auto i : m_Behaviors)
+        for (const auto &i : m_Behaviors)
             i->start();
+    }
+    void Scene::lateUpdate()
+    {
+        for (const auto &i : m_Behaviors)
+            i->lateUpdate();
+        for (const auto &i : m_Entities)
+            i->transform.lateUpdate();
     }
 }
