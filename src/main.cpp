@@ -107,7 +107,7 @@ private:
 int main()
 {
     Scene scene("Game");
-    Engine::init(scene, "Engine", 1920, 1080);
+    Engine::init(scene, "Engine", true, 1920, 1080);
 
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 

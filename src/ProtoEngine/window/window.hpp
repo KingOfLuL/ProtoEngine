@@ -17,7 +17,7 @@ namespace Engine
 
     public:
         Window() = default;
-        Window(const std::string &name, int w, int h);
+        Window(const std::string &name, bool fullscreen, int resW, int resH);
         ~Window();
 
     public:

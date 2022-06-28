@@ -16,14 +16,14 @@ namespace Engine
 
     Event onRenderUpdate;
 
-    void init(Scene &scene, const std::string &windowName, int windowW, int windowH)
+    void init(Scene &scene, const std::string &windowName, bool fullscreen, int resolutionWidth, int resolutionHeight)
     {
         activeScene = &scene;
 
         stbi_set_flip_vertically_on_load(false);
         internal_util_init();
 
-        activeWindow = new Window(windowName, windowW, windowH);
+        activeWindow = new Window(windowName, fullscreen, resolutionWidth, resolutionHeight);
 
         Renderer::init();
         Time::init();

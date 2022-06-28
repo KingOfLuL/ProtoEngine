@@ -6,8 +6,7 @@
 
 namespace Engine
 {
-    Window::Window(const std::string &name, int w, int h)
-        : width(w), height(h)
+    Window::Window(const std::string &name, bool fullscreen, int resW, int resH)
     {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -18,7 +17,9 @@ namespace Engine
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 
-        bool fullscreen = width == mode->width && height == mode->height;
+        width = mode->width;
+        height = mode->height;
+
         glfwWindowHint(GLFW_DECORATED, !fullscreen);
 
         m_Window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
@@ -53,7 +54,7 @@ namespace Engine
         m_Screen.addIndexbuffer(&indices[0], 6);
 
         Renderer::shaderScreen = new Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
-        m_WindowTexture = new RenderTexture(width, height);
+        m_WindowTexture = new RenderTexture(resW, resH);
     }
     RenderTexture *Window::getWindowRenderTexture() const
     {
