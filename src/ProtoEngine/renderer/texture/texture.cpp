@@ -29,12 +29,12 @@ namespace Engine
         setParameter(GL_TEXTURE_MIN_FILTER, min);
         setParameter(GL_TEXTURE_MAG_FILTER, mag);
     }
-    uint32_t Texture::getID() const
+    u32 Texture::getID() const
     {
         return m_ID;
     }
 
-    Texture2D::Texture2D(void *textureData, int w, int h, GLenum colFormat, const TextureType &texType, const std::string &path)
+    Texture2D::Texture2D(void *textureData, i32 w, i32 h, GLenum colFormat, const TextureType &texType, const std::string &path)
         : m_Type(texType), m_Path(path)
     {
         m_GLTextureType = GL_TEXTURE_2D;
@@ -63,7 +63,7 @@ namespace Engine
     {
         std::string fileName = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + path;
 
-        int width, height, nrComponents;
+        i32 width, height, nrComponents;
         void *data = stbi_load(fileName.c_str(), &width, &height, &nrComponents, 0);
 
         if (data == nullptr)
@@ -96,7 +96,7 @@ namespace Engine
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 
-        int w, h, nrChannels;
+        i32 w, h, nrChannels;
         colorFormat = GL_RGB;
 
         for (size_t i = 0; i < faces.size(); i++)
@@ -116,7 +116,7 @@ namespace Engine
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
-    RenderTexture::RenderTexture(int w, int h)
+    RenderTexture::RenderTexture(i32 w, i32 h)
     {
         m_Texture = new Texture2D(NULL, w, h, GL_RGB);
         m_Texture->setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
@@ -128,11 +128,11 @@ namespace Engine
     {
         delete m_Texture;
     }
-    int RenderTexture::getWidth() const
+    i32 RenderTexture::getWidth() const
     {
         return m_Texture->width;
     }
-    int RenderTexture::getHeight() const
+    i32 RenderTexture::getHeight() const
     {
         return m_Texture->height;
     }

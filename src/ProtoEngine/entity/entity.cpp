@@ -117,18 +117,18 @@ namespace Engine
             rootEntity->children.push_back(entity);
         }
 
-        for (unsigned int i = 0; i < rootNode->mNumChildren; i++) // go through all (children) nodes
+        for (u32 i = 0; i < rootNode->mNumChildren; i++) // go through all (children) nodes
         {
             aiNode *node = rootNode->mChildren[i];
-            for (unsigned int j = 0; j < node->mNumMeshes; j++) // mesh of (children) node
+            for (u32 j = 0; j < node->mNumMeshes; j++) // mesh of (children) node
             {
                 aiMesh *mesh = scene->mMeshes[node->mMeshes[j]];
                 entity->name = mesh->mName.C_Str();
 
                 std::vector<Vertex> vertices;
-                std::vector<uint32_t> indices;
+                std::vector<u32> indices;
 
-                for (unsigned int k = 0; k < mesh->mNumVertices; k++) // vertices
+                for (u32 k = 0; k < mesh->mNumVertices; k++) // vertices
                 {
                     Vertex vertex;
 
@@ -159,10 +159,10 @@ namespace Engine
                     }
                     vertices.push_back(vertex);
                 }
-                for (unsigned int k = 0; k < mesh->mNumFaces; k++) // indices
+                for (u32 k = 0; k < mesh->mNumFaces; k++) // indices
                 {
                     aiFace face = mesh->mFaces[k];
-                    for (unsigned int l = 0; l < face.mNumIndices; l++)
+                    for (u32 l = 0; l < face.mNumIndices; l++)
                         indices.push_back(face.mIndices[l]);
                 }
 

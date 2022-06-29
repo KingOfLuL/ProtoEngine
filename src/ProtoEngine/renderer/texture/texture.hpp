@@ -29,23 +29,23 @@ namespace Engine
         void setTextureWrapMode(GLenum wrapS, GLenum wrapT);
         void setTextureFilterMode(GLenum min, GLenum mag);
 
-        uint32_t getID() const;
+        u32 getID() const;
 
     public:
-        int width;
-        int height;
+        i32 width;
+        i32 height;
         GLenum colorFormat;
 
     protected:
         GLenum m_GLTextureType;
-        uint32_t m_ID;
+        u32 m_ID;
     };
 
     class Texture2D : public Texture
     {
     public:
         Texture2D() = default;
-        Texture2D(void *data, int w, int h, GLenum colFormat, const TextureType &texType = TextureType::DIFFUSE, const std::string &path = "");
+        Texture2D(void *data, i32 w, i32 h, GLenum colFormat, const TextureType &texType = TextureType::DIFFUSE, const std::string &path = "");
 
     public:
         std::string getPath() const;
@@ -65,7 +65,7 @@ namespace Engine
     {
     public:
         RenderTexture() = default;
-        RenderTexture(int w, int h);
+        RenderTexture(i32 w, i32 h);
         ~RenderTexture();
 
     public:
@@ -73,8 +73,8 @@ namespace Engine
         void unbindFramebuffer() const;
         void bindTexture() const;
 
-        int getWidth() const;
-        int getHeight() const;
+        i32 getWidth() const;
+        i32 getHeight() const;
 
         Texture2D *getTexture() const;
 

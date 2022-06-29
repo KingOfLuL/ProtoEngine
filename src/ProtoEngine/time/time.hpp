@@ -1,10 +1,12 @@
 #ifndef SRC_ENGINE_TIME_TIME
 #define SRC_ENGINE_TIME_TIME
 
+#include "util/types.h"
+
 namespace Engine::Time
 {
-    extern float deltaTime;
-    extern float time;
+    extern f32 deltaTime;
+    extern f32 time;
 
     void init();
 }

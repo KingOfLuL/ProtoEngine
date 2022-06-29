@@ -32,3 +32,5 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string.hpp>
+
+#include "util/types.h"

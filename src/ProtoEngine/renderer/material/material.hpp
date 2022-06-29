@@ -23,7 +23,7 @@ namespace Engine
         bool hasDiffuseTexture = true;
         bool hasSpecularTexture = true;
         glm::vec3 diffuseColor = glm::vec3(1.f);
-        float shininess = 32.f;
+        f32 shininess = 32.f;
         bool twoSided = false;
 
     public:

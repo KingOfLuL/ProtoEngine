@@ -12,58 +12,58 @@ namespace Engine
         virtual void bind() const {}
         virtual void unbind() const {}
 
-        uint32_t getID() const;
+        u32 getID() const;
 
     protected:
-        uint32_t m_ID;
+        u32 m_ID;
     };
 
     class Indexbuffer : public Buffer
     {
     public:
         Indexbuffer() = default;
-        Indexbuffer(const void *data, int dataCount);
+        Indexbuffer(const void *data, i32 dataCount);
         void deleteBuffers();
 
         void bind() const override;
         void unbind() const override;
-        int getCount() const;
+        i32 getCount() const;
 
     private:
-        int m_Count;
+        i32 m_Count;
     };
 
     class Vertexbuffer : public Buffer
     {
     public:
         Vertexbuffer() = default;
-        Vertexbuffer(const void *data, int dataCount);
+        Vertexbuffer(const void *data, i32 dataCount);
 
     public:
-        void addIndexbuffer(const void *indexBufferData, int indexBufferDataCount);
+        void addIndexbuffer(const void *indexBufferData, i32 indexBufferDataCount);
         void deleteBuffers();
-        void setData(const void *data, int dataCount);
+        void setData(const void *data, i32 dataCount);
         void bind() const override;
         void unbind() const override;
         void draw() const;
-        int getIndicesCount() const;
+        i32 getIndicesCount() const;
 
     private:
-        uint32_t m_BufferID;
+        u32 m_BufferID;
         Indexbuffer m_IndexBuffer;
         bool m_HasIndexbuffer = false;
-        int m_Count;
+        i32 m_Count;
     };
 
     class Renderbuffer : public Buffer
     {
     public:
         Renderbuffer() = default;
-        Renderbuffer(int w, int h, GLenum storageType);
+        Renderbuffer(i32 w, i32 h, GLenum storageType);
 
     public:
-        int width;
-        int height;
+        i32 width;
+        i32 height;
 
     private:
         GLenum m_StorageType;
@@ -74,14 +74,14 @@ namespace Engine
     {
     public:
         Framebuffer() = default;
-        Framebuffer(int w, int h, RenderTexture *renderTexture);
+        Framebuffer(i32 w, i32 h, RenderTexture *renderTexture);
 
         void bind() const override;
         void unbind() const override;
 
     public:
-        int width;
-        int height;
+        i32 width;
+        i32 height;
 
     private:
         Renderbuffer m_Renderbuffer;
@@ -92,16 +92,16 @@ namespace Engine
     {
     public:
         Uniformbuffer() = default;
-        Uniformbuffer(uint32_t size, uint32_t bindingPoint);
+        Uniformbuffer(u32 size, u32 bindingPoint);
 
-        void setData(const void *data, uint32_t size, uint32_t offset);
+        void setData(const void *data, u32 size, u32 offset);
 
         void bind() const override;
         void unbind() const override;
 
     private:
-        uint32_t m_Size;
-        uint32_t m_BindingPoint;
+        u32 m_Size;
+        u32 m_BindingPoint;
     };
 }
 #endif // SRC_ENGINE_RENDERER_BUFFERS_BUFFERS

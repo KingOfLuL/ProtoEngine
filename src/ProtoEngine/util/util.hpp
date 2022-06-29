@@ -2,6 +2,7 @@
 #define SRC_ENGINE_UTIL_UTIL
 
 #include "renderer/mesh/mesh.hpp"
+#include "util/types.h"
 
 namespace Engine
 {

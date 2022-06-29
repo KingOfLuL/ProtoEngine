@@ -11,16 +11,16 @@ namespace Engine::Input
     extern glm::vec2 MousePosition;
     extern glm::vec2 MouseMovement;
 
-    bool keyIsDown(int key);
+    bool keyIsDown(i32 key);
 
     // this function gets called when the mouse is moved
     void internal_updateMouseMovement(float xOff, float yOff);
-    void internal_keyCallback(int key, int scancode, int action, int mods);
+    void internal_keyCallback(i32 key, i32 scancode, i32 action, i32 mods);
 }
 namespace Engine::Keys
 {
     // a key is an integer from the GLFW library. If a key is not defined here, use the GLFW version (GLFW_KEY_<key>)
-    typedef int Key;
+    typedef i32 Key;
 
     const Key A = GLFW_KEY_A;
     const Key B = GLFW_KEY_B;

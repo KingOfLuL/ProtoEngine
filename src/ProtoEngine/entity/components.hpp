@@ -3,6 +3,7 @@
 
 #include "renderer/material/material.hpp"
 #include "renderer/mesh/mesh.hpp"
+#include "util/types.h"
 
 namespace Engine
 {
@@ -55,7 +56,7 @@ namespace Engine
     class Camera : public Component
     {
     public:
-        Camera(int resW, int resH);
+        Camera(i32 resW, i32 resH);
         ~Camera();
 
     public:
@@ -67,7 +68,7 @@ namespace Engine
     public:
         RenderTexture *targetTexture;
         std::vector<std::string> layers = {"Default"};
-        float fov;
+        f32 fov;
         glm::vec2 resolution;
     };
 
@@ -83,9 +84,9 @@ namespace Engine
 
     public:
         void setMesh(const Mesh &mesh);
-        void setMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
+        void setMesh(const std::vector<Vertex> &vertices, const std::vector<u32> &indices);
         void addToMesh(const Mesh &mesh);
-        void addToMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices);
+        void addToMesh(const std::vector<Vertex> &vertices, const std::vector<u32> &indices);
         void drawMesh();
 
     public:
@@ -101,64 +102,64 @@ namespace Engine
     class Light : public Component
     {
     public:
-        Light(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity);
+        Light(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity);
         virtual ~Light();
 
     public:
-        virtual const std::vector<float> getData() const;
+        virtual const std::vector<f32> getData() const;
 
     public:
         glm::vec3 ambient;
         glm::vec3 diffuse;
         glm::vec3 specular;
-        float intensity;
+        f32 intensity;
     };
 
     class DirectionalLight : public Light
     {
     public:
-        DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity);
+        DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity);
         ~DirectionalLight();
 
     public:
         glm::vec3 getDirection() const;
-        const std::vector<float> getData() const override;
+        const std::vector<f32> getData() const override;
 
     public:
-        static const uint32_t NUM_DATA = 16;
+        static const u32 NUM_DATA = 16;
     };
 
     class PointLight : public Light
     {
     public:
-        PointLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity, float range);
+        PointLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity, f32 range);
         ~PointLight();
 
     public:
-        const std::vector<float> getData() const override;
+        const std::vector<f32> getData() const override;
 
     public:
-        float range;
+        f32 range;
 
-        static const uint32_t NUM_DATA = 20;
+        static const u32 NUM_DATA = 20;
     };
 
     class SpotLight : public Light
     {
     public:
-        SpotLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity, float range, float innerCutoff, float outerCutoff);
+        SpotLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity, f32 range, f32 innerCutoff, f32 outerCutoff);
         ~SpotLight();
 
     public:
         glm::vec3 getDirection() const;
-        const std::vector<float> getData() const override;
+        const std::vector<f32> getData() const override;
 
     public:
-        float innerCutoff;
-        float outerCutoff;
-        float range;
+        f32 innerCutoff;
+        f32 outerCutoff;
+        f32 range;
 
-        static const uint32_t NUM_DATA = 28;
+        static const u32 NUM_DATA = 28;
     };
 
     ///

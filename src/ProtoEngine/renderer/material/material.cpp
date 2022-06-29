@@ -16,12 +16,12 @@ namespace Engine
         boost::property_tree::ptree mat;
         boost::property_tree::read_json(PathUtil::FULL_PATH + PathUtil::MATERIAL_PATH + name + ".mat.json", mat);
 
-        int i = 0;
+        i32 i = 0;
         for (auto &item : mat.get_child("diffuseColor"))
-            diffuseColor[i++] = item.second.get_value<float>();
+            diffuseColor[i++] = item.second.get_value<f32>();
 
         twoSided = mat.get<bool>("twoSided");
-        shininess = mat.get<float>("shininess");
+        shininess = mat.get<f32>("shininess");
 
         std::string diffusePath = mat.get<std::string>("diffuse");
         std::string specularPath = mat.get<std::string>("specular");
@@ -55,7 +55,7 @@ namespace Engine
     void Material::loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
     {
         // check if texture already is loaded
-        for (uint32_t i = 0; i < Texture2D::s_LoadedTextures.size(); i++)
+        for (u32 i = 0; i < Texture2D::s_LoadedTextures.size(); i++)
         {
             // retrieve texture from list of loaded textures
             auto front = Texture2D::s_LoadedTextures.begin();

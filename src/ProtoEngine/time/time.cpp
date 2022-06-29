@@ -4,10 +4,10 @@
 
 namespace Engine::Time
 {
-    float deltaTime = 0.f;
-    float time = 0.f;
+    f32 deltaTime = 0.f;
+    f32 time = 0.f;
 
-    float lastFrame = 0;
+    f32 lastFrame = 0;
 
     void init()
     {

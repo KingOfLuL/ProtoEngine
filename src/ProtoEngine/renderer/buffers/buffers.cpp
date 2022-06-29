@@ -8,17 +8,17 @@
 
 namespace Engine
 {
-    uint32_t Buffer::getID() const
+    u32 Buffer::getID() const
     {
         return m_ID;
     }
 
-    Indexbuffer::Indexbuffer(const void *data, int count) : m_Count(count)
+    Indexbuffer::Indexbuffer(const void *data, i32 count) : m_Count(count)
     {
         glGenBuffers(1, &m_ID);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(uint32_t), data, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(u32), data, GL_STATIC_DRAW);
     }
     void Indexbuffer::bind() const
     {
@@ -28,7 +28,7 @@ namespace Engine
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
-    int Indexbuffer::getCount() const
+    i32 Indexbuffer::getCount() const
     {
         return m_Count;
     }
@@ -37,7 +37,7 @@ namespace Engine
         glDeleteBuffers(1, &m_ID);
     }
 
-    Vertexbuffer::Vertexbuffer(const void *data, int dataCount) : m_Count(dataCount)
+    Vertexbuffer::Vertexbuffer(const void *data, i32 dataCount) : m_Count(dataCount)
     {
         glGenVertexArrays(1, &m_ID);
         glGenBuffers(1, &m_BufferID);
@@ -62,7 +62,7 @@ namespace Engine
 
         unbind();
     }
-    void Vertexbuffer::addIndexbuffer(const void *indexBufferData, int indexBufferDataCount)
+    void Vertexbuffer::addIndexbuffer(const void *indexBufferData, i32 indexBufferDataCount)
     {
         bind();
         m_IndexBuffer = Indexbuffer(indexBufferData, indexBufferDataCount);
@@ -86,7 +86,7 @@ namespace Engine
             glDrawArrays(GL_TRIANGLES, 0, m_Count);
         unbind();
     }
-    int Vertexbuffer::getIndicesCount() const
+    i32 Vertexbuffer::getIndicesCount() const
     {
         return m_IndexBuffer.getCount();
     }
@@ -96,7 +96,7 @@ namespace Engine
         glDeleteBuffers(1, &m_BufferID);
         m_IndexBuffer.deleteBuffers();
     }
-    void Vertexbuffer::setData(const void *data, int dataCount)
+    void Vertexbuffer::setData(const void *data, i32 dataCount)
     {
         m_Count = dataCount;
 
@@ -106,7 +106,7 @@ namespace Engine
         glBufferData(GL_ARRAY_BUFFER, m_Count * sizeof(Vertex), data, GL_STATIC_DRAW);
     }
 
-    Renderbuffer::Renderbuffer(int w, int h, GLenum storageType)
+    Renderbuffer::Renderbuffer(i32 w, i32 h, GLenum storageType)
         : width(w), height(h), m_StorageType(storageType)
     {
         glGenRenderbuffers(1, &m_ID);
@@ -114,7 +114,7 @@ namespace Engine
         glRenderbufferStorage(GL_RENDERBUFFER, m_StorageType, width, height);
     }
 
-    Framebuffer::Framebuffer(int w, int h, RenderTexture *renderTexture)
+    Framebuffer::Framebuffer(i32 w, i32 h, RenderTexture *renderTexture)
         : width(w), height(h), m_RenderTexture(renderTexture)
     {
         glGenFramebuffers(1, &m_ID);
@@ -139,7 +139,7 @@ namespace Engine
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    Uniformbuffer::Uniformbuffer(uint32_t size, uint32_t bindingPoint)
+    Uniformbuffer::Uniformbuffer(u32 size, u32 bindingPoint)
         : m_Size(size), m_BindingPoint(bindingPoint)
     {
         glGenBuffers(1, &m_ID);
@@ -148,7 +148,7 @@ namespace Engine
         glBindBufferRange(GL_UNIFORM_BUFFER, bindingPoint, m_ID, 0, size);
         unbind();
     }
-    void Uniformbuffer::setData(const void *data, uint32_t size, uint32_t offset)
+    void Uniformbuffer::setData(const void *data, u32 size, u32 offset)
     {
         bind();
         glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);

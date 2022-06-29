@@ -20,7 +20,7 @@ namespace Engine
 
         const char *c_vCode = m_VertexCode.c_str(),
                    *c_fCode = m_FragmentCode.c_str();
-        uint32_t vertex, fragment;
+        u32 vertex, fragment;
 
         vertex = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertex, 1, &c_vCode, NULL);
@@ -49,7 +49,7 @@ namespace Engine
         m_GeometryCode = processIncludes(m_GeometryCode);
         const char *c_code = m_GeometryCode.c_str();
 
-        uint32_t id = glCreateShader(GL_GEOMETRY_SHADER);
+        u32 id = glCreateShader(GL_GEOMETRY_SHADER);
         glShaderSource(id, 1, &c_code, NULL);
         glCompileShader(id);
         checkCompileErrors(id, "GEOMETRY", path);
@@ -62,7 +62,7 @@ namespace Engine
     {
         glUseProgram(m_ID);
     }
-    void Shader::checkCompileErrors(GLuint shader, const std::string &type, const std::string &path)
+    void Shader::checkCompileErrors(u32 shader, const std::string &type, const std::string &path)
     {
         GLint success;
         GLchar infoLog[1024];
@@ -97,11 +97,11 @@ namespace Engine
     {
         glUniform1i(glGetUniformLocation(m_ID, name.c_str()), (int)value);
     }
-    void Shader::setInt(const std::string &name, int value) const
+    void Shader::setInt(const std::string &name, i32 value) const
     {
         glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value);
     }
-    void Shader::setFloat(const std::string &name, float value) const
+    void Shader::setFloat(const std::string &name, f32 value) const
     {
         glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
     }
@@ -109,7 +109,7 @@ namespace Engine
     {
         glUniform2fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]);
     }
-    void Shader::setVec2(const std::string &name, float x, float y) const
+    void Shader::setVec2(const std::string &name, f32 x, f32 y) const
     {
         glUniform2f(glGetUniformLocation(m_ID, name.c_str()), x, y);
     }
@@ -117,7 +117,7 @@ namespace Engine
     {
         glUniform3fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]);
     }
-    void Shader::setVec3(const std::string &name, float x, float y, float z) const
+    void Shader::setVec3(const std::string &name, f32 x, f32 y, f32 z) const
     {
         glUniform3f(glGetUniformLocation(m_ID, name.c_str()), x, y, z);
     }
@@ -133,14 +133,14 @@ namespace Engine
 
         while (std::getline(ss, line, '\n'))
         {
-            size_t startOfInclude = line.find("#include ");
+            u64 startOfInclude = line.find("#include ");
             if (startOfInclude < line.size())
             {
                 if (line.find("//") < startOfInclude) // #include is commented out
                     continue;
 
-                size_t fileNameStartindex = strlen("#include ") + 1;
-                size_t endOfInclude = line.find('"', startOfInclude + fileNameStartindex);
+                u64 fileNameStartindex = strlen("#include ") + 1;
+                u64 endOfInclude = line.find('"', startOfInclude + fileNameStartindex);
 
                 std::string name = line.substr(startOfInclude + fileNameStartindex, endOfInclude - (startOfInclude + fileNameStartindex));
                 std::string includedCode = loadTextFile(PathUtil::SHADER_INCLUDE_PATH + name);
@@ -155,7 +155,7 @@ namespace Engine
     void Shader::printCode(const std::string &code) const
     {
         std::istringstream iss(code);
-        int num = 1;
+        i32 num = 1;
         for (std::string line; std::getline(iss, line); num++)
             std::cout << "(" << num << ") " << line << '\n';
         std::cout << "----------------------------------------------------------" << std::endl;

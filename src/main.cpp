@@ -5,8 +5,8 @@ using namespace Engine;
 
 struct Rotate : public Behavior
 {
-    float angle = 0;
-    const float speed = 30.f;
+    f32 angle = 0;
+    const f32 speed = 30.f;
     Rotate()
     {
         start = []() {};
@@ -19,9 +19,9 @@ struct Rotate : public Behavior
 };
 struct Move : public Behavior
 {
-    float angle = 0.f;
-    const float RANGE = 13.f;
-    const float SPEED = 30.f;
+    f32 angle = 0.f;
+    const f32 RANGE = 13.f;
+    const f32 SPEED = 30.f;
     Move()
     {
         start = []() {};
@@ -60,8 +60,8 @@ struct PlayerMovement : public Behavior
     }
 
 private:
-    const float MOVEMENT_SPEED = 10.f;
-    const float MOUSE_SENSITIVITY = 4.f;
+    const f32 MOVEMENT_SPEED = 10.f;
+    const f32 MOUSE_SENSITIVITY = 4.f;
     enum class Direction
     {
         FORWARD,
@@ -75,8 +75,8 @@ private:
 private:
     void updateMouseMovement()
     {
-        float xOff = Input::MouseMovement.x * Time::deltaTime * MOUSE_SENSITIVITY;
-        float yOff = Input::MouseMovement.y * Time::deltaTime * MOUSE_SENSITIVITY;
+        f32 xOff = Input::MouseMovement.x * Time::deltaTime * MOUSE_SENSITIVITY;
+        f32 yOff = Input::MouseMovement.y * Time::deltaTime * MOUSE_SENSITIVITY;
 
         entity->transform.rotation.y += xOff;
         entity->transform.rotation.x -= yOff;
@@ -87,7 +87,7 @@ private:
     }
     void processKeyboard(Direction dir)
     {
-        float vel = MOVEMENT_SPEED * Time::deltaTime;
+        f32 vel = MOVEMENT_SPEED * Time::deltaTime;
 
         if (dir == Direction::FORWARD)
             entity->transform.position += entity->transform.localFront * vel;

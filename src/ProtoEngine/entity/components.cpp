@@ -78,7 +78,7 @@ namespace Engine
     ///
     ///
     ///
-    Camera::Camera(int resW, int resH)
+    Camera::Camera(i32 resW, i32 resH)
         : fov(75.f), resolution(resW, resH)
     {
         activeScene->addCamera(this);
@@ -104,10 +104,10 @@ namespace Engine
     }
     glm::mat4 Camera::getProjectionMatrix() const
     {
-        return glm::perspective<float>(glm::radians(fov),
-                                       float(targetTexture->getWidth()) / float(targetTexture->getHeight()),
-                                       0.01f,
-                                       100.0f);
+        return glm::perspective<f32>(glm::radians(fov),
+                                     f32(targetTexture->getWidth()) / f32(targetTexture->getHeight()),
+                                     0.01f,
+                                     100.0f);
     }
     void Camera::renderToTexture()
     {
@@ -145,7 +145,7 @@ namespace Engine
             material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
             material->shader->setBool("_Material.hasTransparency", false);
 
-            for (uint32_t i = 0; i < material->textures.size(); i++)
+            for (u32 i = 0; i < material->textures.size(); i++)
             {
                 auto tex = material->textures[i];
 
@@ -198,7 +198,7 @@ namespace Engine
 
         bounds = mesh.bounds;
     }
-    void MeshRenderer::setMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices)
+    void MeshRenderer::setMesh(const std::vector<Vertex> &vertices, const std::vector<u32> &indices)
     {
         mesh.vertices = vertices;
         mesh.indices = indices;
@@ -219,7 +219,7 @@ namespace Engine
 
         mesh.calculateBounds();
     }
-    void MeshRenderer::addToMesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices)
+    void MeshRenderer::addToMesh(const std::vector<Vertex> &vertices, const std::vector<u32> &indices)
     {
         mesh.vertices.insert(mesh.vertices.end(), vertices.begin(), vertices.end());
         mesh.indices.insert(mesh.indices.end(), indices.begin(), indices.end());
@@ -244,19 +244,19 @@ namespace Engine
     ///
     ///
     ///
-    Light::Light(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity)
+    Light::Light(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity)
         : ambient(ambient), diffuse(diffuse), specular(specular), intensity(intensity)
     {
     }
     Light::~Light()
     {
     }
-    const std::vector<float> Light::getData() const
+    const std::vector<f32> Light::getData() const
     {
         return {0.f};
     }
 
-    DirectionalLight::DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity)
+    DirectionalLight::DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity)
         : Light(ambient, diffuse, specular, intensity)
     {
         activeScene->addDirectionalLight(this);
@@ -269,7 +269,7 @@ namespace Engine
     {
         return entity->transform.rotation;
     }
-    const std::vector<float> DirectionalLight::getData() const
+    const std::vector<f32> DirectionalLight::getData() const
     {
         return {
             getDirection().x,
@@ -291,7 +291,7 @@ namespace Engine
         };
     }
 
-    PointLight::PointLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity, float range)
+    PointLight::PointLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity, f32 range)
         : Light(ambient, diffuse, specular, intensity), range(range)
     {
         activeScene->addPointLight(this);
@@ -300,7 +300,7 @@ namespace Engine
     {
         activeScene->removePointLight(this);
     }
-    const std::vector<float> PointLight::getData() const
+    const std::vector<f32> PointLight::getData() const
     {
         return {
             entity->transform.getWorldPosition().x,
@@ -326,7 +326,7 @@ namespace Engine
         };
     }
 
-    SpotLight::SpotLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, float intensity, float range, float innerCutoff, float outerCutoff)
+    SpotLight::SpotLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity, f32 range, f32 innerCutoff, f32 outerCutoff)
         : Light(ambient, diffuse, specular, intensity), innerCutoff(innerCutoff), outerCutoff(outerCutoff), range(range)
     {
         activeScene->addSpotLight(this);
@@ -339,7 +339,7 @@ namespace Engine
     {
         return entity->transform.localFront;
     }
-    const std::vector<float> SpotLight::getData() const
+    const std::vector<f32> SpotLight::getData() const
     {
         return {
             entity->transform.getWorldPosition().x,

@@ -29,7 +29,7 @@ namespace Engine
     void Scene::addDirectionalLight(DirectionalLight *light)
     {
         bool canCreate = false;
-        for (int i = 0; i < MAX_NR_DIRLIGHTS; ++i)
+        for (i32 i = 0; i < MAX_NR_DIRLIGHTS; ++i)
         {
             if (m_DirectionalLights[i] == nullptr)
             {
@@ -43,8 +43,8 @@ namespace Engine
     }
     void Scene::removeDirectionalLight(DirectionalLight *light)
     {
-        int index = 0;
-        for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
+        i32 index = 0;
+        for (i32 i = 0; i < MAX_NR_DIRLIGHTS; i++)
         {
             if (m_DirectionalLights[i] == light)
             {
@@ -57,7 +57,7 @@ namespace Engine
     void Scene::addSpotLight(SpotLight *light)
     {
         bool canCreate = false;
-        for (int i = 0; i < MAX_NR_SPOTLIGHTS; ++i)
+        for (i32 i = 0; i < MAX_NR_SPOTLIGHTS; ++i)
         {
             if (m_SpotLights[i] == nullptr)
             {
@@ -71,8 +71,8 @@ namespace Engine
     }
     void Scene::removeSpotLight(SpotLight *light)
     {
-        int index = 0;
-        for (int i = 0; i < MAX_NR_SPOTLIGHTS; i++)
+        i32 index = 0;
+        for (i32 i = 0; i < MAX_NR_SPOTLIGHTS; i++)
         {
             if (m_SpotLights[i] == light)
             {
@@ -85,7 +85,7 @@ namespace Engine
     void Scene::addPointLight(PointLight *light)
     {
         bool canCreate = false;
-        for (int i = 0; i < MAX_NR_POINTLIGHTS; ++i)
+        for (i32 i = 0; i < MAX_NR_POINTLIGHTS; ++i)
         {
             if (!m_PointLights[i])
             {
@@ -99,8 +99,8 @@ namespace Engine
     }
     void Scene::removePointLight(PointLight *light)
     {
-        int index = 0;
-        for (int i = 0; i < MAX_NR_POINTLIGHTS; i++)
+        i32 index = 0;
+        for (i32 i = 0; i < MAX_NR_POINTLIGHTS; i++)
         {
             if (m_PointLights[i] == light)
             {
@@ -149,8 +149,8 @@ namespace Engine
             std::sort(m_Renderers.begin(), m_Renderers.end(),
                       [](MeshRenderer *a, MeshRenderer *b)
                       {
-                          float distA = glm::length(activeScene->mainCamera->entity->transform.position - a->bounds.center);
-                          float distB = glm::length(activeScene->mainCamera->entity->transform.position - b->bounds.center);
+                          f32 distA = glm::length(activeScene->mainCamera->entity->transform.position - a->bounds.center);
+                          f32 distB = glm::length(activeScene->mainCamera->entity->transform.position - b->bounds.center);
                           return distA > distB;
                       });
         }

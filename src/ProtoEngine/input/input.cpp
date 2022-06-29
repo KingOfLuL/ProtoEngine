@@ -16,9 +16,9 @@ namespace Engine::Input
         return glfwGetKey(Engine::activeWindow->getGLFWwindow(), key) == GLFW_PRESS;
     }
 
-    float lastX, lastY;
+    f32 lastX, lastY;
     bool firstMove = true;
-    void internal_updateMouseMovement(float xOff, float yOff)
+    void internal_updateMouseMovement(f32 xOff, f32 yOff)
     {
         if (firstMove)
         {
@@ -38,7 +38,7 @@ namespace Engine::Input
 
         MouseMoveEvent.call();
     }
-    void internal_keyCallback(int key, int scancode, int action, int mods)
+    void internal_keyCallback(i32 key, i32 scancode, i32 action, i32 mods)
     {
         (void)key;
         (void)scancode;

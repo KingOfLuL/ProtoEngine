@@ -20,15 +20,15 @@ namespace Engine::Renderer
     Uniformbuffer shaderUniformbufferLights;
     Uniformbuffer shaderUniformbufferInput;
 
-    const uint32_t MATRIX_DATA_SIZE = 2 * sizeof(glm::mat4);
+    const u32 MATRIX_DATA_SIZE = 2 * sizeof(glm::mat4);
 
-    const uint32_t NUN_DIRLIGHTS_DATA = DirectionalLight::NUM_DATA * MAX_NR_DIRLIGHTS;
-    const uint32_t NUM_POINTLIGHTS_DATA = PointLight::NUM_DATA * MAX_NR_POINTLIGHTS;
-    const uint32_t NUM_SPOTLIGHTS_DATA = SpotLight::NUM_DATA * MAX_NR_SPOTLIGHTS;
+    const u32 NUN_DIRLIGHTS_DATA = DirectionalLight::NUM_DATA * MAX_NR_DIRLIGHTS;
+    const u32 NUM_POINTLIGHTS_DATA = PointLight::NUM_DATA * MAX_NR_POINTLIGHTS;
+    const u32 NUM_SPOTLIGHTS_DATA = SpotLight::NUM_DATA * MAX_NR_SPOTLIGHTS;
 
-    const uint32_t LIGHT_DATA_SIZE = (NUN_DIRLIGHTS_DATA + NUM_POINTLIGHTS_DATA + NUM_SPOTLIGHTS_DATA) * sizeof(float);
+    const u32 LIGHT_DATA_SIZE = (NUN_DIRLIGHTS_DATA + NUM_POINTLIGHTS_DATA + NUM_SPOTLIGHTS_DATA) * sizeof(f32);
 
-    const uint32_t INPUT_DATA_SIZE = 7 * sizeof(float);
+    const u32 INPUT_DATA_SIZE = 7 * sizeof(f32);
 
     // TODO: add Batched Renderer
 
@@ -62,25 +62,25 @@ namespace Engine::Renderer
         auto pointLights = activeScene->getPointLights();
         auto spotLights = activeScene->getSpotLights();
 
-        std::array<float, LIGHT_DATA_SIZE / sizeof(float)> lightData;
+        std::array<f32, LIGHT_DATA_SIZE / sizeof(f32)> lightData;
 
-        int offset = 0;
+        i32 offset = 0;
 
-        for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
+        for (i32 i = 0; i < MAX_NR_DIRLIGHTS; i++)
         {
-            const uint32_t localOffset = offset + i * DirectionalLight::NUM_DATA;
+            const u32 localOffset = offset + i * DirectionalLight::NUM_DATA;
 
             if (dirLights[i])
             {
                 const auto &data = dirLights[i]->getData();
-                for (uint32_t j = 0; j < DirectionalLight::NUM_DATA; j++)
+                for (u32 j = 0; j < DirectionalLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = data[j];
                 }
             }
             else
             {
-                for (uint32_t j = 0; j < DirectionalLight::NUM_DATA; j++)
+                for (u32 j = 0; j < DirectionalLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = 0.f;
                 }
@@ -89,21 +89,21 @@ namespace Engine::Renderer
 
         offset += NUN_DIRLIGHTS_DATA;
 
-        for (int i = 0; i < MAX_NR_POINTLIGHTS; i++)
+        for (i32 i = 0; i < MAX_NR_POINTLIGHTS; i++)
         {
-            const uint32_t localOffset = offset + i * PointLight::NUM_DATA;
+            const u32 localOffset = offset + i * PointLight::NUM_DATA;
 
             if (pointLights[i])
             {
                 const auto &data = pointLights[i]->getData();
-                for (uint32_t j = 0; j < PointLight::NUM_DATA; j++)
+                for (u32 j = 0; j < PointLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = data[j];
                 }
             }
             else
             {
-                for (uint32_t j = 0; j < PointLight::NUM_DATA; j++)
+                for (u32 j = 0; j < PointLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = 0.f;
                 }
@@ -112,21 +112,21 @@ namespace Engine::Renderer
 
         offset += NUM_POINTLIGHTS_DATA;
 
-        for (int i = 0; i < MAX_NR_SPOTLIGHTS; i++)
+        for (i32 i = 0; i < MAX_NR_SPOTLIGHTS; i++)
         {
-            const uint32_t localOffset = offset + i * SpotLight::NUM_DATA;
+            const u32 localOffset = offset + i * SpotLight::NUM_DATA;
 
             if (spotLights[i])
             {
                 const auto &data = spotLights[i]->getData();
-                for (uint32_t j = 0; j < SpotLight::NUM_DATA; j++)
+                for (u32 j = 0; j < SpotLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = data[j];
                 }
             }
             else
             {
-                for (uint32_t j = 0; j < SpotLight::NUM_DATA; j++)
+                for (u32 j = 0; j < SpotLight::NUM_DATA; j++)
                 {
                     lightData[localOffset + j] = 0.f;
                 }
@@ -140,14 +140,14 @@ namespace Engine::Renderer
         glClearColor(0.2f, 0.2f, 0.2f, 1.0);
         updateLights();
 
-        float shaderData[] = {
+        f32 shaderData[] = {
             Time::deltaTime,
             Time::time,
             activeWindow->width,
             activeWindow->height,
         };
 
-        shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData) * sizeof(float), sizeof(glm::vec3));
+        shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData) * sizeof(f32), sizeof(glm::vec3));
 
         for (const auto &camera : activeScene->getCameras())
         {

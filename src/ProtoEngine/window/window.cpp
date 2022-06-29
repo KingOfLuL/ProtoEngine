@@ -50,7 +50,7 @@ namespace Engine
             Vertex({1.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}),
             Vertex({1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}),
         };
-        const int indices[] = {0, 1, 3, 1, 2, 3};
+        const u32 indices[] = {0, 1, 3, 1, 2, 3};
         m_Screen = Vertexbuffer(&verts[0], 4);
         m_Screen.addIndexbuffer(&indices[0], 6);
 
@@ -72,23 +72,23 @@ namespace Engine
     {
         glfwDestroyWindow(m_Window);
     }
-    void Window::sizeCallback(int width, int height)
+    void Window::sizeCallback(i32 width, i32 height)
     {
         this->width = width;
         this->height = height;
         glViewport(0, 0, this->width, this->height);
     }
-    void Window::framebuffer_size_callback(GLFWwindow *window, int width, int height)
+    void Window::framebuffer_size_callback(GLFWwindow *window, i32 width, i32 height)
     {
         (void)window;
         activeWindow->sizeCallback(width, height);
     }
-    void Window::mouse_callback(GLFWwindow *window, double xOffset, double yOffset)
+    void Window::mouse_callback(GLFWwindow *window, f64 xOffset, f64 yOffset)
     {
         (void)window;
         Input::internal_updateMouseMovement(xOffset, yOffset);
     }
-    void Window::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+    void Window::key_callback(GLFWwindow *window, i32 key, i32 scancode, i32 action, i32 mods)
     {
         (void)window;
         Input::internal_keyCallback(key, scancode, action, mods);
