@@ -58,9 +58,9 @@ namespace Engine::Renderer
     }
     void updateLights()
     {
-        auto dirLights = activeScene->getDirectionalLights();
-        auto pointLights = activeScene->getPointLights();
-        auto spotLights = activeScene->getSpotLights();
+        const auto &dirLights = activeScene->getDirectionalLights();
+        const auto &pointLights = activeScene->getPointLights();
+        const auto &spotLights = activeScene->getSpotLights();
 
         std::array<f32, LIGHT_DATA_SIZE / sizeof(f32)> lightData;
 

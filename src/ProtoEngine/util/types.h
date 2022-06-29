@@ -14,6 +14,6 @@ typedef unsigned char u8;
 typedef float f32;
 typedef double f64;
 
-typedef u64 usize;
+typedef unsigned long long usize;
 
 #endif // SRC_PROTOENGINE_UTIL_TYPES

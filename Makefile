@@ -5,7 +5,7 @@ SRC_OBJ = $(SRC:.cpp=.o)
 RES = res
 BUILD = build
 BIN = bin
-NAME = Engine
+NAME = App
 
 LIB_ENGINE = lib/ProtoEngine
 LIB_ENGINE_DYN = ProtoEngine.dll
@@ -39,16 +39,16 @@ clean:
 	rm -rf $(SRC_OBJ)
 
 
-debug_l: lib_dyn
+debug_lib: lib_dyn
 	$(CC) src/main.cpp $(CFLAGS) -o $(BIN)/$(NAME) -Lbin -l:$(LIB_ENGINE_DYN) $(LIBS_DYN)
 
-debug:
+debug_app:
 	$(CC) src/main.cpp $(CFLAGS) -o $(BIN)/$(NAME) -Lbin -l:$(LIB_ENGINE_DYN) $(LIBS_DYN)
 
-debug_run_l: debug_l
+debug_lib_run: debug_lib
 	./bin/Engine
 
-debug_run: debug
+debug_app_run: debug_app
 	./bin/Engine
 
 build: lib_static
@@ -64,13 +64,5 @@ pch:
 update_res:
 	rm -r -f $(BUILD)/$(RES); \
 	cp -r $(RES) $(BUILD)/$(RES); \
-
-glad_static:
-	cd lib/glad; \
-	make static;
-
-glad_shared:
-	cd lib/glad; \
-	make shared;
 
 .PHONY: build debug debug_run build_run lib_dyn clean

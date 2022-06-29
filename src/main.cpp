@@ -117,7 +117,7 @@ int main()
     floor->transform.position = glm::vec3(0, -1, 0);
 
     Entity *camera = new Entity("Main Camera");
-    camera->addComponent<Camera>(1920, 1080)->layers.push_back("Back");
+    camera->addComponent<Camera>(activeWindow->width, activeWindow->height)->layers.push_back("Back");
     camera->addComponent<PlayerMovement>();
 
     activeScene->setMainCamera(camera->getComponent<Camera>());
