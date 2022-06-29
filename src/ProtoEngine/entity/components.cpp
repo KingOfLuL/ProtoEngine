@@ -155,8 +155,6 @@ namespace Engine
                     material->shader->setInt("_Material.diffuseTexture", i);
                 else if (tex->getType() == TextureType::SPECULAR)
                     material->shader->setInt("_Material.specularTexture", i);
-                if (tex->colorFormat == GL_RGBA)
-                    material->shader->setBool("_Material.hasTransparency", true);
 
                 tex->bind();
             }

@@ -8,8 +8,6 @@ struct Material
     bool hasSpecular;
 
     float shininess;
-
-    bool hasTransparency;
 };
 uniform Material _Material;
 
@@ -19,7 +17,7 @@ vec4 _TextureSpecularColor;
 void getTextureColors()
 {
     if (_Material.hasDiffuse)
-        _TextureDiffuseColor = texture(_Material.diffuseTexture, _Fragment.UV);
+        _TextureDiffuseColor = texture(_Material.diffuseTexture, _Fragment.UV) * vec4(_Material.diffuseColor, 1.0);
     else
         _TextureDiffuseColor = vec4(_Material.diffuseColor, 1.0);
 

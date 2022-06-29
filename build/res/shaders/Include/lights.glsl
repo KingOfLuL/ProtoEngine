@@ -77,15 +77,17 @@ vec4 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(normal, halfWayDir), 0.0), _Material.shininess);
 
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    float dst = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * dst + light.quadratic * dst);    
 
     vec4 ambient  = vec4(light.ambient, 1.0)  *        _TextureDiffuseColor;
     vec4 diffuse  = vec4(light.diffuse, 1.0)  * diff * _TextureDiffuseColor;
     vec4 specular = vec4(light.specular, 1.0) * spec * _TextureSpecularColor;
-    ambient  *= attenuation;
-    diffuse  *= attenuation;
-    specular *= attenuation;
+
+    ambient  *= vec4(vec3(attenuation), 1.0);
+    diffuse  *= vec4(vec3(attenuation), 1.0);
+    specular *= vec4(vec3(attenuation), 1.0);
+
     return (ambient + diffuse + specular);
 }
 // calculate spot light
@@ -99,8 +101,8 @@ vec4 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(normal, halfWayDir), 0.0), _Material.shininess);
 
-    float dist = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
+    float dst = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * dst + light.quadratic * dst);    
 
     float theta = dot(lightDir, normalize(-light.direction));
     float epsilon = light.cutOff - light.outerCutOff;
@@ -110,8 +112,9 @@ vec4 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     vec4 diffuse = vec4(light.diffuse, 1.0)   * diff *  _TextureDiffuseColor; 
     vec4 specular = vec4(light.specular, 1.0) * spec *  _TextureSpecularColor; 
 
-    ambient *= attenuation * intensity; 
-    diffuse *= attenuation * intensity; 
-    specular *= attenuation * intensity; 
+    ambient *= vec4(vec3(attenuation * intensity), 1.0); 
+    diffuse *= vec4(vec3(attenuation * intensity), 1.0); 
+    specular *= vec4(vec3(attenuation * intensity), 1.0); 
+    
     return (ambient + diffuse + specular);
 }

@@ -3,9 +3,9 @@
     "diffuse": "bark007_1k_color.png",
     "specular": "bark007_1k_specular.png",
     "diffuseColor": [
-        1.0,
-        1.0,
-        1.0
+        0.84,
+        0.61,
+        0.47
     ],
     "shininess": 32,
     "twoSided": false

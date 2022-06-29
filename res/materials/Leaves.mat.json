@@ -3,9 +3,9 @@
     "diffuse": "scatteredleaves001_1k_color.png",
     "specular": "scatteredleaves001_1k_specular.png",
     "diffuseColor": [
+        0.1,
         1.0,
-        1.0,
-        1.0
+        0.1
     ],
     "shininess": 32,
     "twoSided": false

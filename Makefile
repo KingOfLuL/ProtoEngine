@@ -39,12 +39,17 @@ clean:
 	rm -rf $(SRC_OBJ)
 
 
-debug: lib_dyn
+debug_l: lib_dyn
 	$(CC) src/main.cpp $(CFLAGS) -o $(BIN)/$(NAME) -Lbin -l:$(LIB_ENGINE_DYN) $(LIBS_DYN)
+
+debug:
+	$(CC) src/main.cpp $(CFLAGS) -o $(BIN)/$(NAME) -Lbin -l:$(LIB_ENGINE_DYN) $(LIBS_DYN)
+
+debug_run_l: debug_l
+	./bin/Engine
 
 debug_run: debug
 	./bin/Engine
-
 
 build: lib_static
 	make update_res; \

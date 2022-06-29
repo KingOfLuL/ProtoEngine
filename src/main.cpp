@@ -144,7 +144,7 @@ int main()
     r->material->textures.push_back(bc->targetTexture->getTexture());
 
     Entity *light = new Entity("Light");
-    light->addComponent<PointLight>(glm::vec3(0.f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1, 50);
+    light->addComponent<PointLight>(glm::vec3(0.2f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1.5, 50);
 
     Entity *box2 = Entity::loadModel("Box.fbx");
     box2->transform.position = glm::vec3(10, 0, 0);

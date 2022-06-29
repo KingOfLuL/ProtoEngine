@@ -43,10 +43,19 @@ namespace Engine
         height = h;
         colorFormat = colFormat;
 
+        GLenum sRGBformat = colorFormat;
+        if (m_Type == TextureType::DIFFUSE)
+        {
+            if (colorFormat == GL_RGB)
+                sRGBformat = GL_SRGB;
+            else if (colorFormat == GL_RGBA)
+                sRGBformat = GL_SRGB_ALPHA;
+        }
+
         glGenTextures(1, &m_ID);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(m_GLTextureType, m_ID);
-        glTexImage2D(m_GLTextureType, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, textureData);
+        glTexImage2D(m_GLTextureType, 0, sRGBformat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, textureData);
         glGenerateMipmap(m_GLTextureType);
         setTextureWrapMode(GL_REPEAT, GL_REPEAT);
         setTextureFilterMode(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
@@ -98,13 +107,14 @@ namespace Engine
 
         i32 w, h, nrChannels;
         colorFormat = GL_RGB;
+        GLint sRGBformat = GL_RGB;
 
         for (size_t i = 0; i < faces.size(); i++)
         {
             auto path = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + faces[i];
             void *data = stbi_load(path.c_str(), &w, &h, &nrChannels, 0);
             if (data)
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, sRGBformat, w, h, 0, colorFormat, GL_UNSIGNED_BYTE, data);
             else
                 std::cout << "failed to load Cubemap at: " << faces[i] << std::endl;
             stbi_image_free(data);
