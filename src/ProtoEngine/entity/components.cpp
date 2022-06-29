@@ -168,7 +168,7 @@ namespace Engine
             }
 
             material->shader->setVec3("_Material.diffuseColor", material->diffuseColor);
-            material->shader->setFloat("_Material.shininess", 32.f);
+            material->shader->setFloat("_Material.shininess", material->shininess);
 
             material->shader->setBool("_Material.hasDiffuse", material->hasDiffuseTexture);
             material->shader->setBool("_Material.hasSpecular", material->hasSpecularTexture);

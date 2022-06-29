@@ -21,6 +21,7 @@ namespace Engine
             diffuseColor[i++] = item.second.get_value<float>();
 
         twoSided = mat.get<bool>("twoSided");
+        shininess = mat.get<float>("shininess");
 
         std::string diffusePath = mat.get<std::string>("diffuse");
         std::string specularPath = mat.get<std::string>("specular");

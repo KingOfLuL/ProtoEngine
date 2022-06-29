@@ -1,0 +1,12 @@
+{
+    "shader": "Lit",
+    "diffuse": "WoodFloor_Color.png",
+    "specular": "WoodFloor_Specular.png",
+    "diffuseColor": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "shininess": 16,
+    "twoSided": true
+}

@@ -113,6 +113,9 @@ int main()
 
     Shader backScreenShader("vertex/back.vs.glsl", "fragment/back.fs.glsl", "BackScreen");
 
+    Entity *floor = Entity::loadModel("WoodFloor.fbx");
+    floor->transform.position = glm::vec3(0, -1, 0);
+
     Entity *camera = new Entity("Main Camera");
     camera->addComponent<Camera>(true)->layers.push_back("Back");
     camera->addComponent<PlayerMovement>();
@@ -139,9 +142,8 @@ int main()
 
     r->material->textures.push_back(bc->targetTexture->getTexture());
 
-    Entity *flashlight = new Entity("Flashlight");
-    flashlight->addComponent<SpotLight>(glm::vec3(0.f), glm::vec3(1, 0, 1), glm::vec3(1, 0, 1), 3, 20, 30, 45);
-    flashlight->setParent(camera);
+    Entity *light = new Entity("Light");
+    light->addComponent<PointLight>(glm::vec3(0.f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1, 50);
 
     Entity *box2 = Entity::loadModel("Box.fbx");
     box2->transform.position = glm::vec3(10, 0, 0);
@@ -166,7 +168,7 @@ int main()
     window4->transform.position = glm::vec3(0, 5, 25);
 
     Entity *sun = new Entity("Sun");
-    sun->addComponent<DirectionalLight>(glm::vec3(0.2f), glm::vec3(1.f), glm::vec3(1.f), 1);
+    sun->addComponent<DirectionalLight>(glm::vec3(0.2f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1);
     sun->transform.rotation.x = 1;
 
     Engine::run();

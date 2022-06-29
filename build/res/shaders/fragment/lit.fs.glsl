@@ -5,8 +5,8 @@ void main()
 {
     getTextureColors();
 
-    vec3 norm = normalize(_Fragment.Normal);
-    vec3 viewDir = normalize(_ViewPosition - _Fragment.Position);
+    vec3 normal = normalize(_Fragment.Normal);
+    vec3 viewDirection = normalize(_ViewPosition - _Fragment.Position);
 
-    _OutputColor = calculateLitColor(norm, viewDir);
+    _OutputColor = calculateLitColor(normal, viewDirection);
 }
