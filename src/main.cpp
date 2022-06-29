@@ -107,7 +107,7 @@ private:
 int main()
 {
     Scene scene("Game");
-    Engine::init(scene, "Engine", true, 1920, 1080);
+    Engine::init(scene, "Engine", true);
 
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
@@ -117,8 +117,10 @@ int main()
     floor->transform.position = glm::vec3(0, -1, 0);
 
     Entity *camera = new Entity("Main Camera");
-    camera->addComponent<Camera>(true)->layers.push_back("Back");
+    camera->addComponent<Camera>(1920, 1080)->layers.push_back("Back");
     camera->addComponent<PlayerMovement>();
+
+    activeScene->setMainCamera(camera->getComponent<Camera>());
 
     Entity *backScreen = new Entity("BackScreen");
     backScreen->transform.scale *= 0.2f;
@@ -137,8 +139,7 @@ int main()
     Entity *backCamera = new Entity("Back Camera"); // not rendering back but front
     backCamera->transform.rotation.y = 180;
     backCamera->setParent(camera);
-    Camera *bc = backCamera->addComponent<Camera>();
-    bc->targetTexture = new RenderTexture(480, 270);
+    Camera *bc = backCamera->addComponent<Camera>(480, 270);
 
     r->material->textures.push_back(bc->targetTexture->getTexture());
 

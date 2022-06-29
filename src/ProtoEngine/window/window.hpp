@@ -17,18 +17,16 @@ namespace Engine
 
     public:
         Window() = default;
-        Window(const std::string &name, bool fullscreen, int resW, int resH);
+        Window(const std::string &name, bool fullscreen);
         ~Window();
 
     public:
-        void drawToWindow();
-        RenderTexture *getWindowRenderTexture() const;
+        void drawToWindow(RenderTexture *texture);
         GLFWwindow *getGLFWwindow() const;
 
     private:
         GLFWwindow *m_Window;
         Vertexbuffer m_Screen;
-        RenderTexture *m_WindowTexture;
 
     private:
         void sizeCallback(int width, int height);

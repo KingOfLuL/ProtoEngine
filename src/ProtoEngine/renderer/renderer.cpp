@@ -155,6 +155,6 @@ namespace Engine::Renderer
         }
         activeScene->mainCamera->renderToTexture();
 
-        activeWindow->drawToWindow();
+        activeWindow->drawToWindow(activeScene->mainCamera->targetTexture);
     }
 }

@@ -26,6 +26,7 @@ namespace Engine
         void removeBehavior(Behavior *behavior);
         void addCamera(Camera *camera);
         void removeCamera(Camera *camera);
+        void setMainCamera(Camera *camera);
         void start();
         void update();
         void lateUpdate();

@@ -78,17 +78,11 @@ namespace Engine
     ///
     ///
     ///
-    Camera::Camera(bool isMainCamera) : fov(75.f)
+    Camera::Camera(int resW, int resH)
+        : fov(75.f), resolution(resW, resH)
     {
-        if (isMainCamera)
-        {
-            activeScene->mainCamera = this;
-            targetTexture = activeWindow->getWindowRenderTexture();
-        }
-        else
-        {
-            activeScene->addCamera(this);
-        }
+        activeScene->addCamera(this);
+        targetTexture = new RenderTexture(resolution.x, resolution.y);
     }
     Camera::~Camera()
     {

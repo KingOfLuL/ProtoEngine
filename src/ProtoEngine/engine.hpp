@@ -13,7 +13,7 @@ namespace Engine
     // Event that gets called on each frame
     extern Event onRenderUpdate;
 
-    void init(Scene &scene, const std::string &windowName, bool fullscreen, int resolutionWidth, int resolutionHeight);
+    void init(Scene &scene, const std::string &windowName, bool fullscreen);
     void run();
 }
 

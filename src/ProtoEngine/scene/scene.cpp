@@ -126,6 +126,10 @@ namespace Engine
     {
         m_Cameras.erase(std::find(m_Cameras.begin(), m_Cameras.end(), camera));
     }
+    void Scene::setMainCamera(Camera *camera)
+    {
+        mainCamera = camera;
+    }
     const std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> &Scene::getDirectionalLights() const
     {
         return m_DirectionalLights;

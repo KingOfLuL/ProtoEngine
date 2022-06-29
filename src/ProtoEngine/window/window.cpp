@@ -6,7 +6,7 @@
 
 namespace Engine
 {
-    Window::Window(const std::string &name, bool fullscreen, int resW, int resH)
+    Window::Window(const std::string &name, bool fullscreen)
     {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -55,19 +55,14 @@ namespace Engine
         m_Screen.addIndexbuffer(&indices[0], 6);
 
         Renderer::shaderScreen = new Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
-        m_WindowTexture = new RenderTexture(resW, resH);
     }
-    RenderTexture *Window::getWindowRenderTexture() const
-    {
-        return m_WindowTexture;
-    }
-    void Window::drawToWindow()
+    void Window::drawToWindow(RenderTexture *texture)
     {
         Renderer::shaderScreen->use();
         glViewport(0, 0, width, height);
 
         glActiveTexture(GL_TEXTURE0);
-        m_WindowTexture->bindTexture();
+        texture->bindTexture();
 
         glDisable(GL_DEPTH_TEST);
         m_Screen.draw();
@@ -75,7 +70,7 @@ namespace Engine
     }
     Window::~Window()
     {
-        delete m_WindowTexture;
+        glfwDestroyWindow(m_Window);
     }
     void Window::sizeCallback(int width, int height)
     {

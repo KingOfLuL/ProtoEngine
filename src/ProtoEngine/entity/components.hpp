@@ -55,7 +55,7 @@ namespace Engine
     class Camera : public Component
     {
     public:
-        Camera(bool isMainCamera = false);
+        Camera(int resW, int resH);
         ~Camera();
 
     public:
@@ -68,6 +68,7 @@ namespace Engine
         RenderTexture *targetTexture;
         std::vector<std::string> layers = {"Default"};
         float fov;
+        glm::vec2 resolution;
     };
 
     ///
