@@ -46,17 +46,17 @@ debug_app:
 	$(CC) src/main.cpp $(CFLAGS) -o $(BIN)/$(NAME) -Lbin -l:$(LIB_ENGINE_DYN) $(LIBS_DYN)
 
 debug_lib_run: debug_lib
-	./bin/Engine
+	./$(BIN)/$(NAME)
 
 debug_app_run: debug_app
-	./bin/Engine
+	./$(BIN)/$(NAME)
 
 build: lib_static
 	make update_res; \
 	$(CC) src/main.cpp $(CFLAGS) -static -L$(LIB_ENGINE) -l:$(LIB_ENGINE_STATIC) $(LIBS_STATIC) -o $(BUILD)/$(NAME);
 
 build_run: build
-	./build/Engine
+	./$(BUILD)/$(NAME)
 
 pch:
 	$(CC) -c $(PCH) $(CFLAGS)

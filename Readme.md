@@ -1,6 +1,6 @@
 # ProtoEngine
 
-A prototype of an engine written in c++ and OpenGL I´m working on, based on the learnopengl.com tutorial
+A prototype of an engine written in c++ and OpenGL I´m working on, based on the learnopengl.com tutorial. Currently only for Windows.
 
 ## Running
 
@@ -14,12 +14,20 @@ For Compiling yourself you need the following libraries installed:
 
 glm, GLFW, boost, stb, Assimp
 
-The included Makefile has two options for compiling:
+The options for compiling:
 
-### debug
+### debug_lib
 
-Creates an executable without statically linked libraries. Found in the "bin" directory.
+Compiles the engine into the library and compiles the application into an executable. The library is linked dynamically. Is meant for testing the engine itself.
+
+### debug_app
+
+Compiles to an executable without (re)creating the engine-library. Is meant to test the application without changing the inner workings of the engine.
 
 ### build
 
-Copies the "res" directory into the "build" directory and creates an executable with static linking. Can be found in the "build" directory.
+Creates the entire build: Compiles both the engine into the library and the files for the application to the executable. Also copies the "res" directory into the "build" directory. The library is linked statically.
+
+### []_run
+
+The three previous options have versions with the suffix "_run". Simply runs the respective executable.
