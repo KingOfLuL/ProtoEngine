@@ -111,66 +111,17 @@ int main()
 
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
-    Shader backScreenShader("vertex/back.vs.glsl", "fragment/back.fs.glsl", "BackScreen");
-
-    Entity *floor = Entity::loadModel("WoodFloor.fbx");
-    floor->transform.position = glm::vec3(0, -1, 0);
-
     Entity *camera = new Entity("Main Camera");
     camera->addComponent<Camera>(activeWindow->width, activeWindow->height)->layers.push_back("Back");
     camera->addComponent<PlayerMovement>();
 
     activeScene->setMainCamera(camera->getComponent<Camera>());
 
-    Entity *backScreen = new Entity("BackScreen");
-    backScreen->transform.scale *= 0.2f;
-    backScreen->transform.position = glm::vec3(0, 0.7, 0);
-    backScreen->layer = "Back";
-    MeshRenderer *r = backScreen->addComponent<MeshRenderer>();
-    r->setMesh({
-                   Vertex({-1, 1, 0.0}, {0, 0, 0}, {0.f, 1.f}, {1.f, 1.f, 1.f}),
-                   Vertex({-1, -1, 0.0}, {0, 0, 0}, {0.f, 0.f}, {1.f, 1.f, 1.f}),
-                   Vertex({1, -1, 0.0}, {0, 0, 0}, {1.f, 0.f}, {1.f, 1.f, 1.f}),
-                   Vertex({1, 1, 0.0}, {0, 0, 0}, {1.f, 1.f}, {1.f, 1.f, 1.f}),
-               },
-               {0, 1, 3, 1, 2, 3});
-    r->material = new Material("BackScreen");
-
-    Entity *backCamera = new Entity("Back Camera"); // not rendering back but front
-    backCamera->transform.rotation.y = 180;
-    backCamera->setParent(camera);
-    Camera *bc = backCamera->addComponent<Camera>(480, 270);
-
-    r->material->textures.push_back(bc->targetTexture->getTexture());
-
-    Entity *light = new Entity("Light");
-    light->addComponent<PointLight>(glm::vec3(0.2f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1.5, 50);
-
-    Entity *box2 = Entity::loadModel("Box.fbx");
-    box2->transform.position = glm::vec3(10, 0, 0);
-
-    Entity *tree = Entity::loadModel("Tree.fbx");
-    tree->transform.position = glm::vec3(0, 0, 10);
-    tree->addComponent<Rotate>();
-
-    Entity *backpack = Entity::loadModel("Backpack.fbx");
-    backpack->transform.position = glm::vec3(0, 0, -10);
-
-    Entity *window = Entity::loadModel("Window.fbx");
-    window->transform.position = glm::vec3(5, 10, -10);
-
-    Entity *window2 = Entity::loadModel("Window.fbx");
-    window2->transform.position = glm::vec3(-10, 10, -10);
-
-    Entity *window3 = Entity::loadModel("Window.fbx");
-    window3->transform.position = glm::vec3(15, -10, 5);
-
-    Entity *window4 = Entity::loadModel("Window.fbx");
-    window4->transform.position = glm::vec3(0, 5, 25);
+    Entity::loadModel("Landscape.fbx");
 
     Entity *sun = new Entity("Sun");
-    sun->addComponent<DirectionalLight>(glm::vec3(0.2f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1);
-    sun->transform.rotation.x = 1;
+    sun->addComponent<DirectionalLight>(glm::vec3(0.4f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1);
+    sun->transform.rotation = {1, -0.35, 0.18};
 
     Engine::run();
 

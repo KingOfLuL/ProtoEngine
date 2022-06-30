@@ -1,7 +1,7 @@
 {
     "shader": "Lit",
-    "diffuse": "bark007_1k_color.png",
-    "specular": "bark007_1k_specular.png",
+    "diffuse": "tree/bark007_1k_color.png",
+    "specular": "tree/bark007_1k_specular.png",
     "diffuseColor": [
         0.84,
         0.61,

@@ -1,7 +1,7 @@
 {
     "shader": "Lit",
-    "diffuse": "WoodFloor_Color.png",
-    "specular": "WoodFloor_Specular.png",
+    "diffuse": "floor/WoodFloor_Color.png",
+    "specular": "floor/WoodFloor_Specular.png",
     "diffuseColor": [
         1.0,
         1.0,

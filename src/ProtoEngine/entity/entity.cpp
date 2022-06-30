@@ -170,7 +170,12 @@ namespace Engine
                 aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
                 std::string matName = material->GetName().C_Str();
-                Material *mat = Material::getMaterialByName(matName);
+
+                entity = new Entity(node->mName.C_Str());
+                entity->parent = rootEntity;
+                rootEntity->children.push_back(entity);
+
+                Material *mat = Material::getMaterialByName(matName); // TODO: clean up; combining meshes?
                 if (mat)
                 {
                     auto renderer = entity->getComponent<MeshRenderer>();
@@ -187,10 +192,6 @@ namespace Engine
                 }
                 else
                 {
-                    entity = new Entity(node->mName.C_Str());
-                    entity->parent = rootEntity;
-                    rootEntity->children.push_back(entity);
-
                     mat = new Material(matName);
 
                     auto renderer = entity->addComponent<MeshRenderer>();

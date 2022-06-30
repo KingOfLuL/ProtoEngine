@@ -1,7 +1,7 @@
 {
     "shader": "Lit",
-    "diffuse": "scatteredleaves001_1k_color.png",
-    "specular": "scatteredleaves001_1k_specular.png",
+    "diffuse": "tree/scatteredleaves001_1k_color.png",
+    "specular": "tree/scatteredleaves001_1k_specular.png",
     "diffuseColor": [
         0.1,
         1.0,

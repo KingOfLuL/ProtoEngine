@@ -30,7 +30,7 @@
             "name": "Run",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/Engine.exe",
+            "program": "${workspaceRoot}/bin/App.exe",
             "cwd": "${workspaceFolder}",
             "externalConsole": true,
             "MIMode": "gdb",

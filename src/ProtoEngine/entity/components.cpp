@@ -107,7 +107,7 @@ namespace Engine
         return glm::perspective<f32>(glm::radians(fov),
                                      f32(targetTexture->getWidth()) / f32(targetTexture->getHeight()),
                                      0.01f,
-                                     100.0f);
+                                     300.0f);
     }
     void Camera::renderToTexture()
     {
