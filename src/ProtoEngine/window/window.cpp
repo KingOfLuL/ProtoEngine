@@ -1,8 +1,8 @@
 #include "libs.hpp"
 
 #include "window.hpp"
-#include "engine.hpp"
 #include "input/input.hpp"
+#include "application/application.hpp"
 
 namespace Engine
 {
@@ -54,11 +54,11 @@ namespace Engine
         m_Screen = Vertexbuffer(&verts[0], 4);
         m_Screen.addIndexbuffer(&indices[0], 6);
 
-        Renderer::shaderScreen = new Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
+        m_Shader = Shader("vertex/screen.vs.glsl", "fragment/screen.fs.glsl", "Screen");
     }
     void Window::drawToWindow(RenderTexture *texture)
     {
-        Renderer::shaderScreen->use();
+        m_Shader.use();
         glViewport(0, 0, width, height);
 
         glActiveTexture(GL_TEXTURE0);
@@ -81,7 +81,7 @@ namespace Engine
     void Window::framebuffer_size_callback(GLFWwindow *window, i32 width, i32 height)
     {
         (void)window;
-        activeWindow->sizeCallback(width, height);
+        application->window->sizeCallback(width, height);
     }
     void Window::mouse_callback(GLFWwindow *window, f64 xOffset, f64 yOffset)
     {

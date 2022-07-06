@@ -74,7 +74,7 @@ namespace Engine
     {
     public:
         Framebuffer() = default;
-        Framebuffer(i32 w, i32 h, RenderTexture *renderTexture);
+        Framebuffer(i32 w, i32 h, u32 textureID);
 
         void bind() const override;
         void unbind() const override;
@@ -85,7 +85,6 @@ namespace Engine
 
     private:
         Renderbuffer m_Renderbuffer;
-        RenderTexture *m_RenderTexture;
     };
 
     class Uniformbuffer : public Buffer

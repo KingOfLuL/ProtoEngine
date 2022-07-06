@@ -114,19 +114,20 @@ namespace Engine
         glRenderbufferStorage(GL_RENDERBUFFER, m_StorageType, width, height);
     }
 
-    Framebuffer::Framebuffer(i32 w, i32 h, RenderTexture *renderTexture)
-        : width(w), height(h), m_RenderTexture(renderTexture)
+    Framebuffer::Framebuffer(i32 w, i32 h, u32 textureID)
+        : width(w), height(h)
     {
         glGenFramebuffers(1, &m_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture->getTexture()->getID(), 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 
         m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Renderbuffer.getID());
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            std::cout << "ERROR: Framebuffer is not complete" << std::endl;
+            std::cerr
+                << "ERROR: Framebuffer is not complete" << std::endl;
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }

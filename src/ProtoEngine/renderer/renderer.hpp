@@ -11,11 +11,6 @@
 
 namespace Engine::Renderer
 {
-    extern Shader *shaderLit;
-    extern Shader *shaderBounds;
-    extern Shader *shaderScreen;
-    extern Shader *shaderCubemap;
-
     extern Uniformbuffer shaderUniformbufferMatrices;
     extern Uniformbuffer shaderUniformbufferLights;
     extern Uniformbuffer shaderUniformbufferInput;

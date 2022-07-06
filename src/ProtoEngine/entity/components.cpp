@@ -2,14 +2,13 @@
 
 #include "components.hpp"
 
-#include "engine.hpp"
+#include "application/application.hpp"
+#include "entity/entity.hpp"
 #include "util/util.hpp"
 #include "renderer/material/shader/shader.hpp"
 #include "renderer/texture/texture.hpp"
 #include "time/time.hpp"
 #include "input/input.hpp"
-
-#include <stb/stb_image.h>
 
 namespace Engine
 {
@@ -81,18 +80,18 @@ namespace Engine
     Camera::Camera(i32 resW, i32 resH)
         : fov(75.f), resolution(resW, resH)
     {
-        activeScene->addCamera(this);
+        application->scene->addCamera(this);
         targetTexture = new RenderTexture(resolution.x, resolution.y);
     }
     Camera::~Camera()
     {
-        if (activeScene->mainCamera == this)
+        if (application->scene->mainCamera == this)
         {
-            activeScene->mainCamera = nullptr;
+            application->scene->mainCamera = nullptr;
         }
         else
         {
-            activeScene->removeCamera(this);
+            application->scene->removeCamera(this);
             delete targetTexture;
         }
     }
@@ -124,10 +123,10 @@ namespace Engine
         };
         Renderer::shaderUniformbufferMatrices.setData(&matrices[0], sizeof(matrices), 0);
 
-        if (activeScene->skybox && std::find(layers.begin(), layers.end(), "Default") != layers.end())
-            activeScene->skybox->draw();
+        if (application->scene->skybox && std::find(layers.begin(), layers.end(), "Default") != layers.end())
+            application->scene->skybox->draw();
 
-        for (const auto &renderer : activeScene->getRenderers(this))
+        for (const auto &renderer : application->scene->getRenderers(this))
         {
             // check if the renderer is on the same layer as the camera
             if (std::find(layers.begin(), layers.end(), renderer->entity->layer) == layers.end())
@@ -176,17 +175,17 @@ namespace Engine
     MeshRenderer::MeshRenderer(bool addToScene)
     {
         if (addToScene)
-            activeScene->addMeshRenderer(this);
+            application->scene->addMeshRenderer(this);
     }
     MeshRenderer::~MeshRenderer()
     {
-        activeScene->removeMeshRenderer(this);
+        application->scene->removeMeshRenderer(this);
         mesh.vertexbuffer.deleteBuffers();
     }
     MeshRenderer::MeshRenderer(const MeshRenderer &other) : material(other.material), drawBounds(other.drawBounds)
     {
         setMesh(other.mesh);
-        activeScene->addMeshRenderer(this);
+        application->scene->addMeshRenderer(this);
     }
     void MeshRenderer::setMesh(const Mesh &other)
     {
@@ -257,11 +256,11 @@ namespace Engine
     DirectionalLight::DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity)
         : Light(ambient, diffuse, specular, intensity)
     {
-        activeScene->addDirectionalLight(this);
+        application->scene->addDirectionalLight(this);
     }
     DirectionalLight::~DirectionalLight()
     {
-        activeScene->removeDirectionalLight(this);
+        application->scene->removeDirectionalLight(this);
     }
     glm::vec3 DirectionalLight::getDirection() const
     {
@@ -292,11 +291,11 @@ namespace Engine
     PointLight::PointLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity, f32 range)
         : Light(ambient, diffuse, specular, intensity), range(range)
     {
-        activeScene->addPointLight(this);
+        application->scene->addPointLight(this);
     }
     PointLight::~PointLight()
     {
-        activeScene->removePointLight(this);
+        application->scene->removePointLight(this);
     }
     const std::vector<f32> PointLight::getData() const
     {
@@ -327,11 +326,11 @@ namespace Engine
     SpotLight::SpotLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity, f32 range, f32 innerCutoff, f32 outerCutoff)
         : Light(ambient, diffuse, specular, intensity), innerCutoff(innerCutoff), outerCutoff(outerCutoff), range(range)
     {
-        activeScene->addSpotLight(this);
+        application->scene->addSpotLight(this);
     }
     SpotLight::~SpotLight()
     {
-        activeScene->removeSpotLight(this);
+        application->scene->removeSpotLight(this);
     }
     glm::vec3 SpotLight::getDirection() const
     {
@@ -376,10 +375,10 @@ namespace Engine
     ///
     Behavior::Behavior()
     {
-        activeScene->addBehavior(this);
+        application->scene->addBehavior(this);
     }
     Behavior::~Behavior()
     {
-        activeScene->removeBehavior(this);
+        application->scene->removeBehavior(this);
     }
 }

@@ -3,7 +3,7 @@
 #include "entity.hpp"
 
 #include "util/util.hpp"
-#include "engine.hpp"
+#include "application/application.hpp"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -16,11 +16,11 @@ namespace Engine
     Entity::Entity(const std::string &name, const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name(name), transform(pos, rot, scl)
     {
         transform.entity = this;
-        activeScene->addEntity(this);
+        application->scene->addEntity(this);
     }
     Entity::Entity(const Entity &entity)
     {
-        activeScene->addEntity(this);
+        application->scene->addEntity(this);
 
         name = entity.name;
         parent = entity.parent;
@@ -62,7 +62,7 @@ namespace Engine
     }
     Entity::~Entity()
     {
-        activeScene->removeEntity(this);
+        application->scene->removeEntity(this);
         for (auto c : m_Components)
             delete c;
 

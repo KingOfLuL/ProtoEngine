@@ -1,6 +1,6 @@
 #include "libs.hpp"
 
-#include "engine.hpp"
+#include "application/application.hpp"
 #include "entity/entity.hpp"
 #include "mesh.hpp"
 #include "renderer/renderer.hpp"
@@ -63,8 +63,11 @@ namespace Engine
     {
         Vertex vert(center * 2.f, size, {0.0, 0.0});
         m_Vertexbuffer.setData(&vert, 1);
-        Renderer::shaderBounds->use();
-        Renderer::shaderBounds->setMat4("_ModelMatrix", glm::mat4(1.0));
+
+        const auto &shader = Shader::getShaderByName("Bounds");
+
+        shader->use();
+        shader->setMat4("_ModelMatrix", glm::mat4(1.0));
         m_Vertexbuffer.bind();
         glDrawArrays(GL_POINTS, 0, 1);
         m_Vertexbuffer.unbind();

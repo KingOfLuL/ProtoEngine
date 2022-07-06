@@ -1,13 +1,13 @@
 #ifndef SRC_ENGINE_PROTOENGINE
 #define SRC_ENGINE_PROTOENGINE
 
-#include "Engine.hpp"
-#include "Entity/Entity.hpp"
-#include "Entity/Components.hpp"
-#include "Renderer/Skybox/Skybox.hpp"
-#include "Time/Time.hpp"
+#include "entity/entity.hpp"
+#include "entity/components.hpp"
+#include "application/application.hpp"
+#include "renderer/skybox/skybox.hpp"
+#include "time/time.hpp"
 #include "Input/Input.hpp"
 #include "util/util.hpp"
-#include "Util/Random/Random.hpp"
+#include "util/random/random.hpp"
 
 #endif // SRC_ENGINE_PROTOENGINE

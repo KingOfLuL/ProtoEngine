@@ -14,7 +14,8 @@ namespace Engine
         DIFFUSE,
         SPECULAR,
         NORMAL,
-        RENDERTEXTURE,
+        RENDER_TEXTURE,
+        DEPTH_TEXTURE,
     };
 
     class Texture

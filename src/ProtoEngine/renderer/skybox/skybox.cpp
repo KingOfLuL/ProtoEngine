@@ -63,7 +63,7 @@ namespace Engine
         glDepthFunc(GL_LEQUAL);
         glActiveTexture(GL_TEXTURE0);
 
-        Renderer::shaderCubemap->use();
+        Shader::getShaderByName("Cubemap")->use();
         m_Cubemap.bind();
         m_Vertexbuffer.draw();
 

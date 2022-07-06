@@ -2,20 +2,13 @@
 
 #include "renderer.hpp"
 
-#include "engine.hpp"
 #include "glad/glad.h"
 #include "util/util.hpp"
 #include "time/time.hpp"
-
-#include <stb/stb_image.h>
+#include "application/application.hpp"
 
 namespace Engine::Renderer
 {
-    Shader *shaderLit;
-    Shader *shaderBounds;
-    Shader *shaderCubemap;
-    Shader *shaderScreen;
-
     Uniformbuffer shaderUniformbufferMatrices;
     Uniformbuffer shaderUniformbufferLights;
     Uniformbuffer shaderUniformbufferInput;
@@ -47,20 +40,15 @@ namespace Engine::Renderer
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonOffset(1.0f, 1.0f);
 
-        shaderLit = new Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit");
-        shaderCubemap = new Shader("vertex/cubemap.vs.glsl", "fragment/cubemap.fs.glsl", "Cubemap");
-        shaderBounds = new Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds");
-        shaderBounds->addGeometryShader("geometry/bounds.gs.glsl");
-
         shaderUniformbufferMatrices = Uniformbuffer(MATRIX_DATA_SIZE, 0);
         shaderUniformbufferLights = Uniformbuffer(LIGHT_DATA_SIZE, 1);
         shaderUniformbufferInput = Uniformbuffer(INPUT_DATA_SIZE, 2);
     }
     void updateLights()
     {
-        const auto &dirLights = activeScene->getDirectionalLights();
-        const auto &pointLights = activeScene->getPointLights();
-        const auto &spotLights = activeScene->getSpotLights();
+        const auto &dirLights = application->scene->getDirectionalLights();
+        const auto &pointLights = application->scene->getPointLights();
+        const auto &spotLights = application->scene->getSpotLights();
 
         std::array<f32, LIGHT_DATA_SIZE / sizeof(f32)> lightData;
 
@@ -137,24 +125,28 @@ namespace Engine::Renderer
     }
     void render()
     {
+        Time::time = glfwGetTime();
+        Time::deltaTime = Time::time - Time::lastFrame;
+        Time::lastFrame = Time::time;
+
         glClearColor(0.2f, 0.2f, 0.2f, 1.0);
         updateLights();
 
         f32 shaderData[] = {
             Time::deltaTime,
             Time::time,
-            activeWindow->width,
-            activeWindow->height,
+            application->window->width,
+            application->window->height,
         };
 
         shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData) * sizeof(f32), sizeof(glm::vec3));
 
-        for (const auto &camera : activeScene->getCameras())
+        for (const auto &camera : application->scene->getCameras())
         {
             camera->renderToTexture();
         }
-        activeScene->mainCamera->renderToTexture();
+        application->scene->mainCamera->renderToTexture();
 
-        activeWindow->drawToWindow(activeScene->mainCamera->targetTexture);
+        application->window->drawToWindow(application->scene->mainCamera->targetTexture);
     }
 }

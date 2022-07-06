@@ -27,6 +27,7 @@ namespace Engine
     private:
         GLFWwindow *m_Window;
         Vertexbuffer m_Screen;
+        Shader m_Shader;
 
     private:
         void sizeCallback(i32 width, i32 height);

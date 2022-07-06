@@ -106,24 +106,26 @@ private:
 
 int main()
 {
+    application = new Application("App", true);
+
     Scene scene("Game");
-    Engine::init(scene, "Engine", true);
+    application->setActiveScene(&scene);
 
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
-    Entity *camera = new Entity("Main Camera");
-    camera->addComponent<Camera>(activeWindow->width, activeWindow->height)->layers.push_back("Back");
-    camera->addComponent<PlayerMovement>();
+    Entity camera("Main Camera");
+    camera.addComponent<Camera>(application->window->width, application->window->height)->layers.push_back("Back");
+    camera.addComponent<PlayerMovement>();
 
-    activeScene->setMainCamera(camera->getComponent<Camera>());
+    application->scene->setMainCamera(camera.getComponent<Camera>());
 
     Entity::loadModel("Landscape.fbx");
 
-    Entity *sun = new Entity("Sun");
-    sun->addComponent<DirectionalLight>(glm::vec3(0.4f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1);
-    sun->transform.rotation = {1, -0.35, 0.18};
+    Entity sun("Sun");
+    sun.addComponent<DirectionalLight>(glm::vec3(0.15f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1);
+    sun.transform.rotation = {1, -0.35, 0.18};
 
-    Engine::run();
+    application->run();
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef SRC_ENGINE_UTIL_UTIL
 #define SRC_ENGINE_UTIL_UTIL
 
+#include "application/application.hpp"
 #include "renderer/mesh/mesh.hpp"
 #include "util/types.h"
 

@@ -44,6 +44,7 @@ namespace Engine
         colorFormat = colFormat;
 
         GLenum sRGBformat = colorFormat;
+        GLenum glType = GL_UNSIGNED_BYTE;
         if (m_Type == TextureType::DIFFUSE)
         {
             if (colorFormat == GL_RGB)
@@ -51,12 +52,18 @@ namespace Engine
             else if (colorFormat == GL_RGBA)
                 sRGBformat = GL_SRGB_ALPHA;
         }
+        else if (m_Type == TextureType::DEPTH_TEXTURE)
+        {
+            colorFormat = GL_DEPTH_COMPONENT;
+            sRGBformat = GL_DEPTH_COMPONENT;
+            glType = GL_FLOAT;
+        }
 
         glGenTextures(1, &m_ID);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(m_GLTextureType, m_ID);
-        glTexImage2D(m_GLTextureType, 0, sRGBformat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, textureData);
-        glGenerateMipmap(m_GLTextureType);
+        glTexImage2D(m_GLTextureType, 0, sRGBformat, width, height, 0, colorFormat, glType, textureData);
+        glGenerateMipmap(m_GLTextureType); // TODO: optional mipmap
         setTextureWrapMode(GL_REPEAT, GL_REPEAT);
         setTextureFilterMode(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     }
@@ -107,7 +114,7 @@ namespace Engine
 
         i32 w, h, nrChannels;
         colorFormat = GL_RGB;
-        GLint sRGBformat = GL_RGB;
+        GLint sRGBformat = GL_SRGB;
 
         for (size_t i = 0; i < faces.size(); i++)
         {
@@ -128,11 +135,11 @@ namespace Engine
     }
     RenderTexture::RenderTexture(i32 w, i32 h)
     {
-        m_Texture = new Texture2D(NULL, w, h, GL_RGB);
+        m_Texture = new Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE);
         m_Texture->setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
         m_Texture->setTextureFilterMode(GL_LINEAR, GL_LINEAR);
 
-        m_Framebuffer = Framebuffer(w, h, this);
+        m_Framebuffer = Framebuffer(w, h, m_Texture->getID());
     }
     RenderTexture::~RenderTexture()
     {

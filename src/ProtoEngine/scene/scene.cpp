@@ -2,12 +2,13 @@
 
 #include "scene.hpp"
 
-#include "engine.hpp"
+#include "application/application.hpp"
 #include "util/util.hpp"
 
 namespace Engine
 {
-    Scene::Scene(const std::string &name) : m_Name(name)
+    Scene::Scene(const std::string &name)
+        : m_Name(name)
     {
     }
     void Scene::addEntity(Entity *entity)
@@ -149,8 +150,8 @@ namespace Engine
             std::sort(m_Renderers.begin(), m_Renderers.end(),
                       [](MeshRenderer *a, MeshRenderer *b)
                       {
-                          f32 distA = glm::length(activeScene->mainCamera->entity->transform.position - a->bounds.center);
-                          f32 distB = glm::length(activeScene->mainCamera->entity->transform.position - b->bounds.center);
+                          f32 distA = glm::length(application->scene->mainCamera->entity->transform.position - a->bounds.center);
+                          f32 distB = glm::length(application->scene->mainCamera->entity->transform.position - b->bounds.center);
                           return distA > distB;
                       });
         }

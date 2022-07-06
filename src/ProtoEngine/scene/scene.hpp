@@ -12,6 +12,8 @@ namespace Engine
     {
     public:
         Scene(const std::string &name);
+
+    public:
         void addEntity(Entity *entity);
         void removeEntity(Entity *entity);
         void addMeshRenderer(MeshRenderer *renderers);

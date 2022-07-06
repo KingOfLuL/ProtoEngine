@@ -1,8 +1,7 @@
 #include "libs.hpp"
 
 #include "input.hpp"
-
-#include "engine.hpp"
+#include "application/application.hpp"
 
 namespace Engine::Input
 {
@@ -13,7 +12,7 @@ namespace Engine::Input
 
     bool keyIsDown(int key)
     {
-        return glfwGetKey(Engine::activeWindow->getGLFWwindow(), key) == GLFW_PRESS;
+        return glfwGetKey(Engine::application->window->getGLFWwindow(), key) == GLFW_PRESS;
     }
 
     f32 lastX, lastY;

@@ -26,8 +26,8 @@ PCH = lib/libs.hpp
 libs: $(SRC_OBJ)
 	$(CC) -shared $^ $(CFLAGS) $(LIBS_DYN) -o $(LIB_DYN_OUT); \
 	ar rcs $(LIB_STATIC_OUT) $^; \
-	cp $(LIB_DYN_OUT) $(BIN);
-	rm -rf $(SRC_OBJ)
+	cp $(LIB_DYN_OUT) $(BIN); \
+	make clean;
 
 %.o: %.cpp
 	$(CC) -c -fPIC $^ $(CFLAGS) -o $@
@@ -48,5 +48,8 @@ build_run: build
 
 pch:
 	$(CC) -c $(PCH) $(CFLAGS)
+
+clean:
+	rm -rf $(SRC_OBJ)
 
 .PHONY: build debug debug_run build_run lib_dyn clean
