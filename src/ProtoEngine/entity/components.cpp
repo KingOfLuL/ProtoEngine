@@ -104,14 +104,14 @@ namespace Engine
     glm::mat4 Camera::getProjectionMatrix() const
     {
         return glm::perspective<f32>(glm::radians(fov),
-                                     f32(targetTexture->getWidth()) / f32(targetTexture->getHeight()),
+                                     f32(targetTexture->width) / f32(targetTexture->height),
                                      0.01f,
                                      300.0f);
     }
     void Camera::renderToTexture()
     {
         targetTexture->bindFramebuffer();
-        glViewport(0, 0, targetTexture->getWidth(), targetTexture->getHeight());
+        glViewport(0, 0, targetTexture->width, targetTexture->height);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

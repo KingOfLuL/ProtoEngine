@@ -69,7 +69,6 @@ namespace Engine
         GLenum m_StorageType;
     };
 
-    class RenderTexture;
     class Framebuffer : public Buffer
     {
     public:

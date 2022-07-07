@@ -134,29 +134,32 @@ namespace Engine
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
     RenderTexture::RenderTexture(i32 w, i32 h)
+        : Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE)
     {
-        m_Texture = new Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE);
-        m_Texture->setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-        m_Texture->setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+        // m_Texture = new Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE);
+        // m_Texture->setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+        // m_Texture->setTextureFilterMode(GL_LINEAR, GL_LINEAR);
 
-        m_Framebuffer = Framebuffer(w, h, m_Texture->getID());
+        setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+        setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+        m_Framebuffer = Framebuffer(w, h, m_ID);
     }
     RenderTexture::~RenderTexture()
     {
-        delete m_Texture;
+        // delete m_Texture;
     }
-    i32 RenderTexture::getWidth() const
-    {
-        return m_Texture->width;
-    }
-    i32 RenderTexture::getHeight() const
-    {
-        return m_Texture->height;
-    }
-    Texture2D *RenderTexture::getTexture() const
-    {
-        return m_Texture;
-    }
+    // i32 RenderTexture::getWidth() const
+    // {
+    //     return m_Texture->width;
+    // }
+    // i32 RenderTexture::getHeight() const
+    // {
+    //     return m_Texture->height;
+    // }
+    // Texture2D *RenderTexture::getTexture() const
+    // {
+    //     return m_Texture;
+    // }
     void RenderTexture::bindFramebuffer() const
     {
         m_Framebuffer.bind();
@@ -165,8 +168,8 @@ namespace Engine
     {
         m_Framebuffer.unbind();
     }
-    void RenderTexture::bindTexture() const
-    {
-        m_Texture->bind();
-    }
+    // void RenderTexture::bindTexture() const
+    // {
+    //     m_Texture->bind();
+    // }
 }

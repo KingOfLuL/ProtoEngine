@@ -1,5 +1,5 @@
-#ifndef SRC_ENGINE_RENDERER_TEXTURE_TEXTURE
-#define SRC_ENGINE_RENDERER_TEXTURE_TEXTURE
+#ifndef SRC_PROTOENGINE_RENDERER_TEXTURE_TEXTURE
+#define SRC_PROTOENGINE_RENDERER_TEXTURE_TEXTURE
 
 #include "glad/glad.h"
 #include "renderer/buffers/buffers.hpp"
@@ -62,7 +62,7 @@ namespace Engine
         std::string m_Path = "";
     };
 
-    class RenderTexture
+    class RenderTexture : public Texture2D
     {
     public:
         RenderTexture() = default;
@@ -72,16 +72,16 @@ namespace Engine
     public:
         void bindFramebuffer() const;
         void unbindFramebuffer() const;
-        void bindTexture() const;
+        // void bindTexture() const;
 
-        i32 getWidth() const;
-        i32 getHeight() const;
+        // i32 getWidth() const;
+        // i32 getHeight() const;
 
-        Texture2D *getTexture() const;
+        // Texture2D *getTexture() const;
 
     private:
         Framebuffer m_Framebuffer;
-        Texture2D *m_Texture = nullptr;
+        // Texture2D *m_Texture = nullptr;
     };
 
     class Cubemap : public Texture
@@ -94,4 +94,4 @@ namespace Engine
         std::array<std::string, 6> m_FacePaths;
     };
 }
-#endif // SRC_ENGINE_RENDERER_TEXTURE_TEXTURE
+#endif // SRC_PROTOENGINE_RENDERER_TEXTURE_TEXTURE

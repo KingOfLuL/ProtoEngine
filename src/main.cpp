@@ -117,10 +117,11 @@ int main()
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
     Entity camera("Main Camera");
-    camera.addComponent<Camera>(application->window->width, application->window->height);
+    auto cameraComponent = camera.addComponent<Camera>(application->window->width, application->window->height);
+
     camera.addComponent<PlayerMovement>();
 
-    application->scene->setMainCamera(camera.getComponent<Camera>());
+    application->scene->setMainCamera(cameraComponent);
 
     Entity sun("Sun");
     sun.addComponent<DirectionalLight>(glm::vec3(0.1), glm::vec3(0.5), glm::vec3(0.5), 1);
