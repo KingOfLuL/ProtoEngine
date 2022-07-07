@@ -1,7 +1,8 @@
 {
-    "shader": "BackScreen",
+    "shader": "Back",
     "diffuse": "RenderTexture",
-    "specular": "",
+    "specular": "RenderTexture",
+    "normal": "RenderTexture",
     "diffuseColor": [
         1.0,
         1.0,

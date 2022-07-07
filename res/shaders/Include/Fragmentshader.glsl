@@ -20,3 +20,8 @@ in mat3 _TBN;
 uniform samplerCube _Skybox;
 
 out vec4 _OutputColor;
+
+vec3 correctGamma(vec3 color)
+{
+    return pow(color, vec3(1.0 / _Gamma));
+}

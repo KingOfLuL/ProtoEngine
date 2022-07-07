@@ -11,6 +11,4 @@ void main()
         _OutputColor = vec4(vec3(0.0), 1.0);
     else
         _OutputColor = vec4(col , 1.0);
-
-    _OutputColor.rgb = pow(_OutputColor.rgb, vec3(1.0 / _Gamma));
 }

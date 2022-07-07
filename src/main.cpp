@@ -107,6 +107,14 @@ private:
     }
 };
 
+const std::vector<Vertex> &verts = {
+    Vertex({-1, 1, 0}, {0, 0, 1}, {0, 1}),
+    Vertex({-1, -1, 0}, {0, 0, 1}, {0, 0}),
+    Vertex({1, -1, 0}, {0, 0, 1}, {1, 0}),
+    Vertex({1, 1, 0}, {0, 0, 1}, {1, 1}),
+};
+const std::vector<u32> indices = {0, 1, 3, 1, 2, 3};
+
 int main()
 {
     application = new Application("App", true);
@@ -114,17 +122,31 @@ int main()
     Scene scene("Game");
     application->setActiveScene(&scene);
 
+    Shader backScreenShader("vertex/back.vs.glsl", "fragment/back.fs.glsl", "Back");
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
     Entity camera("Main Camera");
-    auto cameraComponent = camera.addComponent<Camera>(application->window->width, application->window->height);
-
     camera.addComponent<PlayerMovement>();
-
+    auto cameraComponent = camera.addComponent<Camera>(application->window->width, application->window->height);
+    cameraComponent->layers.push_back("Back");
     application->scene->setMainCamera(cameraComponent);
 
+    Entity entBackCamera("Back Camera");
+    entBackCamera.transform.rotation.y = -180;
+    entBackCamera.setParent(&camera);
+    auto backCamera = entBackCamera.addComponent<Camera>(application->window->width * 0.25, application->window->height * 0.25);
+
+    Entity backScreen("Back Screen");
+    backScreen.transform.scale = glm::vec3(0.25);
+    backScreen.transform.position.y = 0.6;
+    backScreen.layer = "Back";
+    auto backScreenRenderer = backScreen.addComponent<MeshRenderer>();
+    backScreenRenderer->setMesh(verts, indices);
+    backScreenRenderer->material = new Material("BackScreen");
+    backScreenRenderer->material->textures = {backCamera->targetTexture};
+
     Entity sun("Sun");
-    sun.addComponent<DirectionalLight>(glm::vec3(0.1), glm::vec3(0.5), glm::vec3(0.5), 1);
+    sun.addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1);
     sun.transform.rotation = {1, 0, 0};
 
     Entity light("Light");

@@ -9,5 +9,5 @@
         1.0
     ],
     "shininess": 64,
-    "twoSided": false
+    "twoSided": true
 }
