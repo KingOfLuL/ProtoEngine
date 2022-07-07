@@ -37,10 +37,11 @@ struct Move : public Behavior
 struct PlayerMovement : public Behavior
 {
     PlayerMovement()
+        : inputListener(std::bind(updateMouseMovement, this))
     {
         start = [&]()
         {
-            Input::MouseMoveEvent += std::bind(&PlayerMovement::updateMouseMovement, this);
+            Input::MouseMoveEvent += &inputListener;
         };
         update = [&]()
         {
@@ -58,6 +59,8 @@ struct PlayerMovement : public Behavior
                 processKeyboard(Direction::DOWN);
         };
     }
+
+    Listener inputListener;
 
 private:
     const f32 MOVEMENT_SPEED = 10.f;
@@ -119,8 +122,6 @@ int main()
 
     application->scene->setMainCamera(camera.getComponent<Camera>());
 
-    Entity::loadModel("Model.fbx");
-
     Entity sun("Sun");
     sun.addComponent<DirectionalLight>(glm::vec3(0.1), glm::vec3(0.5), glm::vec3(0.5), 1);
     sun.transform.rotation = {1, 0, 0};
@@ -128,6 +129,8 @@ int main()
     Entity light("Light");
     light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 10);
     light.setParent(&camera);
+
+    Entity::loadModel("Model.fbx");
 
     application->run();
 

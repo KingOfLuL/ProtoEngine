@@ -78,7 +78,7 @@ namespace Engine
     class MeshRenderer : public Component
     {
     public:
-        MeshRenderer(bool addToScene = true);
+        MeshRenderer();
         MeshRenderer(const MeshRenderer &other);
         ~MeshRenderer();
 

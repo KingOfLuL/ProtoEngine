@@ -7,15 +7,28 @@
 
 namespace Engine
 {
-    class Event
+    class Listener
     {
     public:
-        void subscribe(std::function<void(void)> func);
-        void operator+=(std::function<void(void)> func);
+        Listener() = default;
+        Listener(std::function<void()> func);
         void call();
 
     private:
-        std::vector<std::function<void(void)>> m_Functions;
+        std::function<void()> m_Function;
+    };
+
+    class Event
+    {
+    public:
+        void subscribe(Listener *listener);
+        void operator+=(Listener *listener);
+        void unsubscribe(Listener *listener);
+        void operator-=(Listener *listener);
+        void call();
+
+    private:
+        std::vector<Listener *> m_Listeners;
     };
 
     void internal_util_init();

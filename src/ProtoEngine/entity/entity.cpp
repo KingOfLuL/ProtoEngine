@@ -11,7 +11,7 @@
 
 namespace Engine
 {
-    std::map<std::string, Entity *> Entity::s_LoadedModels;
+    std::map<std::string, Entity::Model *> Entity::s_LoadedModels;
 
     Entity::Entity(const std::string &name, const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl) : name(name), transform(pos, rot, scl)
     {
@@ -60,25 +60,57 @@ namespace Engine
             children.push_back(newChild);
         }
     }
+    Entity::Entity(Model *model)
+        : name(model->entityName)
+    {
+        application->scene->addEntity(this);
+        transform.entity = this;
+
+        if (model->hasRenderer)
+        {
+            auto renderer = addComponent<MeshRenderer>();
+            renderer->setMesh(model->mesh);
+            renderer->material = model->material;
+        }
+        for (auto child : model->children)
+        {
+            Entity *ent_child = new Entity(child);
+            ent_child->setParent(this);
+        }
+    }
     Entity::~Entity()
     {
         application->scene->removeEntity(this);
         for (auto c : m_Components)
             delete c;
-
+        setParent(nullptr);
         for (auto c : children)
-            c->parent = nullptr;
+            delete c;
     }
     void Entity::setParent(Entity *parent)
     {
-        this->parent = parent;
-        parent->children.push_back(this);
+        if ((parent == nullptr || parent == NULL))
+        {
+            if (this->parent != nullptr)
+            {
+                auto it = std::find(this->parent->children.begin(), this->parent->children.end(), this);
+                if (it != this->parent->children.end())
+                    this->parent->children.erase(it);
+                this->parent = nullptr;
+            }
+        }
+        else
+        {
+            this->parent = parent;
+            parent->children.push_back(this);
+        }
     }
-    void Entity::forEachChildren(const std::function<void(Entity *)> &function)
+    void Entity::forEachChildren(const std::function<void(Entity *)> &function, bool b)
     {
-        function(this);
+        if (b)
+            function(this);
         for (auto child : children)
-            child->forEachChildren(function);
+            child->forEachChildren(function, false);
     }
     Entity *Entity::getChildByName(const std::string &name) const
     {
@@ -93,7 +125,11 @@ namespace Engine
         std::string filePath = PathUtil::FULL_PATH + PathUtil::MODEL_PATH + path;
         if (s_LoadedModels.find(filePath) != s_LoadedModels.end())
         {
-            return new Entity(*s_LoadedModels[filePath]);
+            std::cout << "Already Loaded" << std::endl;
+            Entity *ent = new Entity(s_LoadedModels.at(filePath));
+            if (boost::algorithm::ends_with(filePath, ".fbx"))
+                ent->transform.rotation.x = -90;
+            return ent;
         }
 
         Assimp::Importer importer;
@@ -210,9 +246,34 @@ namespace Engine
             }
         }
         if (boost::algorithm::ends_with(filePath, ".fbx"))
-            rootEntity->transform.rotation = glm::vec3(-90, 0, 0);
-        s_LoadedModels.insert(std::pair<std::string, Entity *>(filePath, rootEntity));
+            rootEntity->transform.rotation.x = -90;
+
+        Model *model = new Model(rootEntity, filePath);
+        s_LoadedModels.insert(std::pair<std::string, Model *>(filePath, model));
 
         return rootEntity;
+    }
+
+    Entity::Model::Model(Entity *entity, const std::string &filePath)
+        : fileName(filePath), entityName(entity->name)
+    {
+        auto renderer = entity->getComponent<MeshRenderer>();
+        if (renderer != nullptr)
+        {
+            hasRenderer = true;
+            mesh = renderer->mesh;
+            material = renderer->material;
+        }
+        else
+        {
+            hasRenderer = false;
+        }
+
+        for (auto child : entity->children)
+        {
+            Model *model_child = new Model(child, fileName);
+            model_child->parent = this;
+            children.push_back(model_child);
+        }
     }
 }

@@ -125,10 +125,6 @@ namespace Engine::Renderer
     }
     void render()
     {
-        Time::time = glfwGetTime();
-        Time::deltaTime = Time::time - Time::lastFrame;
-        Time::lastFrame = Time::time;
-
         glClearColor(0.2f, 0.2f, 0.2f, 1.0);
         updateLights();
 

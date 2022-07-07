@@ -174,10 +174,9 @@ namespace Engine
     ///
     ///
     ///
-    MeshRenderer::MeshRenderer(bool addToScene)
+    MeshRenderer::MeshRenderer()
     {
-        if (addToScene)
-            application->scene->addMeshRenderer(this);
+        application->scene->addMeshRenderer(this);
     }
     MeshRenderer::~MeshRenderer()
     {

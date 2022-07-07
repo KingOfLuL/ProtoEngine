@@ -1,6 +1,7 @@
 #include "libs.hpp"
 #include "application.hpp"
 #include "util/util.hpp"
+#include "time/time.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -37,6 +38,9 @@ namespace Engine
                 break;
             }
 
+            Time::time = glfwGetTime();
+            Time::deltaTime = Time::time - Time::lastFrame;
+            Time::lastFrame = Time::time;
             scene->update();
 
             Renderer::render();

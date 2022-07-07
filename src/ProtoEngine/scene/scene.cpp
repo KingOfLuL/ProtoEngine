@@ -17,9 +17,7 @@ namespace Engine
     }
     void Scene::removeEntity(Entity *entity)
     {
-        auto it = std::find(m_Entities.begin(), m_Entities.end(), entity);
-        if (it != m_Entities.end())
-            m_Entities.erase(it);
+        std::remove(m_Entities.begin(), m_Entities.end(), entity);
     }
     void Scene::addMeshRenderer(MeshRenderer *renderer)
     {
@@ -27,9 +25,7 @@ namespace Engine
     }
     void Scene::removeMeshRenderer(MeshRenderer *renderer)
     {
-        auto it = std::find(m_Renderers.begin(), m_Renderers.end(), renderer);
-        if (it != m_Renderers.end())
-            m_Renderers.erase(it);
+        std::remove(m_Renderers.begin(), m_Renderers.end(), renderer);
     }
     void Scene::addDirectionalLight(DirectionalLight *light)
     {
@@ -121,9 +117,7 @@ namespace Engine
     }
     void Scene::removeBehavior(Behavior *behavior)
     {
-        auto it = std::find(m_Behaviors.begin(), m_Behaviors.end(), behavior);
-        if (it != m_Behaviors.end())
-            m_Behaviors.erase(it);
+        std::remove(m_Behaviors.begin(), m_Behaviors.end(), behavior);
     }
     void Scene::addCamera(Camera *camera)
     {
@@ -131,9 +125,7 @@ namespace Engine
     }
     void Scene::removeCamera(Camera *camera)
     {
-        auto it = std::find(m_Cameras.begin(), m_Cameras.end(), camera);
-        if (it != m_Cameras.end())
-            m_Cameras.erase(it);
+        std::remove(m_Cameras.begin(), m_Cameras.end(), camera);
     }
     void Scene::setMainCamera(Camera *camera)
     {

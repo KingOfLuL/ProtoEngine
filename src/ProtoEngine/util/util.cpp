@@ -6,18 +6,34 @@
 
 namespace Engine
 {
-    void Event::subscribe(std::function<void(void)> func)
+    Listener::Listener(std::function<void()> func)
     {
-        m_Functions.push_back(func);
+        m_Function = func;
     }
-    void Event::operator+=(std::function<void(void)> func)
+    void Listener::call()
     {
-        subscribe(func);
+        m_Function();
+    }
+    void Event::subscribe(Listener *listener)
+    {
+        m_Listeners.push_back(listener);
+    }
+    void Event::operator+=(Listener *listener)
+    {
+        subscribe(listener);
+    }
+    void Event::unsubscribe(Listener *listener)
+    {
+        std::remove(m_Listeners.begin(), m_Listeners.end(), listener);
+    }
+    void Event::operator-=(Listener *listener)
+    {
+        unsubscribe(listener);
     }
     void Event::call()
     {
-        for (auto func : m_Functions)
-            func();
+        for (auto i : m_Listeners)
+            i->call();
     }
 
     void internal_util_init()

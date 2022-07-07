@@ -7,13 +7,31 @@ namespace Engine
 {
     class Entity
     {
+    private:
+        // used for saving already loaded models, entities get created from this data
+        struct Model
+        {
+            Model(Entity *entity, const std::string &filePath);
+
+            std::string fileName;
+            std::string entityName;
+
+            bool hasRenderer;
+            Mesh mesh;
+            Material *material;
+
+            Model *parent;
+            std::vector<Model *> children;
+        };
+
     public:
         Entity(const std::string &name, const glm::vec3 &pos = glm::vec3(0.0f), const glm::vec3 &rot = glm::vec3(0.0f), const glm::vec3 &scl = glm::vec3(1.0f));
         Entity(const Entity &entity);
+        Entity(Model *model);
         ~Entity();
 
     public:
-        void forEachChildren(const std::function<void(Entity *)> &function);
+        void forEachChildren(const std::function<void(Entity *)> &function, bool b = true);
         void setParent(Entity *parent);
         Entity *getChildByName(const std::string &name) const;
 
@@ -50,7 +68,7 @@ namespace Engine
         Entity *parent = nullptr;
         std::vector<Entity *> children;
 
-        static std::map<std::string, Entity *> s_LoadedModels;
+        static std::map<std::string, Model *> s_LoadedModels;
 
     private:
         std::vector<Component *> m_Components;
