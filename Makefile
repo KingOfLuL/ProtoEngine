@@ -23,7 +23,7 @@ CFLAGS += $(INCLUDES)
 
 PCH = lib/libs.hpp
 
-libs: $(SRC_OBJ)
+lib: $(SRC_OBJ)
 	$(CC) -shared $^ $(CFLAGS) $(LIBS_DYN) -o $(LIB_DYN_OUT); \
 	ar rcs $(LIB_STATIC_OUT) $^; \
 	cp $(LIB_DYN_OUT) $(BIN); \

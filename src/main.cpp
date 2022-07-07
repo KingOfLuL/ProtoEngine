@@ -114,16 +114,20 @@ int main()
     scene.skybox = new Skybox({"skybox/right.jpg", "skybox/left.jpg", "skybox/top.jpg", "skybox/bottom.jpg", "skybox/front.jpg", "skybox/back.jpg"});
 
     Entity camera("Main Camera");
-    camera.addComponent<Camera>(application->window->width, application->window->height)->layers.push_back("Back");
+    camera.addComponent<Camera>(application->window->width, application->window->height);
     camera.addComponent<PlayerMovement>();
 
     application->scene->setMainCamera(camera.getComponent<Camera>());
 
-    Entity::loadModel("Landscape.fbx");
+    Entity::loadModel("Model.fbx");
 
     Entity sun("Sun");
-    sun.addComponent<DirectionalLight>(glm::vec3(0.15f), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), 1);
-    sun.transform.rotation = {1, -0.35, 0.18};
+    sun.addComponent<DirectionalLight>(glm::vec3(0.1), glm::vec3(0.5), glm::vec3(0.5), 1);
+    sun.transform.rotation = {1, 0, 0};
+
+    Entity light("Light");
+    light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 10);
+    light.setParent(&camera);
 
     application->run();
 

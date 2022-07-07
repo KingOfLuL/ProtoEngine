@@ -1,13 +1,17 @@
 struct Material 
 {
-    sampler2D diffuseTexture;
-    bool hasDiffuse;
-    vec3 diffuseColor;
+    sampler2D DiffuseTexture;
+    bool HasDiffuse;
+    
+    vec3 DiffuseColor;
 
-    sampler2D specularTexture;
-    bool hasSpecular;
+    sampler2D SpecularTexture;
+    bool HasSpecular;
 
-    float shininess;
+    sampler2D NormalMap;
+    bool HasNormal;
+
+    float Shininess;
 };
 uniform Material _Material;
 
@@ -16,13 +20,13 @@ vec4 _TextureSpecularColor;
 
 void getTextureColors()
 {
-    if (_Material.hasDiffuse)
-        _TextureDiffuseColor = texture(_Material.diffuseTexture, _Fragment.UV) * vec4(_Material.diffuseColor, 1.0);
+     if (_Material.HasDiffuse)
+        _TextureDiffuseColor = texture2D(_Material.DiffuseTexture, _Fragment.UV) * vec4(_Material.DiffuseColor, 1.0);
     else
-        _TextureDiffuseColor = vec4(_Material.diffuseColor, 1.0);
+        _TextureDiffuseColor = vec4(_Material.DiffuseColor, 1.0);
 
-    if (_Material.hasSpecular)
-        _TextureSpecularColor = texture(_Material.specularTexture, _Fragment.UV);
+    if (_Material.HasSpecular)
+        _TextureSpecularColor = texture2D(_Material.SpecularTexture, _Fragment.UV);
     else
         _TextureSpecularColor = vec4(vec3(0.0), 1.0);
 }

@@ -1,12 +1,13 @@
 {
     "shader": "Lit",
-    "diffuse": "tree/bark007_1k_color.png",
-    "specular": "tree/bark007_1k_specular.png",
+    "diffuse": "wood/Wood_Color.png",
+    "specular": "wood/Wood_Specular.png",
+    "normal": "wood/Wood_Normal.png",
     "diffuseColor": [
-        0.84,
-        0.61,
-        0.47
+        1.0,
+        1.0,
+        1.0
     ],
-    "shininess": 32,
+    "shininess": 64,
     "twoSided": false
 }

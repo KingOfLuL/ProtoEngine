@@ -17,7 +17,9 @@ namespace Engine
     }
     void Scene::removeEntity(Entity *entity)
     {
-        m_Entities.erase(std::find(m_Entities.begin(), m_Entities.end(), entity));
+        auto it = std::find(m_Entities.begin(), m_Entities.end(), entity);
+        if (it != m_Entities.end())
+            m_Entities.erase(it);
     }
     void Scene::addMeshRenderer(MeshRenderer *renderer)
     {
@@ -25,7 +27,9 @@ namespace Engine
     }
     void Scene::removeMeshRenderer(MeshRenderer *renderer)
     {
-        m_Renderers.erase(std::find(m_Renderers.begin(), m_Renderers.end(), renderer));
+        auto it = std::find(m_Renderers.begin(), m_Renderers.end(), renderer);
+        if (it != m_Renderers.end())
+            m_Renderers.erase(it);
     }
     void Scene::addDirectionalLight(DirectionalLight *light)
     {
@@ -117,7 +121,9 @@ namespace Engine
     }
     void Scene::removeBehavior(Behavior *behavior)
     {
-        m_Behaviors.erase(std::find(m_Behaviors.begin(), m_Behaviors.end(), behavior));
+        auto it = std::find(m_Behaviors.begin(), m_Behaviors.end(), behavior);
+        if (it != m_Behaviors.end())
+            m_Behaviors.erase(it);
     }
     void Scene::addCamera(Camera *camera)
     {
@@ -125,7 +131,9 @@ namespace Engine
     }
     void Scene::removeCamera(Camera *camera)
     {
-        m_Cameras.erase(std::find(m_Cameras.begin(), m_Cameras.end(), camera));
+        auto it = std::find(m_Cameras.begin(), m_Cameras.end(), camera);
+        if (it != m_Cameras.end())
+            m_Cameras.erase(it);
     }
     void Scene::setMainCamera(Camera *camera)
     {
@@ -163,22 +171,22 @@ namespace Engine
     }
     void Scene::update()
     {
-        for (const auto &e : m_Entities)
+        for (auto e : m_Entities)
             e->transform.update();
 
-        for (const auto &i : m_Behaviors)
+        for (auto i : m_Behaviors)
             i->update();
     }
     void Scene::start()
     {
-        for (const auto &i : m_Behaviors)
+        for (auto i : m_Behaviors)
             i->start();
     }
     void Scene::lateUpdate()
     {
-        for (const auto &i : m_Behaviors)
+        for (auto i : m_Behaviors)
             i->lateUpdate();
-        for (const auto &i : m_Entities)
+        for (auto i : m_Entities)
             i->transform.lateUpdate();
     }
 }

@@ -139,7 +139,7 @@ namespace Engine::Renderer
             application->window->height,
         };
 
-        shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData) * sizeof(f32), sizeof(glm::vec3));
+        shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData), sizeof(glm::vec3));
 
         for (const auto &camera : application->scene->getCameras())
         {

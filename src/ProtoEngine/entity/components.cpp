@@ -142,7 +142,6 @@ namespace Engine
             material->shader->use();
 
             material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
-            material->shader->setBool("_Material.hasTransparency", false);
 
             for (u32 i = 0; i < material->textures.size(); i++)
             {
@@ -151,18 +150,21 @@ namespace Engine
                 glActiveTexture(GL_TEXTURE0 + i);
 
                 if (tex->getType() == TextureType::DIFFUSE)
-                    material->shader->setInt("_Material.diffuseTexture", i);
+                    material->shader->setInt("_Material.DiffuseTexture", i);
                 else if (tex->getType() == TextureType::SPECULAR)
-                    material->shader->setInt("_Material.specularTexture", i);
+                    material->shader->setInt("_Material.SpecularTexture", i);
+                else if (tex->getType() == TextureType::NORMAL)
+                    material->shader->setInt("_Material.NormalMap", i);
 
                 tex->bind();
             }
 
-            material->shader->setVec3("_Material.diffuseColor", material->diffuseColor);
-            material->shader->setFloat("_Material.shininess", material->shininess);
+            material->shader->setVec3("_Material.DiffuseColor", material->diffuseColor);
+            material->shader->setFloat("_Material.Shininess", material->shininess);
 
-            material->shader->setBool("_Material.hasDiffuse", material->hasDiffuseTexture);
-            material->shader->setBool("_Material.hasSpecular", material->hasSpecularTexture);
+            material->shader->setBool("_Material.HasDiffuse", material->hasDiffuseTexture);
+            material->shader->setBool("_Material.HasSpecular", material->hasSpecularTexture);
+            material->shader->setBool("_Material.HasNormal", material->hasNormalMap);
 
             renderer->drawMesh();
         }

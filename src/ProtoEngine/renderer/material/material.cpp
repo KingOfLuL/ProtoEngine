@@ -25,6 +25,7 @@ namespace Engine
 
         std::string diffusePath = mat.get<std::string>("diffuse");
         std::string specularPath = mat.get<std::string>("specular");
+        std::string normalPath = mat.get<std::string>("normal");
 
         if (diffusePath != "RenderTexture")
         {
@@ -39,6 +40,13 @@ namespace Engine
                 loadMaterialTexture(specularPath, TextureType::SPECULAR, this);
             else if (specularPath != "RenderTexture")
                 hasSpecularTexture = false;
+        }
+        if (normalPath != "RenderTexture")
+        {
+            if (normalPath != "")
+                loadMaterialTexture(normalPath, TextureType::NORMAL, this);
+            else if (normalPath != "RenderTexture")
+                hasNormalMap = false;
         }
 
         shader = Shader::getShaderByName(mat.get<std::string>("shader"));

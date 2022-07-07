@@ -22,6 +22,7 @@ namespace Engine
         std::vector<Texture2D *> textures;
         bool hasDiffuseTexture = true;
         bool hasSpecularTexture = true;
+        bool hasNormalMap = true;
         glm::vec3 diffuseColor = glm::vec3(1.f);
         f32 shininess = 32.f;
         bool twoSided = false;

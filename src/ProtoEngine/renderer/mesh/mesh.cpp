@@ -27,21 +27,21 @@ namespace Engine
     }
     void Mesh::calculateBounds()
     {
-        auto [minX, maxX] = std::minmax_element(vertices.begin(), vertices.end(),
-                                                [](const Vertex &a, const Vertex &b)
-                                                {
-                                                    return a.position.x < b.position.x;
-                                                });
-        auto [minY, maxY] = std::minmax_element(vertices.begin(), vertices.end(),
-                                                [](const Vertex &a, const Vertex &b)
-                                                {
-                                                    return a.position.y < b.position.y;
-                                                });
-        auto [minZ, maxZ] = std::minmax_element(vertices.begin(), vertices.end(),
-                                                [](const Vertex &a, const Vertex &b)
-                                                {
-                                                    return a.position.z < b.position.z;
-                                                });
+        const auto &[minX, maxX] = std::minmax_element(vertices.begin(), vertices.end(),
+                                                       [](const Vertex &a, const Vertex &b)
+                                                       {
+                                                           return a.position.x < b.position.x;
+                                                       });
+        const auto &[minY, maxY] = std::minmax_element(vertices.begin(), vertices.end(),
+                                                       [](const Vertex &a, const Vertex &b)
+                                                       {
+                                                           return a.position.y < b.position.y;
+                                                       });
+        const auto &[minZ, maxZ] = std::minmax_element(vertices.begin(), vertices.end(),
+                                                       [](const Vertex &a, const Vertex &b)
+                                                       {
+                                                           return a.position.z < b.position.z;
+                                                       });
         /* cube corner vertices */
         glm::vec3 a((*minX).position.x, (*maxY).position.y, (*minZ).position.z);
         glm::vec3 b((*minX).position.x, (*minY).position.y, (*minZ).position.z);

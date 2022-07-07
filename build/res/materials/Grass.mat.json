@@ -2,6 +2,7 @@
     "shader": "Lit",
     "diffuse": "grass/Grass_Color.png",
     "specular": "grass/Grass_Specular.png",
+    "normal": "grass/Grass_Normal.png",
     "diffuseColor": [
         1.0,
         1.0,

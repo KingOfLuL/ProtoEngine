@@ -2,6 +2,7 @@
     "shader": "Lit",
     "diffuse": "box/box_diffuse.png",
     "specular": "box/box_specular.png",
+    "normal": "box/box_normal.png",
     "diffuseColor": [
         1.0,
         1.0,

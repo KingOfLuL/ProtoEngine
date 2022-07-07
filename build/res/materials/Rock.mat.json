@@ -1,0 +1,13 @@
+{
+    "shader": "Lit",
+    "diffuse": "rock/Rock_Color.png",
+    "specular": "rock/Rock_Specular.png",
+    "normal": "rock/Rock_Normal.png",
+    "diffuseColor": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "twoSided": false,
+    "shininess": 32
+}

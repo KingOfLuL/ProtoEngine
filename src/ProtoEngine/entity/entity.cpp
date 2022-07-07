@@ -67,7 +67,7 @@ namespace Engine
             delete c;
 
         for (auto c : children)
-            delete c;
+            c->parent = nullptr;
     }
     void Entity::setParent(Entity *parent)
     {
@@ -98,7 +98,7 @@ namespace Engine
 
         Assimp::Importer importer;
 
-        const aiScene *scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene *scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -157,6 +157,15 @@ namespace Engine
                     {
                         vertex.color = glm::vec3(1.f);
                     }
+
+                    vertex.tangent.x = mesh->mTangents[i].x;
+                    vertex.tangent.y = mesh->mTangents[i].y;
+                    vertex.tangent.z = mesh->mTangents[i].z;
+
+                    vertex.bitangent.x = mesh->mBitangents[i].x;
+                    vertex.bitangent.y = mesh->mBitangents[i].y;
+                    vertex.bitangent.z = mesh->mBitangents[i].z;
+
                     vertices.push_back(vertex);
                 }
                 for (u32 k = 0; k < mesh->mNumFaces; k++) // indices
