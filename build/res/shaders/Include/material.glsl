@@ -20,7 +20,7 @@ vec4 _TextureSpecularColor;
 
 void getTextureColors()
 {
-     if (_Material.HasDiffuse)
+    if (_Material.HasDiffuse)
         _TextureDiffuseColor = texture2D(_Material.DiffuseTexture, _Fragment.UV) * vec4(_Material.DiffuseColor, 1.0);
     else
         _TextureDiffuseColor = vec4(_Material.DiffuseColor, 1.0);

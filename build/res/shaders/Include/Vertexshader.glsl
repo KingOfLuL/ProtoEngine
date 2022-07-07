@@ -39,7 +39,6 @@ void setVertex()
     vec3 B = cross(N, T);
 
     _TBN = transpose(mat3(T, B, N));
-
     _Vertex.TangentPosition = _TBN * _Vertex.Position;
 }
 vec4 calculatePosition()

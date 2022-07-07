@@ -8,6 +8,6 @@
         1.0,
         1.0
     ],
-    "twoSided": false,
-    "shininess": 32
+    "shininess": 64,
+    "twoSided": false
 }
