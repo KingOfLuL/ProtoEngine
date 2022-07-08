@@ -1,6 +1,7 @@
 #version 460 core
 
 #include "Values.glsl"
+#include "Greyscale.glsl"
 
 in FRAGMENT
 {

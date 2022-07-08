@@ -107,7 +107,7 @@ namespace Engine
     }
     void Camera::renderToTexture()
     {
-        targetTexture->bindFramebuffer();
+        targetTexture->bindMultisample();
         glViewport(0, 0, targetTexture->width, targetTexture->height);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -165,7 +165,7 @@ namespace Engine
 
             renderer->drawMesh();
         }
-        targetTexture->unbindFramebuffer();
+        targetTexture->unbindMultisample();
     }
 
     ///

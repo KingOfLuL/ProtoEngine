@@ -65,8 +65,14 @@ namespace Engine
         i32 width;
         i32 height;
 
-    private:
+    protected:
         GLenum m_StorageType;
+    };
+    class RenderbufferMultisample : public Renderbuffer
+    {
+    public:
+        RenderbufferMultisample() = default;
+        RenderbufferMultisample(i32 w, i32 h, GLenum storageType);
     };
 
     class Framebuffer : public Buffer
@@ -82,8 +88,17 @@ namespace Engine
         i32 width;
         i32 height;
 
+        // private:
+        //     Renderbuffer m_Renderbuffer;
+    };
+    class FramebufferMultisample : public Framebuffer
+    {
+    public:
+        FramebufferMultisample() = default;
+        FramebufferMultisample(i32 w, i32 h, u32 textureID);
+
     private:
-        Renderbuffer m_Renderbuffer;
+        RenderbufferMultisample m_Renderbuffer;
     };
 
     class Uniformbuffer : public Buffer

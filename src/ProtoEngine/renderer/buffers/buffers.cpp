@@ -119,6 +119,17 @@ namespace Engine
         glBindRenderbuffer(GL_RENDERBUFFER, m_ID);
         glRenderbufferStorage(GL_RENDERBUFFER, m_StorageType, width, height);
     }
+    RenderbufferMultisample::RenderbufferMultisample(i32 w, i32 h, GLenum storageType)
+    {
+        width = w;
+        height = h;
+        m_StorageType = storageType;
+
+        glGenRenderbuffers(1, &m_ID);
+        glBindRenderbuffer(GL_RENDERBUFFER, m_ID);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, m_StorageType, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    }
 
     Framebuffer::Framebuffer(i32 w, i32 h, u32 textureID)
         : width(w), height(h)
@@ -128,8 +139,8 @@ namespace Engine
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 
-        m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Renderbuffer.getID());
+        // m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8);
+        // glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Renderbuffer.getID());
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             std::cerr
@@ -144,6 +155,18 @@ namespace Engine
     void Framebuffer::unbind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    FramebufferMultisample::FramebufferMultisample(i32 w, i32 h, u32 textureID)
+    {
+        width = w;
+        height = h;
+
+        glGenFramebuffers(1, &m_ID);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureID, 0);
+        m_Renderbuffer = RenderbufferMultisample(width, height, GL_DEPTH24_STENCIL8);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Renderbuffer.getID());
     }
 
     Uniformbuffer::Uniformbuffer(u32 size, u32 bindingPoint)

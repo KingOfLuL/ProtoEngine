@@ -19,6 +19,10 @@ namespace Engine
     {
         glBindTexture(m_GLTextureType, m_ID);
     }
+    void Texture::unbind() const
+    {
+        glBindTexture(m_GLTextureType, m_ID);
+    }
     void Texture::setTextureWrapMode(GLenum wrapS, GLenum wrapT)
     {
         setParameter(GL_TEXTURE_WRAP_S, wrapS);
@@ -104,6 +108,21 @@ namespace Engine
         return Texture2D(data, width, height, format, type, path);
     }
 
+    Texture2DMultisample::Texture2DMultisample(i32 w, i32 h)
+    {
+        width = w;
+        height = h;
+        m_GLTextureType = GL_TEXTURE_2D_MULTISAMPLE;
+        colorFormat = GL_RGB;
+
+        glGenTextures(1, &m_ID);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(m_GLTextureType, m_ID);
+        glTexImage2DMultisample(m_GLTextureType, 4, colorFormat, width, height, GL_TRUE);
+        setTextureWrapMode(GL_REPEAT, GL_REPEAT);
+        setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+    }
+
     Cubemap::Cubemap(const std::array<std::string, 6> &faces) : m_FacePaths(faces)
     {
         m_GLTextureType = GL_TEXTURE_CUBE_MAP;
@@ -136,19 +155,33 @@ namespace Engine
     RenderTexture::RenderTexture(i32 w, i32 h)
         : Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE)
     {
+        width = w;
+        height = h;
+
         setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
         setTextureFilterMode(GL_LINEAR, GL_LINEAR);
         m_Framebuffer = Framebuffer(w, h, m_ID);
+
+        m_MultisampleTexture = Texture2DMultisample(width, height);
+        m_MultisampleFramebuffer = FramebufferMultisample(width, height, m_MultisampleTexture.getID());
     }
     RenderTexture::~RenderTexture()
     {
     }
-    void RenderTexture::bindFramebuffer() const
+    void RenderTexture::bind() const
     {
-        m_Framebuffer.bind();
+        glBindTexture(GL_TEXTURE_2D, m_ID);
     }
-    void RenderTexture::unbindFramebuffer() const
+    void RenderTexture::bindMultisample() const
     {
-        m_Framebuffer.unbind();
+        m_MultisampleFramebuffer.bind();
+    }
+    void RenderTexture::unbindMultisample() const
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_MultisampleFramebuffer.getID());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_Framebuffer.getID());
+        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        m_MultisampleFramebuffer.unbind();
     }
 }

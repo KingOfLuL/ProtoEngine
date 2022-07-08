@@ -26,6 +26,7 @@ namespace Engine
 
     public:
         void bind() const;
+        void unbind() const;
         void setParameter(GLenum parameter, GLenum value);
         void setTextureWrapMode(GLenum wrapS, GLenum wrapT);
         void setTextureFilterMode(GLenum min, GLenum mag);
@@ -61,6 +62,12 @@ namespace Engine
         TextureType m_Type;
         std::string m_Path = "";
     };
+    class Texture2DMultisample : public Texture
+    {
+    public:
+        Texture2DMultisample() = default;
+        Texture2DMultisample(i32 w, i32 h);
+    };
 
     class RenderTexture : public Texture2D
     {
@@ -70,18 +77,14 @@ namespace Engine
         ~RenderTexture();
 
     public:
-        void bindFramebuffer() const;
-        void unbindFramebuffer() const;
-        // void bindTexture() const;
-
-        // i32 getWidth() const;
-        // i32 getHeight() const;
-
-        // Texture2D *getTexture() const;
+        void bind() const;
+        void bindMultisample() const;
+        void unbindMultisample() const;
 
     private:
         Framebuffer m_Framebuffer;
-        // Texture2D *m_Texture = nullptr;
+        Texture2DMultisample m_MultisampleTexture;
+        FramebufferMultisample m_MultisampleFramebuffer;
     };
 
     class Cubemap : public Texture
