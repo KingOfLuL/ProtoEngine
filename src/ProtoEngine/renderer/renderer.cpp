@@ -137,9 +137,10 @@ namespace Engine::Renderer
 
         shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData), sizeof(glm::vec3));
 
-        for (const auto &camera : application->scene->getCameras())
+        for (auto camera : application->scene->getCameras())
         {
-            camera->renderToTexture();
+            if (camera != application->scene->mainCamera)
+                camera->renderToTexture();
         }
         application->scene->mainCamera->renderToTexture();
 

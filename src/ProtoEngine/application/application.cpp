@@ -22,8 +22,7 @@ namespace Engine
 
         (new Shader("vertex/vertex.vs.glsl", "fragment/lit.fs.glsl", "Lit"));
         (new Shader("vertex/cubemap.vs.glsl", "fragment/cubemap.fs.glsl", "Cubemap"));
-        (new Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds"))
-            ->addGeometryShader("geometry/bounds.gs.glsl");
+        (new Shader("vertex/vertex.vs.glsl", "fragment/bounds.fs.glsl", "Bounds"))->addGeometryShader("geometry/bounds.gs.glsl");
 
         application = this;
     }

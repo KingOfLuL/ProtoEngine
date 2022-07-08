@@ -25,7 +25,7 @@ namespace Engine
     class Transform : public Component
     {
     public:
-        Transform(const glm::vec3 &pos = glm::vec3(0.0f), const glm::vec3 &rot = glm::vec3(0.0f), const glm::vec3 &scl = glm::vec3(1.0f));
+        Transform(const glm::vec3 &pos = glm::vec3(0), const glm::vec3 &rot = glm::vec3(0), const glm::vec3 &scl = glm::vec3(1));
 
     public:
         glm::vec3 position;

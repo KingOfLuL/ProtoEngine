@@ -45,10 +45,10 @@ namespace Engine
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 
         const Vertex verts[] = {
-            Vertex({-1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}),
-            Vertex({-1.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}),
-            Vertex({1.0f, -1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}),
-            Vertex({1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}),
+            Vertex({-1, 1, 0}, {1, 0, 0}, {0, 1}),
+            Vertex({-1, -1, 0}, {1, 0, 0}, {0, 0}),
+            Vertex({1, -1, 0}, {1, 0, 0}, {1, 0}),
+            Vertex({1, 1, 0}, {1, 0, 0}, {1, 1}),
         };
         const u32 indices[] = {0, 1, 3, 1, 2, 3};
         m_Screen = Vertexbuffer(&verts[0], 4);

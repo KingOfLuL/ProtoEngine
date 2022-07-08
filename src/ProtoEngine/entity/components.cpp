@@ -89,11 +89,8 @@ namespace Engine
         {
             application->scene->mainCamera = nullptr;
         }
-        else
-        {
-            application->scene->removeCamera(this);
-            delete targetTexture;
-        }
+        application->scene->removeCamera(this);
+        delete targetTexture;
     }
     glm::mat4 Camera::getViewMatrix() const
     {
