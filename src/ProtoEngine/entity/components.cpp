@@ -77,11 +77,11 @@ namespace Engine
     ///
     ///
     ///
-    Camera::Camera(i32 resW, i32 resH)
+    Camera::Camera(i32 resW, i32 resH, bool useAntiAliasing)
         : fov(75.f), resolution(resW, resH)
     {
         application->scene->addCamera(this);
-        targetTexture = new RenderTexture(resolution.x, resolution.y);
+        targetTexture = new RenderTexture(resolution.x, resolution.y, useAntiAliasing);
     }
     Camera::~Camera()
     {
@@ -107,7 +107,7 @@ namespace Engine
     }
     void Camera::renderToTexture()
     {
-        targetTexture->bindMultisample();
+        targetTexture->bindRender();
         glViewport(0, 0, targetTexture->width, targetTexture->height);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -165,7 +165,7 @@ namespace Engine
 
             renderer->drawMesh();
         }
-        targetTexture->unbindMultisample();
+        targetTexture->unbindRender();
     }
 
     ///

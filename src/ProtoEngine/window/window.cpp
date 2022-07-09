@@ -62,7 +62,7 @@ namespace Engine
         glViewport(0, 0, width, height);
 
         glActiveTexture(GL_TEXTURE0);
-        texture->bind();
+        texture->bindTexture();
 
         glDisable(GL_DEPTH_TEST);
         m_Screen.draw();

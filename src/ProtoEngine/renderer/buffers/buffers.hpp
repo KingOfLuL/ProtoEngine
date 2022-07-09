@@ -59,27 +59,22 @@ namespace Engine
     {
     public:
         Renderbuffer() = default;
-        Renderbuffer(i32 w, i32 h, GLenum storageType);
+        Renderbuffer(i32 w, i32 h, GLenum storageType, GLenum attachment, bool useAntiAliasing = true);
 
     public:
         i32 width;
         i32 height;
 
-    protected:
+    private:
         GLenum m_StorageType;
-    };
-    class RenderbufferMultisample : public Renderbuffer
-    {
-    public:
-        RenderbufferMultisample() = default;
-        RenderbufferMultisample(i32 w, i32 h, GLenum storageType);
+        bool m_AntiAliasing;
     };
 
     class Framebuffer : public Buffer
     {
     public:
         Framebuffer() = default;
-        Framebuffer(i32 w, i32 h, u32 textureID);
+        Framebuffer(i32 w, i32 h, u32 textureID, bool useAntiAliasing = true);
 
         void bind() const override;
         void unbind() const override;
@@ -88,17 +83,9 @@ namespace Engine
         i32 width;
         i32 height;
 
-        // private:
-        //     Renderbuffer m_Renderbuffer;
-    };
-    class FramebufferMultisample : public Framebuffer
-    {
-    public:
-        FramebufferMultisample() = default;
-        FramebufferMultisample(i32 w, i32 h, u32 textureID);
-
     private:
-        RenderbufferMultisample m_Renderbuffer;
+        bool m_AntiAliasing;
+        Renderbuffer m_Renderbuffer;
     };
 
     class Uniformbuffer : public Buffer

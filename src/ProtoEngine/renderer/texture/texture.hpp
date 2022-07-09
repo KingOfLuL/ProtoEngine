@@ -73,18 +73,21 @@ namespace Engine
     {
     public:
         RenderTexture() = default;
-        RenderTexture(i32 w, i32 h);
+        RenderTexture(i32 w, i32 h, bool antiAliasing = true);
         ~RenderTexture();
 
     public:
-        void bind() const;
-        void bindMultisample() const;
-        void unbindMultisample() const;
+        void bindRender() const;
+        void bindTexture() const;
+        void unbindRender() const;
 
     private:
+        bool m_AntiAliasing;
+
         Framebuffer m_Framebuffer;
+        Renderbuffer m_Renderbuffer;
         Texture2DMultisample m_MultisampleTexture;
-        FramebufferMultisample m_MultisampleFramebuffer;
+        Framebuffer m_MultisampleFramebuffer;
     };
 
     class Cubemap : public Texture

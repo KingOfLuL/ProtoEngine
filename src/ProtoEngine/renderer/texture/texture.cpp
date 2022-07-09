@@ -152,36 +152,54 @@ namespace Engine
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
-    RenderTexture::RenderTexture(i32 w, i32 h)
-        : Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE)
+    RenderTexture::RenderTexture(i32 w, i32 h, bool antiAliasing)
+        : Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE), m_AntiAliasing(antiAliasing)
     {
         width = w;
         height = h;
+        m_GLTextureType = GL_TEXTURE_2D;
 
         setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
         setTextureFilterMode(GL_LINEAR, GL_LINEAR);
-        m_Framebuffer = Framebuffer(w, h, m_ID);
 
-        m_MultisampleTexture = Texture2DMultisample(width, height);
-        m_MultisampleFramebuffer = FramebufferMultisample(width, height, m_MultisampleTexture.getID());
+        m_Framebuffer = Framebuffer(w, h, m_ID, false);
+
+        if (m_AntiAliasing)
+        {
+            m_MultisampleTexture = Texture2DMultisample(width, height);
+            m_MultisampleFramebuffer = Framebuffer(width, height, m_MultisampleTexture.getID(), true);
+        }
+        m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_AntiAliasing);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     RenderTexture::~RenderTexture()
     {
     }
-    void RenderTexture::bind() const
+    void RenderTexture::bindTexture() const
     {
-        glBindTexture(GL_TEXTURE_2D, m_ID);
+        bind();
     }
-    void RenderTexture::bindMultisample() const
+    void RenderTexture::bindRender() const
     {
-        m_MultisampleFramebuffer.bind();
+        if (m_AntiAliasing)
+            m_MultisampleFramebuffer.bind();
+        else
+            m_Framebuffer.bind();
     }
-    void RenderTexture::unbindMultisample() const
+    void RenderTexture::unbindRender() const
     {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_MultisampleFramebuffer.getID());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_Framebuffer.getID());
-        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        if (m_AntiAliasing)
+        {
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, m_MultisampleFramebuffer.getID());
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_Framebuffer.getID());
+            glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-        m_MultisampleFramebuffer.unbind();
+            m_MultisampleFramebuffer.unbind();
+        }
+        else
+        {
+            m_Framebuffer.unbind();
+        }
     }
 }
