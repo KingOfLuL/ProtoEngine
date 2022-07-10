@@ -142,8 +142,8 @@ namespace Engine
 
             material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
 
-            u32 i;
-            for (i = 0; i < material->textures.size(); i++)
+            u32 i = 0;
+            for (; i < material->textures.size(); i++)
             {
                 auto tex = material->textures[i];
 
@@ -158,8 +158,15 @@ namespace Engine
 
                 tex->bind();
             }
-            material->shader->setInt("_DepthTexture", i);
+
+            material->shader->setInt("_DepthTexture", i + 1);
+            material->shader->setInt("_Skybox", i + 2);
+
+            glActiveTexture(GL_TEXTURE1 + i);
             renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
+
+            glActiveTexture(GL_TEXTURE2 + i);
+            application->scene->skybox->bind();
 
             material->shader->setVec3("_Material.DiffuseColor", material->diffuseColor);
             material->shader->setFloat("_Material.Shininess", material->shininess);

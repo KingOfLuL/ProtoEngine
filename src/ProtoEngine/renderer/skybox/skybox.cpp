@@ -69,4 +69,8 @@ namespace Engine
 
         glDepthFunc(GL_LESS);
     }
+    void Skybox::bind() const
+    {
+        m_Cubemap.bind();
+    }
 }

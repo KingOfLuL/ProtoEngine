@@ -16,6 +16,7 @@ namespace Engine
 
     public:
         void draw() const;
+        void bind() const;
 
     private:
         Cubemap m_Cubemap;

@@ -131,19 +131,19 @@ int main()
     cameraComponent->layers.push_back("Back");
     application->scene->setMainCamera(cameraComponent);
 
-    // Entity entBackCamera("Back Camera");
-    // entBackCamera.transform.rotation.y = -180;
-    // entBackCamera.setParent(&camera);
-    // auto backCamera = entBackCamera.addComponent<Camera>(application->window->width * 0.25, application->window->height * 0.25, false);
+    Entity entBackCamera("Back Camera");
+    entBackCamera.transform.rotation.y = -180;
+    entBackCamera.setParent(&camera);
+    auto backCamera = entBackCamera.addComponent<Camera>(application->window->width * 0.25, application->window->height * 0.25, false);
 
-    // Entity backScreen("Back Screen");
-    // backScreen.transform.scale = glm::vec3(0.25);
-    // backScreen.transform.position.y = 0.6;
-    // backScreen.layer = "Back";
-    // auto backScreenRenderer = backScreen.addComponent<MeshRenderer>();
-    // backScreenRenderer->setMesh(verts, indices);
-    // backScreenRenderer->material = new Material("BackScreen");
-    // backScreenRenderer->material->textures = {backCamera->targetTexture->getTexture(TextureType::DEPTH_TEXTURE)};
+    Entity backScreen("Back Screen");
+    backScreen.transform.scale = glm::vec3(0.25);
+    backScreen.transform.position.y = 0.6;
+    backScreen.layer = "Back";
+    auto backScreenRenderer = backScreen.addComponent<MeshRenderer>();
+    backScreenRenderer->setMesh(verts, indices);
+    backScreenRenderer->material = new Material("BackScreen");
+    backScreenRenderer->material->textures = {backCamera->renderTarget->getTexture(TextureType::DEPTH_TEXTURE)};
 
     Entity sun("Sun");
     sun.addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1);

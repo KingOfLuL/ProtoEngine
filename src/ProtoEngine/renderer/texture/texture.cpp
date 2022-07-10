@@ -212,6 +212,10 @@ namespace Engine
             m_Framebuffer.unbind();
         }
     }
+    Texture2D *RenderTexture::getColorTexture()
+    {
+        return &m_ColorTexture;
+    }
     Texture2D *RenderTexture::getTexture(i32 textureType)
     {
         if (textureType == TextureType::COLOR_TEXTURE)

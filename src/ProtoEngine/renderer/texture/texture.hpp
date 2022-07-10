@@ -49,7 +49,13 @@ namespace Engine
     {
     public:
         Texture2D() = default;
-        Texture2D(i32 w, i32 h, i32 texType = TextureType::MAT_DIFFUSE, bool mipmap = true, void *data = nullptr, GLenum colFormat = GL_RGB, const std::string &path = "");
+        Texture2D(i32 w,
+                  i32 h,
+                  i32 texType = TextureType::MAT_DIFFUSE,
+                  bool mipmap = true,
+                  void *data = nullptr,
+                  GLenum colFormat = GL_RGB,
+                  const std::string &path = "");
 
     public:
         std::string getPath() const;
@@ -78,6 +84,7 @@ namespace Engine
         void bindTexture() const;
         void unbindRender() const;
 
+        Texture2D *getColorTexture();
         Texture2D *getTexture(i32 textureType);
 
         i32 width, height;
