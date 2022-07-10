@@ -30,21 +30,21 @@ namespace Engine
         if (diffusePath != "RenderTexture")
         {
             if (diffusePath != "")
-                loadMaterialTexture(diffusePath, TextureType::DIFFUSE, this);
+                loadMaterialTexture(diffusePath, TextureType::MAT_DIFFUSE, this);
             else
                 hasDiffuseTexture = false;
         }
         if (specularPath != "RenderTexture")
         {
             if (specularPath != "")
-                loadMaterialTexture(specularPath, TextureType::SPECULAR, this);
+                loadMaterialTexture(specularPath, TextureType::MAT_SPECULAR, this);
             else if (specularPath != "RenderTexture")
                 hasSpecularTexture = false;
         }
         if (normalPath != "RenderTexture")
         {
             if (normalPath != "")
-                loadMaterialTexture(normalPath, TextureType::NORMAL, this);
+                loadMaterialTexture(normalPath, TextureType::MAT_NORMAL, this);
             else if (normalPath != "RenderTexture")
                 hasNormalMap = false;
         }
@@ -60,7 +60,7 @@ namespace Engine
                 return mat;
         return nullptr;
     }
-    void Material::loadMaterialTexture(const std::string &path, TextureType texType, Material *material)
+    void Material::loadMaterialTexture(const std::string &path, i32 texType, Material *material)
     {
         // check if texture already is loaded
         for (u32 i = 0; i < Texture2D::s_LoadedTextures.size(); i++)
@@ -77,7 +77,7 @@ namespace Engine
             }
         }
         // otherwise create a new one
-        Texture2D tex = Texture2D::loadFromFile(path, texType);
+        Texture2D tex = Texture2D::loadFromFile(path, (TextureType)texType);
         Texture2D::s_LoadedTextures.push_back(tex);
         material->textures.push_back(&(Texture2D::s_LoadedTextures.back()));
     }

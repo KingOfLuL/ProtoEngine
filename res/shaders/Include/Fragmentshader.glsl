@@ -18,6 +18,7 @@ in mat3 _TBN;
 
 #include "Material.glsl"
 
+uniform sampler2D _DepthTexture;
 uniform samplerCube _Skybox;
 
 out vec4 _OutputColor;
@@ -25,4 +26,9 @@ out vec4 _OutputColor;
 vec3 correctGamma(vec3 color)
 {
     return pow(color, vec3(1.0 / _Gamma));
+}
+float linearDepth(float z)
+{
+    float linearZ = (2.0 * _NearClipPlane * _FarClipPlane) / (_FarClipPlane + _NearClipPlane - z * (_FarClipPlane - _NearClipPlane));
+    return linearZ / _FarClipPlane;
 }

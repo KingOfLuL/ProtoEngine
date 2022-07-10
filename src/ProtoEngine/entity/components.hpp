@@ -66,9 +66,11 @@ namespace Engine
         void renderToTexture();
 
     public:
-        RenderTexture *targetTexture;
+        RenderTexture *renderTarget;
         std::vector<std::string> layers = {"Default"};
         f32 fov;
+        f32 nearClipPlane = 0.01f;
+        f32 farClipPlane = 300.f;
         glm::vec2 resolution;
     };
 

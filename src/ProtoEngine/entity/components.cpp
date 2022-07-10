@@ -81,7 +81,7 @@ namespace Engine
         : fov(75.f), resolution(resW, resH)
     {
         application->scene->addCamera(this);
-        targetTexture = new RenderTexture(resolution.x, resolution.y, useAntiAliasing);
+        renderTarget = new RenderTexture(resolution.x, resolution.y, useAntiAliasing);
     }
     Camera::~Camera()
     {
@@ -90,28 +90,30 @@ namespace Engine
             application->scene->mainCamera = nullptr;
         }
         application->scene->removeCamera(this);
-        delete targetTexture;
+        delete renderTarget;
     }
     glm::mat4 Camera::getViewMatrix() const
     {
-        return glm::lookAt(entity->transform.getWorldPosition(),
-                           entity->transform.getWorldPosition() + entity->transform.getWorldFront(),
-                           entity->transform.getWorldUp());
+        return glm::lookAt<f32>(entity->transform.getWorldPosition(),
+                                entity->transform.getWorldPosition() + entity->transform.getWorldFront(),
+                                entity->transform.getWorldUp());
     }
     glm::mat4 Camera::getProjectionMatrix() const
     {
         return glm::perspective<f32>(glm::radians(fov),
-                                     f32(targetTexture->width) / f32(targetTexture->height),
-                                     0.01f,
-                                     300.0f);
+                                     f32(renderTarget->width) / f32(renderTarget->height),
+                                     nearClipPlane,
+                                     farClipPlane);
     }
     void Camera::renderToTexture()
     {
-        targetTexture->bindRender();
-        glViewport(0, 0, targetTexture->width, targetTexture->height);
+        renderTarget->bindRender();
+        glViewport(0, 0, renderTarget->width, renderTarget->height);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        float planes[] = {nearClipPlane, farClipPlane};
+        Renderer::shaderUniformbufferInput.setData(&planes[0], sizeof(planes), 7 * sizeof(float));
         Renderer::shaderUniformbufferInput.setData(glm::value_ptr(entity->transform.getWorldPosition()), sizeof(glm::vec3), 0);
 
         glm::mat4 matrices[] = {
@@ -140,21 +142,24 @@ namespace Engine
 
             material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
 
-            for (u32 i = 0; i < material->textures.size(); i++)
+            u32 i;
+            for (i = 0; i < material->textures.size(); i++)
             {
                 auto tex = material->textures[i];
 
                 glActiveTexture(GL_TEXTURE0 + i);
 
-                if (tex->getType() == TextureType::DIFFUSE)
+                if (tex->getType() == TextureType::MAT_DIFFUSE)
                     material->shader->setInt("_Material.DiffuseTexture", i);
-                else if (tex->getType() == TextureType::SPECULAR)
+                else if (tex->getType() == TextureType::MAT_SPECULAR)
                     material->shader->setInt("_Material.SpecularTexture", i);
-                else if (tex->getType() == TextureType::NORMAL)
+                else if (tex->getType() == TextureType::MAT_NORMAL)
                     material->shader->setInt("_Material.NormalMap", i);
 
                 tex->bind();
             }
+            material->shader->setInt("_DepthTexture", i);
+            renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
 
             material->shader->setVec3("_Material.DiffuseColor", material->diffuseColor);
             material->shader->setFloat("_Material.Shininess", material->shininess);
@@ -165,7 +170,7 @@ namespace Engine
 
             renderer->drawMesh();
         }
-        targetTexture->unbindRender();
+        renderTarget->unbindRender();
     }
 
     ///

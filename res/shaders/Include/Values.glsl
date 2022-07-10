@@ -5,6 +5,8 @@ layout (std140, binding = 2) uniform Values
     float _Time;
     float _ScreenWidth;
     float _ScreenHeight;
+    float _NearClipPlane;
+    float _FarClipPlane;
 };
 
 const float _Gamma = 2.2;

@@ -59,10 +59,14 @@ namespace Engine
     void Window::drawToWindow(RenderTexture *texture)
     {
         m_Shader.use();
+        m_Shader.setInt("_RenderTexture", 0);
+        m_Shader.setInt("_DepthTexture", 1);
         glViewport(0, 0, width, height);
 
         glActiveTexture(GL_TEXTURE0);
         texture->bindTexture();
+        glActiveTexture(GL_TEXTURE1);
+        texture->getTexture(TextureType::DEPTH_TEXTURE)->bind();
 
         glDisable(GL_DEPTH_TEST);
         m_Screen.draw();

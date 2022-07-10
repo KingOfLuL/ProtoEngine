@@ -74,18 +74,16 @@ namespace Engine
     {
     public:
         Framebuffer() = default;
-        Framebuffer(i32 w, i32 h, u32 textureID, bool useAntiAliasing = true);
+        Framebuffer(i32 w, i32 h);
 
         void bind() const override;
         void unbind() const override;
 
+        static void checkError();
+
     public:
         i32 width;
         i32 height;
-
-    private:
-        bool m_AntiAliasing;
-        Renderbuffer m_Renderbuffer;
     };
 
     class Uniformbuffer : public Buffer

@@ -38,47 +38,6 @@ namespace Engine
         return m_ID;
     }
 
-    Texture2D::Texture2D(void *textureData, i32 w, i32 h, GLenum colFormat, const TextureType &texType, const std::string &path)
-        : m_Type(texType), m_Path(path)
-    {
-        m_GLTextureType = GL_TEXTURE_2D;
-
-        width = w;
-        height = h;
-        colorFormat = colFormat;
-
-        GLenum sRGBformat = colorFormat;
-        GLenum glType = GL_UNSIGNED_BYTE;
-        if (m_Type == TextureType::DIFFUSE)
-        {
-            if (colorFormat == GL_RGB)
-                sRGBformat = GL_SRGB;
-            else if (colorFormat == GL_RGBA)
-                sRGBformat = GL_SRGB_ALPHA;
-        }
-        else if (m_Type == TextureType::DEPTH_TEXTURE)
-        {
-            colorFormat = GL_DEPTH_COMPONENT;
-            sRGBformat = GL_DEPTH_COMPONENT;
-            glType = GL_FLOAT;
-        }
-
-        glGenTextures(1, &m_ID);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(m_GLTextureType, m_ID);
-        glTexImage2D(m_GLTextureType, 0, sRGBformat, width, height, 0, colorFormat, glType, textureData);
-        glGenerateMipmap(m_GLTextureType); // TODO: optional mipmap
-        setTextureWrapMode(GL_REPEAT, GL_REPEAT);
-        setTextureFilterMode(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    }
-    std::string Texture2D::getPath() const
-    {
-        return m_Path;
-    }
-    TextureType Texture2D::getType() const
-    {
-        return m_Type;
-    }
     Texture2D Texture2D::loadFromFile(const std::string &path, const TextureType &type)
     {
         std::string fileName = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + path;
@@ -105,22 +64,69 @@ namespace Engine
             format = GL_RGBA;
             break;
         }
-        return Texture2D(data, width, height, format, type, path);
+        return Texture2D(width, height, type, true, data, format, path);
     }
-
-    Texture2DMultisample::Texture2DMultisample(i32 w, i32 h)
+    Texture2D::Texture2D(i32 w, i32 h, i32 texType, bool mipmap, void *textureData, GLenum colFormat, const std::string &path)
+        : m_Type((TextureType)texType), m_Path(path)
     {
+        m_Multisample = m_Type & TextureType::MULTISAMPLE;
+
+        if (m_Multisample)
+            m_GLTextureType = GL_TEXTURE_2D_MULTISAMPLE;
+        else
+            m_GLTextureType = GL_TEXTURE_2D;
+
         width = w;
         height = h;
-        m_GLTextureType = GL_TEXTURE_2D_MULTISAMPLE;
-        colorFormat = GL_RGB;
+        colorFormat = colFormat;
+
+        GLenum internalFormat = colorFormat;
+        GLenum glType = GL_UNSIGNED_BYTE;
+
+        if (m_Type == TextureType::MAT_DIFFUSE)
+        {
+            if (colorFormat == GL_RGB)
+                internalFormat = GL_SRGB;
+            else if (colorFormat == GL_RGBA)
+                internalFormat = GL_SRGB_ALPHA;
+        }
+        else if (m_Type == TextureType::DEPTH_TEXTURE)
+        {
+            colorFormat = GL_DEPTH_COMPONENT;
+            internalFormat = GL_DEPTH_COMPONENT;
+            glType = GL_FLOAT;
+        }
 
         glGenTextures(1, &m_ID);
-        glActiveTexture(GL_TEXTURE0);
         glBindTexture(m_GLTextureType, m_ID);
-        glTexImage2DMultisample(m_GLTextureType, 4, colorFormat, width, height, GL_TRUE);
+
+        if (m_Multisample)
+            glTexImage2DMultisample(m_GLTextureType, 4, colorFormat, width, height, GL_TRUE);
+        else
+            glTexImage2D(m_GLTextureType, 0, internalFormat, width, height, 0, colorFormat, glType, textureData);
+
+        if (mipmap)
+            glGenerateMipmap(m_GLTextureType);
+
         setTextureWrapMode(GL_REPEAT, GL_REPEAT);
-        setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+        if (mipmap)
+            setTextureFilterMode(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        else if (m_Multisample)
+            setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+        else if (m_Type == TextureType::DEPTH_TEXTURE)
+            setTextureFilterMode(GL_NEAREST, GL_NEAREST);
+        else
+            setTextureFilterMode(GL_NEAREST, GL_LINEAR);
+
+        unbind();
+    }
+    std::string Texture2D::getPath() const
+    {
+        return m_Path;
+    }
+    TextureType Texture2D::getType() const
+    {
+        return m_Type;
     }
 
     Cubemap::Cubemap(const std::array<std::string, 6> &faces) : m_FacePaths(faces)
@@ -153,23 +159,27 @@ namespace Engine
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
     RenderTexture::RenderTexture(i32 w, i32 h, bool antiAliasing)
-        : Texture2D(NULL, w, h, GL_RGB, TextureType::RENDER_TEXTURE), m_AntiAliasing(antiAliasing)
+        : width(w), height(h), m_AntiAliasing(antiAliasing)
     {
-        width = w;
-        height = h;
-        m_GLTextureType = GL_TEXTURE_2D;
+        m_ColorTexture = Texture2D(width, height, TextureType::RENDER_TEXTURE);
+        m_DepthTexture = Texture2D(width, height, TextureType::DEPTH_TEXTURE, false);
+        m_Framebuffer = Framebuffer(width, height);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                               m_ColorTexture.getID(), 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+                               m_DepthTexture.getID(), 0);
 
-        setTextureWrapMode(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-        setTextureFilterMode(GL_LINEAR, GL_LINEAR);
-
-        m_Framebuffer = Framebuffer(w, h, m_ID, false);
+        Framebuffer::checkError();
 
         if (m_AntiAliasing)
         {
-            m_MultisampleTexture = Texture2DMultisample(width, height);
-            m_MultisampleFramebuffer = Framebuffer(width, height, m_MultisampleTexture.getID(), true);
+            m_MultisampleTexture = Texture2D(width, height, TextureType::RENDER_TEXTURE | TextureType::MULTISAMPLE, false);
+            m_MultisampleFramebuffer = Framebuffer(width, height);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE,
+                                   m_MultisampleTexture.getID(), 0);
+            Framebuffer::checkError();
+            m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_AntiAliasing);
         }
-        m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_AntiAliasing);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -178,7 +188,7 @@ namespace Engine
     }
     void RenderTexture::bindTexture() const
     {
-        bind();
+        m_ColorTexture.bind();
     }
     void RenderTexture::bindRender() const
     {
@@ -193,7 +203,7 @@ namespace Engine
         {
             glBindFramebuffer(GL_READ_FRAMEBUFFER, m_MultisampleFramebuffer.getID());
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_Framebuffer.getID());
-            glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
             m_MultisampleFramebuffer.unbind();
         }
@@ -201,5 +211,16 @@ namespace Engine
         {
             m_Framebuffer.unbind();
         }
+    }
+    Texture2D *RenderTexture::getTexture(i32 textureType)
+    {
+        if (textureType == TextureType::COLOR_TEXTURE)
+            if (textureType & TextureType::MULTISAMPLE)
+                return &m_MultisampleTexture;
+            else
+                return &m_ColorTexture;
+        else if (textureType == TextureType::DEPTH_TEXTURE)
+            return &m_DepthTexture;
+        return nullptr;
     }
 }

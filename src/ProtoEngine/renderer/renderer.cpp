@@ -21,7 +21,7 @@ namespace Engine::Renderer
 
     const u32 LIGHT_DATA_SIZE = (NUN_DIRLIGHTS_DATA + NUM_POINTLIGHTS_DATA + NUM_SPOTLIGHTS_DATA) * sizeof(f32);
 
-    const u32 INPUT_DATA_SIZE = 7 * sizeof(f32);
+    const u32 INPUT_DATA_SIZE = 9 * sizeof(f32);
 
     // TODO: add Batched Renderer
 
@@ -144,6 +144,6 @@ namespace Engine::Renderer
         }
         application->scene->mainCamera->renderToTexture();
 
-        application->window->drawToWindow(application->scene->mainCamera->targetTexture);
+        application->window->drawToWindow(application->scene->mainCamera->renderTarget);
     }
 }

@@ -126,17 +126,17 @@ namespace Engine
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, m_ID);
     }
 
-    Framebuffer::Framebuffer(i32 w, i32 h, u32 textureID, bool useAntiAliasing)
-        : width(w), height(h), m_AntiAliasing(useAntiAliasing)
+    Framebuffer::Framebuffer(i32 w, i32 h)
+        : width(w), height(h)
     {
         glGenFramebuffers(1, &m_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_AntiAliasing ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, textureID, 0);
-
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            std::cerr
-                << "ERROR: Framebuffer is not complete" << std::endl;
+    }
+    void Framebuffer::checkError()
+    {
+        auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE)
+            std::cout << "Framebuffer not complete: Status: " << status << " Error: " << glGetError() << std::endl;
     }
     void Framebuffer::bind() const
     {

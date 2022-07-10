@@ -9,13 +9,15 @@
 
 namespace Engine
 {
-    enum class TextureType
+    enum TextureType
     {
-        DIFFUSE,
-        SPECULAR,
-        NORMAL,
-        RENDER_TEXTURE,
-        DEPTH_TEXTURE,
+        MULTISAMPLE = 0x01,
+        MAT_DIFFUSE = 0x02,
+        MAT_SPECULAR = 0x04,
+        MAT_NORMAL = 0x08,
+        RENDER_TEXTURE = 0x10,
+        DEPTH_TEXTURE = 0x20,
+        COLOR_TEXTURE = 0x40,
     };
 
     class Texture
@@ -47,7 +49,7 @@ namespace Engine
     {
     public:
         Texture2D() = default;
-        Texture2D(void *data, i32 w, i32 h, GLenum colFormat, const TextureType &texType = TextureType::DIFFUSE, const std::string &path = "");
+        Texture2D(i32 w, i32 h, i32 texType = TextureType::MAT_DIFFUSE, bool mipmap = true, void *data = nullptr, GLenum colFormat = GL_RGB, const std::string &path = "");
 
     public:
         std::string getPath() const;
@@ -61,15 +63,10 @@ namespace Engine
     private:
         TextureType m_Type;
         std::string m_Path = "";
-    };
-    class Texture2DMultisample : public Texture
-    {
-    public:
-        Texture2DMultisample() = default;
-        Texture2DMultisample(i32 w, i32 h);
+        bool m_Multisample;
     };
 
-    class RenderTexture : public Texture2D
+    class RenderTexture
     {
     public:
         RenderTexture() = default;
@@ -81,12 +78,18 @@ namespace Engine
         void bindTexture() const;
         void unbindRender() const;
 
+        Texture2D *getTexture(i32 textureType);
+
+        i32 width, height;
+
     private:
         bool m_AntiAliasing;
 
-        Framebuffer m_Framebuffer;
         Renderbuffer m_Renderbuffer;
-        Texture2DMultisample m_MultisampleTexture;
+        Texture2D m_ColorTexture;
+        Texture2D m_DepthTexture;
+        Texture2D m_MultisampleTexture;
+        Framebuffer m_Framebuffer;
         Framebuffer m_MultisampleFramebuffer;
     };
 

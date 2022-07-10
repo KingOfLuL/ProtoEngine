@@ -8,7 +8,6 @@
 namespace Engine
 {
     class Texture2D;
-    enum class TextureType;
 
     struct Material
     {
@@ -29,7 +28,7 @@ namespace Engine
 
     public:
         static Material *getMaterialByName(const std::string &matName);
-        static void loadMaterialTexture(const std::string &path, TextureType texType, Material *material);
+        static void loadMaterialTexture(const std::string &path, i32 texType, Material *material);
 
     private:
         static std::vector<Material *> s_LoadedMaterials;
