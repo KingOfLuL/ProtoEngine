@@ -76,12 +76,12 @@ namespace Engine
     {
     public:
         RenderTexture() = default;
-        RenderTexture(i32 w, i32 h, bool antiAliasing = true);
+        RenderTexture(i32 w, i32 h, i32 texturesToRender);
         ~RenderTexture();
 
     public:
         void bindRender() const;
-        void bindTexture() const;
+        void bindColorTexture() const;
         void unbindRender() const;
 
         Texture2D *getColorTexture();
@@ -91,7 +91,6 @@ namespace Engine
 
     private:
         bool m_AntiAliasing;
-
         Renderbuffer m_Renderbuffer;
         Texture2D m_ColorTexture;
         Texture2D m_DepthTexture;

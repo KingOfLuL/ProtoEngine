@@ -158,16 +158,32 @@ namespace Engine
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
-    RenderTexture::RenderTexture(i32 w, i32 h, bool antiAliasing)
-        : width(w), height(h), m_AntiAliasing(antiAliasing)
+    RenderTexture::RenderTexture(i32 w, i32 h, i32 texturesToRender)
+        : width(w), height(h)
     {
-        m_ColorTexture = Texture2D(width, height, TextureType::RENDER_TEXTURE);
-        m_DepthTexture = Texture2D(width, height, TextureType::DEPTH_TEXTURE, false);
+        m_AntiAliasing = texturesToRender & TextureType::MULTISAMPLE;
+        bool drawColorTex = texturesToRender & TextureType::COLOR_TEXTURE;
+        bool drawDepthTex = texturesToRender & TextureType::DEPTH_TEXTURE;
+
         m_Framebuffer = Framebuffer(width, height);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                               m_ColorTexture.getID(), 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-                               m_DepthTexture.getID(), 0);
+
+        if (drawColorTex)
+        {
+            m_ColorTexture = Texture2D(width, height, TextureType::RENDER_TEXTURE);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                                   m_ColorTexture.getID(), 0);
+        }
+        else
+        {
+            glDrawBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+        }
+        if (drawDepthTex)
+        {
+            m_DepthTexture = Texture2D(width, height, TextureType::DEPTH_TEXTURE, false);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+                                   m_DepthTexture.getID(), 0);
+        }
 
         Framebuffer::checkError();
 
@@ -178,15 +194,16 @@ namespace Engine
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE,
                                    m_MultisampleTexture.getID(), 0);
             Framebuffer::checkError();
-            m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_AntiAliasing);
         }
+        if (m_AntiAliasing || (drawColorTex && !drawDepthTex))
+            m_Renderbuffer = Renderbuffer(width, height, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, m_AntiAliasing);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     RenderTexture::~RenderTexture()
     {
     }
-    void RenderTexture::bindTexture() const
+    void RenderTexture::bindColorTexture() const
     {
         m_ColorTexture.bind();
     }

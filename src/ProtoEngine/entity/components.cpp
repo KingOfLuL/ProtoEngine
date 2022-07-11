@@ -77,11 +77,12 @@ namespace Engine
     ///
     ///
     ///
-    Camera::Camera(i32 resW, i32 resH, bool useAntiAliasing)
+    Camera::Camera(i32 resW, i32 resH, i32 texturesToRender)
         : fov(75.f), resolution(resW, resH)
     {
         application->scene->addCamera(this);
-        renderTarget = new RenderTexture(resolution.x, resolution.y, useAntiAliasing);
+
+        renderTarget = new RenderTexture(resolution.x, resolution.y, texturesToRender);
     }
     Camera::~Camera()
     {
@@ -279,9 +280,9 @@ namespace Engine
     const std::vector<f32> DirectionalLight::getData() const
     {
         return {
-            getDirection().x,
-            getDirection().y,
-            getDirection().z,
+            entity->transform.rotation.x,
+            entity->transform.rotation.y,
+            entity->transform.rotation.z,
             0.f, // padding
             ambient.x * intensity,
             ambient.y * intensity,

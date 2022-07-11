@@ -56,7 +56,7 @@ namespace Engine
     class Camera : public Component
     {
     public:
-        Camera(i32 resW, i32 resH, bool useAntiAliasing = true);
+        Camera(i32 resW, i32 resH, i32 texturesToRender);
         ~Camera();
 
     public:

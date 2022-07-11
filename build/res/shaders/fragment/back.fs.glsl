@@ -4,9 +4,9 @@ uniform sampler2D _RenderTexture;
 
 void main()
 {
-    float depth = texture(_RenderTexture, _Fragment.UV).r;
-    depth = linearDepth(depth);
-
+    float col = texture(_RenderTexture, _Fragment.UV).r;
+    col = linearDepth(col);
+    // vec3 col = texture2D(_RenderTexture, _Fragment.UV).rgb;
    
-    _OutputColor = vec4(depth, depth, depth, 1.0);
+    _OutputColor = vec4(vec3(col), 1.0);
 }

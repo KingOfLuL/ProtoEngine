@@ -64,7 +64,7 @@ namespace Engine
         glViewport(0, 0, width, height);
 
         glActiveTexture(GL_TEXTURE0);
-        texture->bindTexture();
+        texture->bindColorTexture();
         glActiveTexture(GL_TEXTURE1);
         texture->getTexture(TextureType::DEPTH_TEXTURE)->bind();
 
