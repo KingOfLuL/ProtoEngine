@@ -8,6 +8,7 @@
 namespace Engine
 {
     class Texture2D;
+    enum TextureType : int;
 
     struct Material
     {
@@ -18,6 +19,7 @@ namespace Engine
     public:
         std::string name;
         Shader *shader = nullptr;
+        Texture2D *diffuseTex = nullptr, *specularTex = nullptr, *normalTex = nullptr;
         std::vector<Texture2D *> textures;
         bool hasDiffuseTexture = true;
         bool hasSpecularTexture = true;
@@ -28,7 +30,7 @@ namespace Engine
 
     public:
         static Material *getMaterialByName(const std::string &matName);
-        static void loadMaterialTexture(const std::string &path, i32 texType, Material *material);
+        static Texture2D *loadMaterialTexture(const std::string &path, TextureType texType);
 
     private:
         static std::vector<Material *> s_LoadedMaterials;

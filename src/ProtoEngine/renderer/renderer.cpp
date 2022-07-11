@@ -137,6 +137,7 @@ namespace Engine::Renderer
 
         shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData), sizeof(glm::vec3));
 
+        application->scene->getDirectionalLights()[0]->renderShadowMap();
         for (auto camera : application->scene->getCameras())
         {
             if (camera != application->scene->mainCamera)

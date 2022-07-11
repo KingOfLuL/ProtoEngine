@@ -12,6 +12,10 @@
 
 namespace Engine
 {
+    void Component::initialize()
+    {
+    }
+
     Transform::Transform(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl)
         : position(pos), scale(scl), rotation(rot),
           localUp(0.0f, 1.0f, 0.0f), localRight(1.0f, 0.0f, 0.0f), localFront(0.0f, 0.0f, 1.0f)
@@ -77,8 +81,8 @@ namespace Engine
     ///
     ///
     ///
-    Camera::Camera(i32 resW, i32 resH, i32 texturesToRender)
-        : fov(75.f), resolution(resW, resH)
+    Camera::Camera(i32 resW, i32 resH, i32 texturesToRender, const ProjectionType &projectionType)
+        : fov(75.f), resolution(resW, resH), m_ProjectionType(projectionType)
     {
         application->scene->addCamera(this);
 
@@ -101,10 +105,25 @@ namespace Engine
     }
     glm::mat4 Camera::getProjectionMatrix() const
     {
-        return glm::perspective<f32>(glm::radians(fov),
-                                     f32(renderTarget->width) / f32(renderTarget->height),
-                                     nearClipPlane,
-                                     farClipPlane);
+        if (m_ProjectionType == ProjectionType::PERSPECTIVE)
+        {
+            return glm::perspective<f32>(glm::radians(fov),
+                                         f32(renderTarget->width) / f32(renderTarget->height),
+                                         nearClipPlane,
+                                         farClipPlane);
+        }
+        if (m_ProjectionType == ProjectionType::ORTHOGRAPHIC)
+        {
+            const float halfW = orthoSize * 0.5f;
+            const float halfH = orthoSize * 0.5;
+            return glm::ortho<f32>(-halfW, halfW,
+                                   -halfH, halfH,
+                                   nearClipPlane, farClipPlane);
+        }
+        else
+        {
+            return glm::mat4(1.f);
+        }
     }
     void Camera::renderToTexture()
     {
@@ -124,7 +143,8 @@ namespace Engine
         Renderer::shaderUniformbufferMatrices.setData(&matrices[0], sizeof(matrices), 0);
 
         if (application->scene->skybox && std::find(layers.begin(), layers.end(), "Default") != layers.end())
-            application->scene->skybox->draw();
+            if (m_ProjectionType == ProjectionType::PERSPECTIVE)
+                application->scene->skybox->draw();
 
         for (const auto &renderer : application->scene->getRenderers(this))
         {
@@ -143,31 +163,61 @@ namespace Engine
 
             material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
 
-            u32 i = 0;
-            for (; i < material->textures.size(); i++)
-            {
-                auto tex = material->textures[i];
+            material->shader->setInt("_Material.DiffuseTexture", 0);
+            material->shader->setInt("_Material.SpecularTexture", 1);
+            material->shader->setInt("_Material.NormalMap", 2);
+            material->shader->setInt("_DepthTexture", 3);
+            material->shader->setInt("_ShadowMap", 4);
+            material->shader->setInt("_Skybox", 5);
 
-                glActiveTexture(GL_TEXTURE0 + i);
+            glActiveTexture(GL_TEXTURE0);
+            if (material->diffuseTex)
+                material->diffuseTex->bind();
+            glActiveTexture(GL_TEXTURE1);
+            if (material->specularTex)
+                material->specularTex->bind();
+            glActiveTexture(GL_TEXTURE2);
+            if (material->normalTex)
+                material->normalTex->bind();
+            glActiveTexture(GL_TEXTURE3);
+            if (renderTarget->getTexture(TextureType::DEPTH_TEXTURE))
+                renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
+            glActiveTexture(GL_TEXTURE4);
+            if (application->scene->getDirectionalLights()[0])
+                application->scene->getDirectionalLights()[0]->getCamera()->renderTarget->getTexture(DEPTH_TEXTURE)->bind();
+            glActiveTexture(GL_TEXTURE5);
+            if (application->scene->skybox)
+                application->scene->skybox->bind();
+            // u32 i = 0;
+            // for (; i < material->textures.size(); i++)
+            // {
+            //     auto tex = material->textures[i];
 
-                if (tex->getType() == TextureType::MAT_DIFFUSE)
-                    material->shader->setInt("_Material.DiffuseTexture", i);
-                else if (tex->getType() == TextureType::MAT_SPECULAR)
-                    material->shader->setInt("_Material.SpecularTexture", i);
-                else if (tex->getType() == TextureType::MAT_NORMAL)
-                    material->shader->setInt("_Material.NormalMap", i);
+            //     glActiveTexture(GL_TEXTURE0 + i);
 
-                tex->bind();
-            }
+            //     // TODO: have fixed texture slots
+            //     if (tex->getType() == TextureType::MAT_DIFFUSE)
+            //         material->shader->setInt("_Material.DiffuseTexture", i);
+            //     else if (tex->getType() == TextureType::MAT_SPECULAR)
+            //         material->shader->setInt("_Material.SpecularTexture", i);
+            //     else if (tex->getType() == TextureType::MAT_NORMAL)
+            //         material->shader->setInt("_Material.NormalMap", i);
 
-            material->shader->setInt("_DepthTexture", i + 1);
-            material->shader->setInt("_Skybox", i + 2);
+            //     tex->bind();
+            // }
 
-            glActiveTexture(GL_TEXTURE1 + i);
-            renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
+            // material->shader->setInt("_DepthTexture", i + 1);
+            // material->shader->setInt("_ShadowMap", i + 2);
+            // material->shader->setInt("_Skybox", i + 3);
 
-            glActiveTexture(GL_TEXTURE2 + i);
-            application->scene->skybox->bind();
+            // glActiveTexture(GL_TEXTURE1 + i);
+            // renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
+
+            // glActiveTexture(GL_TEXTURE2 + i);
+            // application->scene->getDirectionalLights()[0]->getCamera()->renderTarget->getTexture(TextureType::DEPTH_TEXTURE);
+
+            // glActiveTexture(GL_TEXTURE3 + i);
+            // application->scene->skybox->bind();
 
             material->shader->setVec3("_Material.DiffuseColor", material->diffuseColor);
             material->shader->setFloat("_Material.Shininess", material->shininess);
@@ -269,20 +319,33 @@ namespace Engine
     {
         application->scene->addDirectionalLight(this);
     }
+    void DirectionalLight::initialize()
+    {
+        m_Camera = entity->addComponent<Camera>(
+            application->shadowResolution.x,
+            application->shadowResolution.y,
+            TextureType::DEPTH_TEXTURE,
+            Camera::ProjectionType::ORTHOGRAPHIC);
+        application->scene->removeCamera(m_Camera);
+    }
     DirectionalLight::~DirectionalLight()
     {
         application->scene->removeDirectionalLight(this);
     }
-    glm::vec3 DirectionalLight::getDirection() const
+    void DirectionalLight::renderShadowMap()
     {
-        return entity->transform.rotation;
+        m_Camera->renderToTexture();
+    }
+    const Camera *DirectionalLight::getCamera() const
+    {
+        return m_Camera;
     }
     const std::vector<f32> DirectionalLight::getData() const
     {
         return {
-            entity->transform.rotation.x,
-            entity->transform.rotation.y,
-            entity->transform.rotation.z,
+            entity->transform.getWorldFront().x,
+            entity->transform.getWorldFront().y,
+            entity->transform.getWorldFront().z,
             0.f, // padding
             ambient.x * intensity,
             ambient.y * intensity,

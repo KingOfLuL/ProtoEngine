@@ -13,7 +13,7 @@ struct Rotate : public Behavior
         update = [&]()
         {
             angle += Time::deltaTime * speed;
-            entity->transform.rotation.x = angle;
+            entity->transform.rotation.y = angle;
         };
     }
 };
@@ -133,11 +133,16 @@ int main()
     cameraComponent->layers.push_back("Back");
     application->scene->setMainCamera(cameraComponent);
 
-    Entity entBackCamera("Back Camera");
-    entBackCamera.setParent(&camera);
-    auto backCamera = entBackCamera.addComponent<Camera>(application->window->width * 0.25,
-                                                         application->window->height * 0.25,
-                                                         TextureType::DEPTH_TEXTURE);
+    // Entity entBackCamera("Back Camera");
+    // entBackCamera.setParent(&camera);
+    // auto backCamera = entBackCamera.addComponent<Camera>(application->window->width * 0.25,
+    //                                                      application->window->height * 0.25,
+    //                                                      TextureType::DEPTH_TEXTURE, Camera::ProjectionType::ORTHOGRAPHIC);
+
+    Entity *sun = new Entity("Sun");
+    sun->addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1);
+    sun->addComponent<Rotate>();
+    sun->transform.rotation.x = -45.f;
 
     Entity backScreen("Back Screen");
     backScreen.transform.scale = glm::vec3(0.25);
@@ -146,13 +151,6 @@ int main()
     auto backScreenRenderer = backScreen.addComponent<MeshRenderer>();
     backScreenRenderer->setMesh(verts, indices);
     backScreenRenderer->material = new Material("BackScreen");
-    backScreenRenderer->material->textures = {
-        backCamera->renderTarget->getTexture(TextureType::DEPTH_TEXTURE),
-    };
-
-    Entity sun("Sun");
-    sun.addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1);
-    sun.addComponent<Rotate>();
 
     Entity light("Light");
     light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 10);

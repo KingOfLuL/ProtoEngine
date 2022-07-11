@@ -58,15 +58,19 @@ namespace Engine
     }
     void Window::drawToWindow(RenderTexture *texture)
     {
-        m_Shader.use();
-        m_Shader.setInt("_RenderTexture", 0);
-        m_Shader.setInt("_DepthTexture", 1);
         glViewport(0, 0, width, height);
+        m_Shader.use();
+
+        m_Shader.setInt("_DepthTexture", 0);
+        m_Shader.setInt("_ShadowMap", 1);
+        m_Shader.setInt("_RenderTexture", 2);
 
         glActiveTexture(GL_TEXTURE0);
-        texture->bindColorTexture();
+        application->scene->mainCamera->renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
         glActiveTexture(GL_TEXTURE1);
-        texture->getTexture(TextureType::DEPTH_TEXTURE)->bind();
+        application->scene->getDirectionalLights()[0]->getCamera()->renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
+        glActiveTexture(GL_TEXTURE2);
+        texture->bindColorTexture();
 
         glDisable(GL_DEPTH_TEST);
         m_Screen.draw();

@@ -55,6 +55,7 @@ namespace Engine
             {
                 component->entity = this;
                 m_Components.push_back(component);
+                component->initialize();
             }
             return component;
         }

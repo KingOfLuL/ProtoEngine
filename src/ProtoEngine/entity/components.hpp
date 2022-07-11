@@ -15,6 +15,8 @@ namespace Engine
         Component() = default;
         virtual ~Component() = default;
 
+        virtual void initialize();
+
     public:
         Entity *entity;
     };
@@ -56,7 +58,14 @@ namespace Engine
     class Camera : public Component
     {
     public:
-        Camera(i32 resW, i32 resH, i32 texturesToRender);
+        enum class ProjectionType
+        {
+            ORTHOGRAPHIC,
+            PERSPECTIVE,
+        };
+
+        Camera() = default;
+        Camera(i32 resW, i32 resH, i32 texturesToRender, const ProjectionType &projectionType = ProjectionType::PERSPECTIVE);
         ~Camera();
 
     public:
@@ -70,8 +79,12 @@ namespace Engine
         std::vector<std::string> layers = {"Default"};
         f32 fov;
         f32 nearClipPlane = 0.01f;
-        f32 farClipPlane = 300.f;
+        f32 farClipPlane = 5000.f;
+        f32 orthoSize = 50.f;
         glm::vec2 resolution;
+
+    private:
+        ProjectionType m_ProjectionType;
     };
 
     ///
@@ -123,12 +136,18 @@ namespace Engine
         DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity);
         ~DirectionalLight();
 
+        void initialize() override;
+
     public:
-        glm::vec3 getDirection() const;
         const std::vector<f32> getData() const override;
+        const Camera *getCamera() const;
+        void renderShadowMap();
 
     public:
         static const u32 NUM_DATA = 16;
+
+    private:
+        Camera *m_Camera;
     };
 
     class PointLight : public Light

@@ -30,21 +30,21 @@ namespace Engine
         if (diffusePath != "RenderTexture")
         {
             if (diffusePath != "")
-                loadMaterialTexture(diffusePath, TextureType::MAT_DIFFUSE, this);
+                diffuseTex = loadMaterialTexture(diffusePath, TextureType::MAT_DIFFUSE);
             else
                 hasDiffuseTexture = false;
         }
         if (specularPath != "RenderTexture")
         {
             if (specularPath != "")
-                loadMaterialTexture(specularPath, TextureType::MAT_SPECULAR, this);
+                specularTex = loadMaterialTexture(specularPath, TextureType::MAT_SPECULAR);
             else if (specularPath != "RenderTexture")
                 hasSpecularTexture = false;
         }
         if (normalPath != "RenderTexture")
         {
             if (normalPath != "")
-                loadMaterialTexture(normalPath, TextureType::MAT_NORMAL, this);
+                normalTex = loadMaterialTexture(normalPath, TextureType::MAT_NORMAL);
             else if (normalPath != "RenderTexture")
                 hasNormalMap = false;
         }
@@ -60,7 +60,7 @@ namespace Engine
                 return mat;
         return nullptr;
     }
-    void Material::loadMaterialTexture(const std::string &path, i32 texType, Material *material)
+    Texture2D *Material::loadMaterialTexture(const std::string &path, TextureType texType)
     {
         // check if texture already is loaded
         for (u32 i = 0; i < Texture2D::s_LoadedTextures.size(); i++)
@@ -71,14 +71,11 @@ namespace Engine
             Texture2D *tex = &(*front);
 
             if (tex->getPath() == path)
-            {
-                material->textures.push_back(tex);
-                return;
-            }
+                return tex;
         }
         // otherwise create a new one
         Texture2D tex = Texture2D::loadFromFile(path, (TextureType)texType);
         Texture2D::s_LoadedTextures.push_back(tex);
-        material->textures.push_back(&(Texture2D::s_LoadedTextures.back()));
+        return &(Texture2D::s_LoadedTextures.back());
     }
 }

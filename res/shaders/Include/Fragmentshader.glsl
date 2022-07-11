@@ -20,6 +20,8 @@ in mat3 _TBN;
 
 uniform sampler2D _DepthTexture;
 uniform samplerCube _Skybox;
+uniform sampler2D _ShadowMap;
+uniform sampler2D _RenderTexture;
 
 out vec4 _OutputColor;
 

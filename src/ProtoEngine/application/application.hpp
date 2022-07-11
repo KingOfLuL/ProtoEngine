@@ -15,6 +15,7 @@ namespace Engine
         std::string name;
         Window *window;
         Scene *scene = nullptr;
+        glm::vec2 shadowResolution = glm::vec2(1024, 1024);
 
     public:
         void run();

@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-    enum TextureType
+    enum TextureType : int
     {
         MULTISAMPLE = 0x01,
         MAT_DIFFUSE = 0x02,

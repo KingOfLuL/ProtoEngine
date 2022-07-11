@@ -17,7 +17,7 @@ namespace Engine
     }
     void Scene::removeEntity(Entity *entity)
     {
-        std::remove(m_Entities.begin(), m_Entities.end(), entity);
+        m_Entities.remove(entity);
     }
     void Scene::addMeshRenderer(MeshRenderer *renderer)
     {
@@ -25,7 +25,7 @@ namespace Engine
     }
     void Scene::removeMeshRenderer(MeshRenderer *renderer)
     {
-        std::remove(m_Renderers.begin(), m_Renderers.end(), renderer);
+        m_Renderers.remove(renderer);
     }
     void Scene::addDirectionalLight(DirectionalLight *light)
     {
@@ -117,7 +117,7 @@ namespace Engine
     }
     void Scene::removeBehavior(Behavior *behavior)
     {
-        std::remove(m_Behaviors.begin(), m_Behaviors.end(), behavior);
+        m_Behaviors.remove(behavior);
     }
     void Scene::addCamera(Camera *camera)
     {
@@ -125,7 +125,7 @@ namespace Engine
     }
     void Scene::removeCamera(Camera *camera)
     {
-        std::remove(m_Cameras.begin(), m_Cameras.end(), camera);
+        m_Cameras.remove(camera);
     }
     void Scene::setMainCamera(Camera *camera)
     {
@@ -143,21 +143,21 @@ namespace Engine
     {
         return m_PointLights;
     }
-    const std::vector<MeshRenderer *> &Scene::getRenderers(Camera *camera)
+    const std::list<MeshRenderer *> &Scene::getRenderers(Camera *camera)
     {
         if (camera->entity->transform.hasMoved())
         {
-            std::sort(m_Renderers.begin(), m_Renderers.end(),
-                      [](MeshRenderer *a, MeshRenderer *b)
-                      {
-                          f32 distA = glm::length(application->scene->mainCamera->entity->transform.position - a->bounds.center);
-                          f32 distB = glm::length(application->scene->mainCamera->entity->transform.position - b->bounds.center);
-                          return distA > distB;
-                      });
+            m_Renderers.sort(
+                [](MeshRenderer *a, MeshRenderer *b)
+                {
+                    f32 distA = glm::length(application->scene->mainCamera->entity->transform.position - a->bounds.center);
+                    f32 distB = glm::length(application->scene->mainCamera->entity->transform.position - b->bounds.center);
+                    return distA > distB;
+                });
         }
         return m_Renderers;
     }
-    const std::vector<Camera *> &Scene::getCameras() const
+    const std::list<Camera *> &Scene::getCameras() const
     {
         return m_Cameras;
     }

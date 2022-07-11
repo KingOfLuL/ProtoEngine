@@ -32,8 +32,8 @@ namespace Engine
         void start();
         void update();
         void lateUpdate();
-        const std::vector<MeshRenderer *> &getRenderers(Camera *camera);
-        const std::vector<Camera *> &getCameras() const;
+        const std::list<MeshRenderer *> &getRenderers(Camera *camera);
+        const std::list<Camera *> &getCameras() const;
         const std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> &getDirectionalLights() const;
         const std::array<SpotLight *, MAX_NR_SPOTLIGHTS> &getSpotLights() const;
         const std::array<PointLight *, MAX_NR_POINTLIGHTS> &getPointLights() const;
@@ -44,10 +44,10 @@ namespace Engine
 
     private:
         std::string m_Name;
-        std::vector<Entity *> m_Entities;
-        std::vector<MeshRenderer *> m_Renderers;
-        std::vector<Behavior *> m_Behaviors;
-        std::vector<Camera *> m_Cameras;
+        std::list<Entity *> m_Entities;
+        std::list<MeshRenderer *> m_Renderers;
+        std::list<Behavior *> m_Behaviors;
+        std::list<Camera *> m_Cameras;
         std::array<DirectionalLight *, MAX_NR_DIRLIGHTS> m_DirectionalLights{nullptr};
         std::array<SpotLight *, MAX_NR_SPOTLIGHTS> m_SpotLights{nullptr};
         std::array<PointLight *, MAX_NR_POINTLIGHTS> m_PointLights{nullptr};

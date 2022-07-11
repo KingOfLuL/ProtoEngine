@@ -1,7 +1,5 @@
 #include "Fragmentshader.glsl"
 
-uniform sampler2D _RenderTexture;
-
 void main()
 {
     vec3 col = texture2D(_RenderTexture, _Fragment.UV).rgb;
