@@ -9,7 +9,7 @@ in VS_OUT
     vec3 Bitangent;
     vec3 VertexColor;
     vec3 TangentPosition;
-    mat3 _TBN;
+    vec4 LightSpacePosition;
 } _Vertices[];
 
 out FRAGMENT
@@ -21,5 +21,5 @@ out FRAGMENT
     vec3 Bitangent;
     vec3 VertexColor;
     vec3 TangentPosition;
-    mat3 _TBN;
+    vec4 LightSpacePosition;
 } _Vertex;

@@ -12,6 +12,7 @@ in FRAGMENT
     vec3 Bitangent;
     vec3 VertexColor;
     vec3 TangentPosition;
+    vec4 LightSpacePosition;
 } _Fragment;
 
 in mat3 _TBN;

@@ -1,7 +1,7 @@
 #include "Lights.glsl"
 
 // calculate directional light
-vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float shadow)
 {
     vec3 lightDir = normalize(_TBN * -light.direction);
     vec3 halfWayDir = normalize(lightDir + viewDir);
@@ -11,12 +11,12 @@ vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     float spec = pow(max(dot(normal, halfWayDir), 0.0), _Material.Shininess);
 
     vec4 ambient = vec4(light.ambient, 1.0)   *         _TextureDiffuseColor;
-    vec4 diffuse = vec4(light.diffuse, 1.0)   * diff *  _TextureDiffuseColor;
-    vec4 specular = vec4(light.specular, 1.0) * spec *  _TextureSpecularColor;
-    return (ambient + diffuse + specular);
+    vec4 diffuse = vec4(light.diffuse, 1.0)   * diff *  _TextureDiffuseColor * (1.0 - shadow);
+    vec4 specular = vec4(light.specular, 1.0) * spec *  _TextureSpecularColor * (1.0 - shadow);
+    return diffuse + specular + ambient;
 }
 // calculate point light
-vec4 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir) 
+vec4 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir, float shadow) 
 {
     vec3 tangentPosition = _TBN * light.position;
 
@@ -31,17 +31,17 @@ vec4 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * dst + light.quadratic * dst);    
 
     vec4 ambient  = vec4(light.ambient, 1.0)  *        _TextureDiffuseColor;
-    vec4 diffuse  = vec4(light.diffuse, 1.0)  * diff * _TextureDiffuseColor;
-    vec4 specular = vec4(light.specular, 1.0) * spec * _TextureSpecularColor;
+    vec4 diffuse  = vec4(light.diffuse, 1.0)  * diff * _TextureDiffuseColor * (1.0 - shadow);
+    vec4 specular = vec4(light.specular, 1.0) * spec * _TextureSpecularColor * (1.0 - shadow);
 
     ambient  *= vec4(vec3(attenuation), 1.0);
     diffuse  *= vec4(vec3(attenuation), 1.0);
     specular *= vec4(vec3(attenuation), 1.0);
 
-    return (ambient + diffuse + specular);
+    return ambient + diffuse + specular;
 }
 // calculate spot light
-vec4 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir)
+vec4 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir, float shadow)
 {
     vec3 tangentPosition = _TBN * light.position;
 
@@ -61,14 +61,25 @@ vec4 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir)
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
     vec4 ambient = vec4(light.ambient, 1.0)   *         _TextureDiffuseColor; 
-    vec4 diffuse = vec4(light.diffuse, 1.0)   * diff *  _TextureDiffuseColor; 
-    vec4 specular = vec4(light.specular, 1.0) * spec *  _TextureSpecularColor; 
+    vec4 diffuse = vec4(light.diffuse, 1.0)   * diff *  _TextureDiffuseColor * (1.0 - shadow); 
+    vec4 specular = vec4(light.specular, 1.0) * spec *  _TextureSpecularColor * (1.0 - shadow); 
 
     ambient *= vec4(vec3(attenuation * intensity), 1.0); 
     diffuse *= vec4(vec3(attenuation * intensity), 1.0); 
     specular *= vec4(vec3(attenuation * intensity), 1.0); 
     
-    return (ambient + diffuse + specular);
+    return ambient + diffuse + specular;
+}
+float calculateShadow(vec4 fragPos)
+{
+    vec3 projCoords = fragPos.xyz / fragPos.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    
+    float closestDepth = texture2D(_ShadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+    float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
 }
 
 vec4 calculateLitColor()
@@ -79,17 +90,20 @@ vec4 calculateLitColor()
 
     vec3 viewDirection = normalize(_TBN * _ViewPosition - _Fragment.TangentPosition);
 
+    // float bias = max(_ShadowBiasMax * (1.0 - dot(normal, _ShadowCasterLightDirection)), _ShadowBiasMin);
+    float shadow = calculateShadow(_Fragment.LightSpacePosition);
+
     for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
         if (_DirLights[i].isActive)
-            result += CalcDirLight(_DirLights[i], normal, viewDirection);
+            result += CalcDirLight(_DirLights[i], normal, viewDirection, shadow);
 
     for (int i = 0; i < MAX_NR_POINTLIGHTS; i++)
         if (_PointLights[i].isActive)
-            result += CalcPointLight(_PointLights[i], normal, viewDirection);
+            result += CalcPointLight(_PointLights[i], normal, viewDirection, shadow);
 
     for (int i = 0; i < MAX_NR_SPOTLIGHTS; i++)
         if (_SpotLights[i].isActive)
-            result += CalcSpotLight(_SpotLights[i], normal, viewDirection);
+            result += CalcSpotLight(_SpotLights[i], normal, viewDirection, shadow);
 
     return result;
 }

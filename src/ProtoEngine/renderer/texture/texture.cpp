@@ -110,13 +110,24 @@ namespace Engine
 
         setTextureWrapMode(GL_REPEAT, GL_REPEAT);
         if (mipmap)
+        {
             setTextureFilterMode(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        }
         else if (m_Multisample)
+        {
             setTextureFilterMode(GL_LINEAR, GL_LINEAR);
+        }
         else if (m_Type == TextureType::DEPTH_TEXTURE)
+        {
             setTextureFilterMode(GL_NEAREST, GL_NEAREST);
+            setTextureWrapMode(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+            float col[] = {1.f, 1.f, 1.f, 1.f};
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, col);
+        }
         else
+        {
             setTextureFilterMode(GL_NEAREST, GL_LINEAR);
+        }
 
         unbind();
     }

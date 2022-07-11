@@ -41,6 +41,7 @@ namespace Engine
     public:
         Camera *mainCamera = nullptr;
         Skybox *skybox = nullptr;
+        DirectionalLight *shadowCaster = nullptr;
 
     private:
         std::string m_Name;

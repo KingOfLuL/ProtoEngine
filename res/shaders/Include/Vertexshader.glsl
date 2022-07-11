@@ -19,6 +19,7 @@ out FRAGMENT
     vec3 Bitangent;
     vec3 VertexColor;
     vec3 TangentPosition;
+    vec4 LightSpacePosition;
 } _Vertex;
 
 out mat3 _TBN;
@@ -40,6 +41,7 @@ void setVertex()
 
     _TBN = transpose(mat3(T, B, N));
     _Vertex.TangentPosition = _TBN * _Vertex.Position;
+    _Vertex.LightSpacePosition = _LightSpaceMatrix * vec4(_Vertex.Position, 1.0);
 }
 vec4 calculatePosition()
 {

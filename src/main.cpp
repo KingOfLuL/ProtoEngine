@@ -128,29 +128,13 @@ int main()
     Entity camera("Main Camera");
     camera.addComponent<PlayerMovement>();
     auto cameraComponent = camera.addComponent<Camera>(application->window->width,
-                                                       application->window->height,
-                                                       TextureType::COLOR_TEXTURE | TextureType::DEPTH_TEXTURE | TextureType::MULTISAMPLE);
-    cameraComponent->layers.push_back("Back");
+                                                       application->window->height);
     application->scene->setMainCamera(cameraComponent);
 
-    // Entity entBackCamera("Back Camera");
-    // entBackCamera.setParent(&camera);
-    // auto backCamera = entBackCamera.addComponent<Camera>(application->window->width * 0.25,
-    //                                                      application->window->height * 0.25,
-    //                                                      TextureType::DEPTH_TEXTURE, Camera::ProjectionType::ORTHOGRAPHIC);
-
     Entity *sun = new Entity("Sun");
-    sun->addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1);
+    sun->addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1, true);
     sun->addComponent<Rotate>();
-    sun->transform.rotation.x = -45.f;
-
-    Entity backScreen("Back Screen");
-    backScreen.transform.scale = glm::vec3(0.25);
-    backScreen.transform.position.y = 0.7;
-    backScreen.layer = "Back";
-    auto backScreenRenderer = backScreen.addComponent<MeshRenderer>();
-    backScreenRenderer->setMesh(verts, indices);
-    backScreenRenderer->material = new Material("BackScreen");
+    sun->transform.rotation.x = 45.f;
 
     Entity light("Light");
     light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 10);

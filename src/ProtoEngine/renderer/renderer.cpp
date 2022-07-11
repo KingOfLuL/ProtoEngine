@@ -21,7 +21,7 @@ namespace Engine::Renderer
 
     const u32 LIGHT_DATA_SIZE = (NUN_DIRLIGHTS_DATA + NUM_POINTLIGHTS_DATA + NUM_SPOTLIGHTS_DATA) * sizeof(f32);
 
-    const u32 INPUT_DATA_SIZE = 9 * sizeof(f32);
+    const u32 INPUT_DATA_SIZE = sizeof(glm::mat4) + sizeof(glm::vec3) + 6 * sizeof(f32);
 
     // TODO: add Batched Renderer
 
@@ -128,16 +128,31 @@ namespace Engine::Renderer
         glClearColor(0.2f, 0.2f, 0.2f, 1.0);
         updateLights();
 
+        auto dir = application->scene->shadowCaster->entity->transform.getWorldFront();
         f32 shaderData[] = {
+            dir.x,
+            dir.y,
+            dir.z,
             Time::deltaTime,
             Time::time,
             application->window->width,
             application->window->height,
+            application->scene->shadowCaster->shadowBiasMinMax.x,
+            application->scene->shadowCaster->shadowBiasMinMax.y,
         };
 
-        shaderUniformbufferInput.setData(&shaderData[0], sizeof(shaderData), sizeof(glm::vec3));
+        shaderUniformbufferInput.setData(&shaderData[0],
+                                         sizeof(shaderData),
+                                         sizeof(glm::mat4));
 
-        application->scene->getDirectionalLights()[0]->renderShadowMap();
+        auto c = application->scene->shadowCaster->getCamera();
+        glm::mat4 lsm = c->getProjectionMatrix() * c->getViewMatrix();
+
+        shaderUniformbufferInput.setData(glm::value_ptr(lsm),
+                                         sizeof(glm::mat4),
+                                         0);
+
+        application->scene->shadowCaster->renderShadowMap();
         for (auto camera : application->scene->getCameras())
         {
             if (camera != application->scene->mainCamera)

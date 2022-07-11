@@ -65,7 +65,7 @@ namespace Engine
         };
 
         Camera() = default;
-        Camera(i32 resW, i32 resH, i32 texturesToRender, const ProjectionType &projectionType = ProjectionType::PERSPECTIVE);
+        Camera(i32 resW, i32 resH, i32 texturesToRender = 97, const ProjectionType &projectionType = ProjectionType::PERSPECTIVE);
         ~Camera();
 
     public:
@@ -133,7 +133,7 @@ namespace Engine
     class DirectionalLight : public Light
     {
     public:
-        DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity);
+        DirectionalLight(const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular, f32 intensity, bool isShadowCaster = false);
         ~DirectionalLight();
 
         void initialize() override;
@@ -144,10 +144,12 @@ namespace Engine
         void renderShadowMap();
 
     public:
+        glm::vec2 shadowBiasMinMax = glm::vec2(0.005, 0.05);
         static const u32 NUM_DATA = 16;
 
     private:
         Camera *m_Camera;
+        bool m_IsShadowCaster;
     };
 
     class PointLight : public Light
