@@ -16,7 +16,7 @@ struct Material
 uniform Material _Material;
 
 vec4 _TextureDiffuseColor;
-vec4 _TextureSpecularColor;
+float _TextureSpecularStrength;
 
 void getTextureColors()
 {
@@ -26,7 +26,7 @@ void getTextureColors()
         _TextureDiffuseColor = vec4(_Material.DiffuseColor, 1.0);
 
     if (_Material.HasSpecular)
-        _TextureSpecularColor = texture2D(_Material.SpecularTexture, _Fragment.UV);
+        _TextureSpecularStrength = texture2D(_Material.SpecularTexture, _Fragment.UV).r;
     else
-        _TextureSpecularColor = vec4(vec3(0.0), 1.0);
+        _TextureSpecularStrength = 1.0;
 }

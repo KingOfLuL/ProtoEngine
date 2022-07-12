@@ -137,8 +137,8 @@ namespace Engine::Renderer
             Time::time,
             application->window->width,
             application->window->height,
-            application->scene->shadowCaster->shadowBiasMinMax.x,
-            application->scene->shadowCaster->shadowBiasMinMax.y,
+            application->scene->shadowCaster->shadowBiasMin,
+            application->scene->shadowCaster->shadowBiasMax,
         };
 
         shaderUniformbufferInput.setData(&shaderData[0],

@@ -132,13 +132,13 @@ int main()
     application->scene->setMainCamera(cameraComponent);
 
     Entity *sun = new Entity("Sun");
-    sun->addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1, true);
+    sun->addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(1), glm::vec3(1), 1, true);
     sun->addComponent<Rotate>();
-    sun->transform.rotation.x = 45.f;
+    sun->transform.rotation.x = 25.f;
 
-    Entity light("Light");
-    light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 10);
-    light.setParent(&camera);
+    // Entity light("Light");
+    // light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 10);
+    // light.setParent(&camera);
 
     Entity::loadModel("Model.fbx");
 

@@ -61,7 +61,7 @@ namespace Engine
         std::string getPath() const;
         TextureType getType() const;
 
-        static Texture2D loadFromFile(const std::string &path, const TextureType &type);
+        static Texture2D loadFromFile(const std::string &path, TextureType type);
 
     public:
         static std::list<Texture2D> s_LoadedTextures;

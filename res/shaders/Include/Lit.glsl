@@ -10,10 +10,11 @@ vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float shadow)
 
     float spec = pow(max(dot(normal, halfWayDir), 0.0), _Material.Shininess);
 
-    vec4 ambient = vec4(light.ambient, 1.0)   *         _TextureDiffuseColor;
-    vec4 diffuse = vec4(light.diffuse, 1.0)   * diff *  _TextureDiffuseColor * (1.0 - shadow);
-    vec4 specular = vec4(light.specular, 1.0) * spec *  _TextureSpecularColor * (1.0 - shadow);
-    return diffuse + specular + ambient;
+    vec4 ambient = vec4(light.ambient, 1.0);
+    vec4 diffuse = vec4(light.diffuse, 1.0) * diff;
+    vec4 specular = vec4(light.specular, 1.0) * spec * _TextureSpecularStrength;
+
+    return (ambient + (diffuse + specular) * (1.0 - shadow)) * _TextureDiffuseColor;
 }
 // calculate point light
 vec4 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir, float shadow) 
@@ -30,15 +31,15 @@ vec4 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir, float shadow)
     float dst = length(light.position - _Fragment.Position);
     float attenuation = 1.0 / (light.constant + light.linear * dst + light.quadratic * dst);    
 
-    vec4 ambient  = vec4(light.ambient, 1.0)  *        _TextureDiffuseColor;
-    vec4 diffuse  = vec4(light.diffuse, 1.0)  * diff * _TextureDiffuseColor * (1.0 - shadow);
-    vec4 specular = vec4(light.specular, 1.0) * spec * _TextureSpecularColor * (1.0 - shadow);
+    vec4 ambient  = vec4(light.ambient, 1.0);
+    vec4 diffuse  = vec4(light.diffuse, 1.0)  * diff;
+    vec4 specular = vec4(light.specular, 1.0) * spec;
 
     ambient  *= vec4(vec3(attenuation), 1.0);
     diffuse  *= vec4(vec3(attenuation), 1.0);
     specular *= vec4(vec3(attenuation), 1.0);
 
-    return ambient + diffuse + specular;
+    return (ambient + (diffuse + specular) * (1.0 - shadow)) * _TextureDiffuseColor;
 }
 // calculate spot light
 vec4 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir, float shadow)
@@ -60,24 +61,36 @@ vec4 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir, float shadow)
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
-    vec4 ambient = vec4(light.ambient, 1.0)   *         _TextureDiffuseColor; 
-    vec4 diffuse = vec4(light.diffuse, 1.0)   * diff *  _TextureDiffuseColor * (1.0 - shadow); 
-    vec4 specular = vec4(light.specular, 1.0) * spec *  _TextureSpecularColor * (1.0 - shadow); 
+    vec4 ambient = vec4(light.ambient, 1.0); 
+    vec4 diffuse = vec4(light.diffuse, 1.0)   * diff; 
+    vec4 specular = vec4(light.specular, 1.0) * spec; 
 
     ambient *= vec4(vec3(attenuation * intensity), 1.0); 
     diffuse *= vec4(vec3(attenuation * intensity), 1.0); 
     specular *= vec4(vec3(attenuation * intensity), 1.0); 
     
-    return ambient + diffuse + specular;
+    return (ambient + (diffuse + specular) * (1.0 - shadow)) * _TextureDiffuseColor;
 }
-float calculateShadow(vec4 fragPos)
+float calculateShadow(vec4 fragPos, float bias)
 {
     vec3 projCoords = fragPos.xyz / fragPos.w;
     projCoords = projCoords * 0.5 + 0.5;
     
-    float closestDepth = texture2D(_ShadowMap, projCoords.xy).r;
+    if (projCoords.z > 1.0)
+        return 0.0;
+
+    float shadow = 0.0;
     float currentDepth = projCoords.z;
-    float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+    vec2 texelSize = 1.0 / textureSize(_ShadowMap, 0);
+    for (int x = -1; x <= 1; ++x)
+    {
+        for (int y = - 1; y <= 1; ++y)
+        {
+            float pcfDepth = texture2D(_ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
 
     return shadow;
 }
@@ -90,8 +103,8 @@ vec4 calculateLitColor()
 
     vec3 viewDirection = normalize(_TBN * _ViewPosition - _Fragment.TangentPosition);
 
-    // float bias = max(_ShadowBiasMax * (1.0 - dot(normal, _ShadowCasterLightDirection)), _ShadowBiasMin);
-    float shadow = calculateShadow(_Fragment.LightSpacePosition);
+    float bias = max(_ShadowBiasMax * (1.0 - dot(_Fragment.Normal, _ShadowCasterLightDirection)), _ShadowBiasMin);
+    float shadow = calculateShadow(_Fragment.LightSpacePosition, bias);
 
     for (int i = 0; i < MAX_NR_DIRLIGHTS; i++)
         if (_DirLights[i].isActive)

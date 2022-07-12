@@ -144,7 +144,8 @@ namespace Engine
         void renderShadowMap();
 
     public:
-        glm::vec2 shadowBiasMinMax = glm::vec2(0.005, 0.05);
+        float shadowBiasMin = 0.00005;
+        float shadowBiasMax = 0.0005;
         static const u32 NUM_DATA = 16;
 
     private:

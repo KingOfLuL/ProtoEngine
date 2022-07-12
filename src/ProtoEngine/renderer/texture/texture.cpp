@@ -38,7 +38,7 @@ namespace Engine
         return m_ID;
     }
 
-    Texture2D Texture2D::loadFromFile(const std::string &path, const TextureType &type)
+    Texture2D Texture2D::loadFromFile(const std::string &path, TextureType type)
     {
         std::string fileName = PathUtil::FULL_PATH + PathUtil::TEXTURE_PATH + path;
 
@@ -128,7 +128,6 @@ namespace Engine
         {
             setTextureFilterMode(GL_NEAREST, GL_LINEAR);
         }
-
         unbind();
     }
     std::string Texture2D::getPath() const

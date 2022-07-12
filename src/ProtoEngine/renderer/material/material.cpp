@@ -74,7 +74,7 @@ namespace Engine
                 return tex;
         }
         // otherwise create a new one
-        Texture2D tex = Texture2D::loadFromFile(path, (TextureType)texType);
+        Texture2D tex = Texture2D::loadFromFile(path, texType);
         Texture2D::s_LoadedTextures.push_back(tex);
         return &(Texture2D::s_LoadedTextures.back());
     }
