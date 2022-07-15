@@ -1,13 +1,15 @@
 {
-    "shader": "Lit",
-    "diffuse": "wood/Wood_Color.png",
-    "specular": "wood/Wood_Specular.png",
-    "normal": "wood/Wood_Normal.png",
-    "diffuseColor": [
+    "Shader": "Lit",
+    "DiffuseColor": [
         1.0,
         1.0,
         1.0
     ],
-    "shininess": 64,
-    "twoSided": true
+    "Shininess": 32,
+    "TwoSided": true,
+    "Textures": {
+        "_Material.DiffuseTexture": "wood/Wood_Color.png",
+        "_Material.SpecularTexture": "wood/Wood_Specular.png",
+        "_Material.NormalMap": "wood/Wood_Normal.png"
+    }
 }

@@ -168,31 +168,28 @@ namespace Engine
 
             material->shader->setMat4("_ModelMatrix", renderer->entity->transform.getTransformationMatrix());
 
-            material->shader->setInt("_Material.DiffuseTexture", 0);
-            material->shader->setInt("_Material.SpecularTexture", 1);
-            material->shader->setInt("_Material.NormalMap", 2);
-            material->shader->setInt("_DepthTexture", 3);
-            material->shader->setInt("_ShadowMap", 4);
-            material->shader->setInt("_Skybox", 5);
+            material->shader->setInt("_DepthTexture", 0);
+            material->shader->setInt("_ShadowMap", 1);
+            material->shader->setInt("_Skybox", 2);
 
             glActiveTexture(GL_TEXTURE0);
-            if (material->diffuseTex)
-                material->diffuseTex->bind();
-            glActiveTexture(GL_TEXTURE1);
-            if (material->specularTex)
-                material->specularTex->bind();
-            glActiveTexture(GL_TEXTURE2);
-            if (material->normalTex)
-                material->normalTex->bind();
-            glActiveTexture(GL_TEXTURE3);
             if (renderTarget->getTexture(TextureType::DEPTH_TEXTURE))
                 renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
-            glActiveTexture(GL_TEXTURE4);
+            glActiveTexture(GL_TEXTURE1);
             if (application->scene->shadowCaster)
                 application->scene->shadowCaster->getCamera()->renderTarget->getTexture(DEPTH_TEXTURE)->bind();
-            glActiveTexture(GL_TEXTURE5);
+            glActiveTexture(GL_TEXTURE2);
             if (application->scene->skybox)
                 application->scene->skybox->bind();
+
+            for (usize i = 0; i < material->textures.size(); i++)
+            {
+                Texture2D *tex = material->textures[i];
+                material->shader->setInt(tex->name, 3 + i);
+
+                glActiveTexture(GL_TEXTURE3 + i);
+                tex->bind();
+            }
 
             material->shader->setVec3("_Material.DiffuseColor", material->diffuseColor);
             material->shader->setFloat("_Material.Shininess", material->shininess);

@@ -17,39 +17,24 @@ namespace Engine
         boost::property_tree::read_json(PathUtil::FULL_PATH + PathUtil::MATERIAL_PATH + name + ".mat.json", mat);
 
         i32 i = 0;
-        for (auto &item : mat.get_child("diffuseColor"))
+        for (auto &item : mat.get_child("DiffuseColor"))
             diffuseColor[i++] = item.second.get_value<f32>();
 
-        twoSided = mat.get<bool>("twoSided");
-        shininess = mat.get<f32>("shininess");
+        twoSided = mat.get<bool>("TwoSided");
+        shininess = mat.get<f32>("Shininess");
 
-        std::string diffusePath = mat.get<std::string>("diffuse");
-        std::string specularPath = mat.get<std::string>("specular");
-        std::string normalPath = mat.get<std::string>("normal");
-
-        if (diffusePath != "RenderTexture")
+        for (const auto &[name, texture] : mat.get_child("Textures"))
         {
-            if (diffusePath != "")
-                diffuseTex = loadMaterialTexture(diffusePath, TextureType::MAT_DIFFUSE);
-            else
-                hasDiffuseTexture = false;
-        }
-        if (specularPath != "RenderTexture")
-        {
-            if (specularPath != "")
-                specularTex = loadMaterialTexture(specularPath, TextureType::MAT_SPECULAR);
-            else if (specularPath != "RenderTexture")
-                hasSpecularTexture = false;
-        }
-        if (normalPath != "RenderTexture")
-        {
-            if (normalPath != "")
-                normalTex = loadMaterialTexture(normalPath, TextureType::MAT_NORMAL);
-            else if (normalPath != "RenderTexture")
-                hasNormalMap = false;
+            const std::string &path = texture.get_value<std::string>();
+            if (path != "")
+            {
+                Texture2D *tex = loadMaterialTexture(path);
+                tex->name = name;
+                textures.push_back(tex);
+            }
         }
 
-        shader = Shader::getShaderByName(mat.get<std::string>("shader"));
+        shader = Shader::getShaderByName(mat.get<std::string>("Shader"));
 
         s_LoadedMaterials.push_back(this);
     }
@@ -60,7 +45,7 @@ namespace Engine
                 return mat;
         return nullptr;
     }
-    Texture2D *Material::loadMaterialTexture(const std::string &path, TextureType texType)
+    Texture2D *Material::loadMaterialTexture(const std::string &path)
     {
         // check if texture already is loaded
         for (u32 i = 0; i < Texture2D::s_LoadedTextures.size(); i++)
@@ -74,7 +59,7 @@ namespace Engine
                 return tex;
         }
         // otherwise create a new one
-        Texture2D tex = Texture2D::loadFromFile(path, texType);
+        Texture2D tex = Texture2D::loadFromFile(path, TextureType::MAT_DIFFUSE);
         Texture2D::s_LoadedTextures.push_back(tex);
         return &(Texture2D::s_LoadedTextures.back());
     }

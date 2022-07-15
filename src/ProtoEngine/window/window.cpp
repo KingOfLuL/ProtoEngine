@@ -61,15 +61,15 @@ namespace Engine
         glViewport(0, 0, width, height);
         m_Shader.use();
 
-        m_Shader.setInt("_DepthTexture", 3);
-        m_Shader.setInt("_ShadowMap", 4);
-        m_Shader.setInt("_RenderTexture", 5);
+        m_Shader.setInt("_DepthTexture", 0);
+        m_Shader.setInt("_ShadowMap", 1);
+        m_Shader.setInt("_RenderTexture", 2);
 
-        glActiveTexture(GL_TEXTURE3);
+        glActiveTexture(GL_TEXTURE0);
         application->scene->mainCamera->renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
-        glActiveTexture(GL_TEXTURE4);
+        glActiveTexture(GL_TEXTURE1);
         application->scene->shadowCaster->getCamera()->renderTarget->getTexture(TextureType::DEPTH_TEXTURE)->bind();
-        glActiveTexture(GL_TEXTURE5);
+        glActiveTexture(GL_TEXTURE2);
         texture->bindColorTexture();
 
         glDisable(GL_DEPTH_TEST);

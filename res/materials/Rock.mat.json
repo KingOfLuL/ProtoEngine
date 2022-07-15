@@ -1,13 +1,15 @@
 {
-    "shader": "Lit",
-    "diffuse": "rock/Rock_Color.png",
-    "specular": "rock/Rock_Specular.png",
-    "normal": "rock/Rock_Normal.png",
-    "diffuseColor": [
+    "Shader": "Lit",
+    "DiffuseColor": [
         1.0,
         1.0,
         1.0
     ],
-    "shininess": 32,
-    "twoSided": false
+    "Shininess": 32,
+    "TwoSided": false,
+    "Textures": {
+        "_Material.DiffuseTexture": "rock/Rock_Color.png",
+        "_Material.SpecularTexture": "rock/Rock_Specular.png",
+        "_Material.NormalMap": "rock/Rock_Normal.png"
+    }
 }

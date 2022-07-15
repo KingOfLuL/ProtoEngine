@@ -129,15 +129,24 @@ int main()
     camera.addComponent<PlayerMovement>();
     auto cameraComponent = camera.addComponent<Camera>(application->window->width,
                                                        application->window->height);
+    cameraComponent->layers.push_back("Second");
     application->scene->setMainCamera(cameraComponent);
 
     Entity *sun = new Entity("Sun");
-    sun->addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(1), glm::vec3(1), 1, true);
+    sun->addComponent<DirectionalLight>(glm::vec3(0.05), glm::vec3(0.5), glm::vec3(0.5), 1, true);
     sun->addComponent<Rotate>();
-    sun->transform.rotation.x = 25.f;
+    sun->transform.rotation.x = 45;
+
+    Entity screen("Screen");
+    screen.layer = "Second";
+    screen.transform.scale = glm::vec3(0.2);
+    screen.transform.position.y = 0.7;
+    MeshRenderer *screenRenderer = screen.addComponent<MeshRenderer>();
+    screenRenderer->setMesh(verts, indices);
+    screenRenderer->material = new Material("Screen");
 
     // Entity light("Light");
-    // light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 10);
+    // light.addComponent<PointLight>(glm::vec3(0.0f), glm::vec3(1, 0.5, 0.1), glm::vec3(1, 0.5, 0.1), 1, 5);
     // light.setParent(&camera);
 
     Entity::loadModel("Model.fbx");

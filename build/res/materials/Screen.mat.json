@@ -1,0 +1,15 @@
+{
+    "Shader": "Back",
+    "DiffuseColor": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Shininess": 64,
+    "TwoSided": true,
+    "Textures": {
+        "_Material.DiffuseTexture": "",
+        "_Material.SpecularTexture": "",
+        "_Material.NormalMap": ""
+    }
+}

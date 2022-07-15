@@ -25,7 +25,10 @@ namespace Engine
         };
 
     public:
-        Entity(const std::string &name, const glm::vec3 &pos = glm::vec3(0.0f), const glm::vec3 &rot = glm::vec3(0.0f), const glm::vec3 &scl = glm::vec3(1.0f));
+        Entity(const std::string &name,
+               const glm::vec3 &pos = glm::vec3(0.f),
+               const glm::vec3 &rot = glm::vec3(0.f),
+               const glm::vec3 &scl = glm::vec3(1.f));
         Entity(const Entity &entity);
         Entity(Model *model);
         ~Entity();

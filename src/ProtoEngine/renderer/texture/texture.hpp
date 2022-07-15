@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-    enum TextureType : int
+    enum TextureType : i32
     {
         MULTISAMPLE = 0x01,
         MAT_DIFFUSE = 0x02,
@@ -39,6 +39,8 @@ namespace Engine
         i32 width;
         i32 height;
         GLenum colorFormat;
+        // name used in the shader
+        std::string name;
 
     protected:
         GLenum m_GLTextureType;

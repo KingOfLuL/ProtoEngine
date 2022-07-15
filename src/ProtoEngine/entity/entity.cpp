@@ -220,7 +220,7 @@ namespace Engine
                 entity->parent = rootEntity;
                 rootEntity->children.push_back(entity);
 
-                Material *mat = Material::getMaterialByName(matName); // TODO: clean up; combining meshes?
+                Material *mat = Material::getMaterialByName(matName); // TODO: clean up; combining meshes? -> batched renderer
                 if (mat)
                 {
                     auto renderer = entity->getComponent<MeshRenderer>();
